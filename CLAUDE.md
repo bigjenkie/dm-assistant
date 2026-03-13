@@ -1,5 +1,27 @@
 # DM Assistant — Project Context
 
+## Implementation Status
+
+**Phase:** Pre-implementation. Specs complete, implementation plan written, no code yet.
+
+**Active plan:** `docs/plans/2026-03-10-testable-mvp.md` — 9 tasks to get a testable MVP.
+
+**MVP approach:** Pure TypeScript/React web app (Vite + Tailwind + Vitest). No Tauri/Rust yet (cargo not installed). Core logic in `src/lib/` is framework-agnostic and will move into Tauri unchanged. Manual transcript input simulates whisper.cpp. Hits Ollama over HTTP at localhost:11434.
+
+**MVP scope:** Campaign context input, manual transcript, suggestion engine with 45s cycle, response parsing, entity cooldown, suggestion cards with pin/dismiss, ad-hoc questions, 3 panic buttons (Phones Out, Need an NPC, Recap), LLM provider abstraction (Ollama implemented, Anthropic stubbed).
+
+**NOT in MVP:** Tauri shell, whisper.cpp, SQLite persistence, adaptive music, session export, full 10 panic buttons, MCP server, first-run wizard.
+
+## Development Environment
+
+- **OS:** Windows 11, Git Bash shell
+- **Package manager:** npm (better Windows/Tauri compatibility than bun)
+- **Python:** 3.14.0 (for MCP server later)
+- **Ollama:** 0.14.3 installed (start with `ollama serve`)
+- **Rust/cargo:** NOT INSTALLED — Tauri integration deferred
+- **Test runner:** Vitest (configured in vite.config.ts)
+- **Commands:** `npm run dev`, `npm test`, `npm run build`
+
 ## What This Is
 
 A desktop app that acts as a real-time AI copilot for tabletop RPG Dungeon Masters. It listens to the session via microphone, transcribes in real time, and proactively surfaces contextual suggestions — NPC details, rules clarifications, backstory connections, and improvisation prompts — so the DM can stay focused on running the game.
@@ -245,3 +267,5 @@ dm-assistant/
 | `specs/04-architecture.md` | Full technical architecture: components, code samples, provider abstraction, DB schema, build plan, performance budget, risk register | All implementation work |
 | `specs/05-mcp-server.md` | MCP server spec: FastMCP resources, tools, prompts, database integration, distribution | Building the MCP companion |
 | `specs/06-adaptive-music.md` | Music system: scene classifier, crossfade engine, audio tiers, panic button audio, BDD scenarios | Building the music system |
+| `specs/07-gap-coverage-bdd.md` | 108 BDD scenarios covering gaps: LLM provider management, campaign persistence, first-run wizard, transcript internals, entity cooldown, suggestion parsing, session resilience, security/privacy, settings UI, MCP server | All implementation work — complements specs 01-06 |
+| `docs/plans/2026-03-10-testable-mvp.md` | 9-task implementation plan: scaffold, types, parser, cooldown, prompt builder, Ollama provider, suggestion engine, React UI, smoke test | **Active plan** — execute with superpowers:executing-plans |
