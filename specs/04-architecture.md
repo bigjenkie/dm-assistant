@@ -313,8 +313,8 @@ def create_provider(config: LLMConfig) -> LLMProvider:
 
 **Default model:** `llama3.1:8b-instruct-q4_K_M`
 - 5-6GB VRAM (GPU) or ~8GB RAM (CPU-only, slower)
-- 30-50 tok/sec on Apple Silicon, 8-12 tok/sec on RTX 3060
-- 100-word suggestion ≈ 130 tokens ≈ 2-4 seconds (GPU) / 10-15 sec (CPU)
+- ~128 tok/sec on RTX 4090, ~40 tok/sec on RTX 3060, ~28 tok/sec on M1 Mac
+- 100-word suggestion ≈ 130 tokens ≈ 1-2 sec (4090) / 4-5 sec (3060) / 6-7 sec (M1)
 - Good enough for entity recall, rules lookup, improvisation prompts
 - Instruction-tuned for following structured prompt templates
 
@@ -466,84 +466,249 @@ with a checkbox acknowledgment. Not buried in a ToS — front and center.
 - A small badge in the suggestion panel header shows which provider is
   active: "🖥️ Local" or "☁️ Claude" so the DM always knows.
 
-### 4. Suggestion Engine
+### 4. Suggestion Engine (Pull-Based + Smart Notifications)
 
-**Core loop (runs every 45-60 seconds when transcription is active):**
+**Design philosophy:** The DM is running a game, not monitoring a feed.
+Suggestions should never interrupt. The DM pulls help when they need it.
+The only exception is when the engine detects something genuinely
+important — and even then, it just lights up a notification badge.
+
+**Two interaction modes:**
+
+1. **Pull (primary):** DM clicks "Suggest" button or a panic button → LLM
+   generates a contextual suggestion → card appears. User-initiated, every time.
+2. **Notify (secondary):** Background analyzer detects a high-relevance
+   trigger using cheap keyword/pattern matching (zero LLM cost) → notification
+   badge glows → DM clicks when ready → THEN the LLM fires.
+
+**Why this is better:**
+- No noise. The DM never has to filter through irrelevant suggestions.
+- Dramatically better for laptop hardware. LLM calls happen maybe 15-30
+  times per session instead of 300+. GPU sits idle 95% of the time.
+- Battery life goes from "bring your charger" to "probably fine."
+- Fan noise drops from constant to occasional.
+- Latency is always user-expected — the DM clicked something, they know
+  a response is coming.
+
+#### 4a. Background Analyzer (Always Running, Zero LLM Cost)
+
+The analyzer runs keyword/pattern matching on every transcript window
+(every 10-15 seconds). It maintains a **relevance queue** — a list of
+potential suggestions detected but not yet shown. No LLM calls, just
+string matching against campaign context.
 
 ```python
-# Pseudocode for suggestion cycle
-class SuggestionEngine:
-    def __init__(self, config: LLMConfig):
-        self.provider = create_provider(config)  # Local or Claude
-        self.cooldown_tracker = CooldownTracker()
-        self.prompt_builder = PromptBuilder()
+class BackgroundAnalyzer:
+    """Lightweight pattern matcher — runs on transcript, no LLM calls.
+    Detects when something in the conversation matches campaign data
+    and queues a notification if the relevance score is high enough."""
 
-    async def switch_provider(self, new_config: LLMConfig):
-        """Hot-swap providers mid-session."""
-        new_provider = create_provider(new_config)
-        if await new_provider.health_check():
-            self.provider = new_provider
-            return True
-        return False  # Keep current provider if new one fails
+    def __init__(self, campaign: CampaignData):
+        self.campaign = campaign
+        self.relevance_queue: list[PendingNotification] = []
+        self.notified_entities: dict[str, float] = {}  # entity → timestamp (cooldown)
 
-    async def suggestion_cycle(self):
-        # 1. Get recent transcript (last 3-5 minutes)
-        recent_transcript = transcript_manager.get_window(minutes=3)
+    def analyze(self, transcript_window: str) -> PendingNotification | None:
+        text = transcript_window.lower()
+        best_match: PendingNotification | None = None
+        best_score = 0.0
 
-        # 2. Check if transcript has meaningful new content
-        if not has_new_game_content(recent_transcript):
-            return None  # Don't generate noise
+        # Check NPC names (exact and fuzzy)
+        for npc in self.campaign.npcs:
+            if npc.name.lower() in text and not self._on_cooldown(npc.name):
+                score = 0.8  # High — direct name match
+                if npc.secrets:
+                    score = 0.95  # Very high — NPC has DM-only secrets
+                if score > best_score:
+                    best_score = score
+                    best_match = PendingNotification(
+                        type="RECALL",
+                        trigger=f"NPC mentioned: {npc.name}",
+                        context_hint=npc.name,
+                        score=score
+                    )
 
-        # 3. Build prompt (identical for local and Claude)
-        system, prompt = self.prompt_builder.build(
-            campaign_context=campaign.get_context(),
-            character_backstories=campaign.get_backstories(),
-            recent_transcript=recent_transcript,
-            active_suggestions=suggestion_panel.get_active(),
-            entity_cooldowns=self.cooldown_tracker.get_active(),
-            session_elapsed=timer.elapsed(),
-            mode="proactive"
-        )
+        # Check plot hook keywords
+        for hook in self.campaign.plot_hooks:
+            if hook.status == "unresolved":
+                keywords = extract_keywords(hook.description)
+                matches = sum(1 for kw in keywords if kw in text)
+                if matches >= 2 and not self._on_cooldown(hook.id):
+                    score = 0.7 + (matches * 0.05)
+                    if score > best_score:
+                        best_score = score
+                        best_match = PendingNotification(
+                            type="THREAD",
+                            trigger=f"Plot hook referenced: {hook.description[:50]}",
+                            context_hint=hook.id,
+                            score=score
+                        )
 
-        # 4. Call whichever provider is active
-        #    The provider interface is identical — engine doesn't care
-        response = await self.provider.generate(
-            system=system,
-            prompt=prompt,
-            max_tokens=200
-        )
+        # Check backstory keywords
+        for char in self.campaign.characters:
+            backstory_keywords = extract_keywords(char.backstory + char.bonds + char.goals)
+            matches = sum(1 for kw in backstory_keywords if kw in text)
+            if matches >= 2 and not self._on_cooldown(f"backstory_{char.name}"):
+                score = 0.85  # High — backstory moments are valuable
+                if score > best_score:
+                    best_score = score
+                    best_match = PendingNotification(
+                        type="BACKSTORY",
+                        trigger=f"Backstory moment for {char.name}",
+                        context_hint=char.id,
+                        score=score
+                    )
 
-        # 5. Parse response into structured suggestion
-        suggestion = parse_suggestion(response)
+        # Check combat/rules triggers
+        combat_matches = sum(1 for kw in COMBAT_KEYWORDS if kw in text)
+        if combat_matches >= 3 and self.campaign.has_planned_encounters():
+            if not self._on_cooldown("combat_stats"):
+                best_match = PendingNotification(
+                    type="COMBAT",
+                    trigger="Combat detected — encounter stats available",
+                    context_hint="planned_encounter",
+                    score=0.75
+                )
 
-        # 6. Apply dedup / cooldown
-        if suggestion and not self.cooldown_tracker.is_suppressed(suggestion.entity):
-            self.cooldown_tracker.register(suggestion.entity, ttl=300)
-            return suggestion
+        rules_triggers = RULES_TRIGGER_PATTERNS.findall(text)
+        if rules_triggers and not self._on_cooldown("rules"):
+            best_match = PendingNotification(
+                type="RULES",
+                trigger=f"Rules question: {rules_triggers[0]}",
+                context_hint=rules_triggers[0],
+                score=0.7
+            )
 
-        return None
+        return best_match if best_match and best_match.score >= NOTIFY_THRESHOLD else None
 
-    async def panic_button(self, button_id: str):
-        """Panic buttons bypass the cycle and respond immediately."""
-        system, prompt = self.prompt_builder.build_panic(
-            button_id=button_id,
-            campaign_context=campaign.get_context(),
-            character_backstories=campaign.get_backstories(),
-            recent_transcript=transcript_manager.get_window(minutes=5),
-            full_session_transcript=transcript_manager.get_full(),
-        )
-        response = await self.provider.generate(
-            system=system,
-            prompt=prompt,
-            max_tokens=300  # Panic buttons get more room
-        )
-        return parse_suggestion(response)
+    def _on_cooldown(self, entity: str) -> bool:
+        if entity in self.notified_entities:
+            return (time.time() - self.notified_entities[entity]) < 300  # 5 min
+        return False
 ```
 
-**The prompt is the same regardless of provider.** This is critical.
-You write and tune prompts once. The quality difference between local
-and Claude comes from the model's ability to follow the prompt, not
-from different prompts. This means prompt improvements benefit both modes.
+**Notification threshold:** Configurable (default 0.75). Higher = fewer
+notifications, only the most relevant. Lower = more frequent but noisier.
+The DM can tune this in settings.
+
+#### 4b. Notification Badge UI
+
+When the analyzer queues a notification, the UI shows a subtle indicator:
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│  Suggestion Panel                                             │
+│                                                               │
+│  ┌─────────────────────────────────────────────────────────┐  │
+│  │  [ 🔮 Suggest ]  [ notifications: 🧵● ]                │  │
+│  │                                                          │  │
+│  │  (empty — click Suggest or a panic button for help)      │  │
+│  │                                                          │  │
+│  └─────────────────────────────────────────────────────────┘  │
+│                                                               │
+│  The ● dot glows amber when the analyzer detects something.   │
+│  Click it to generate the full suggestion via LLM.            │
+│  The 🧵 icon indicates the type (Thread, 📋 Recall, etc.)    │
+│  If unclicked for 5 minutes, the notification fades.          │
+└──────────────────────────────────────────────────────────────┘
+```
+
+**Badge behavior:**
+- Appears with the notification type icon and a gentle pulse/glow.
+- Shows a one-line hint: "Mayor Hild mentioned" or "Backstory moment: Drogan."
+- Clicking it fires the LLM with the relevant context to generate the full
+  suggestion. The DM waits 2-5 seconds (pull latency, expected).
+- Multiple notifications can queue. Badge shows count: "●2"
+- Oldest notification expires after 5 minutes if unclicked.
+- Notification is silent — no sound, no popup, no toast. Just a visual change.
+
+#### 4c. Pull Interactions
+
+**"Suggest" button (general pull):**
+The DM clicks "Suggest" at any time. The engine looks at the recent
+transcript + campaign context and generates whatever's most relevant.
+
+```python
+async def suggest(self) -> Suggestion:
+    """DM clicked the Suggest button — generate the best suggestion
+    for the current moment."""
+    system, prompt = self.prompt_builder.build(
+        campaign_context=campaign.get_context(),
+        character_backstories=campaign.get_backstories(),
+        recent_transcript=transcript_manager.get_window(minutes=3),
+        active_suggestions=suggestion_panel.get_active(),
+        entity_cooldowns=self.cooldown_tracker.get_active(),
+        session_elapsed=timer.elapsed(),
+    )
+    response = await self.provider.generate(
+        system=system, prompt=prompt, max_tokens=200
+    )
+    return parse_suggestion(response)
+```
+
+**Notification click (targeted pull):**
+The DM clicks a notification badge. The engine already knows what
+triggered it (NPC name, plot hook, backstory keyword), so it sends a
+more focused prompt with just the relevant context.
+
+```python
+async def expand_notification(self, notification: PendingNotification) -> Suggestion:
+    """DM clicked a notification — generate a focused suggestion
+    using the specific trigger context."""
+    system, prompt = self.prompt_builder.build_targeted(
+        notification_type=notification.type,
+        context_hint=notification.context_hint,
+        campaign_context=campaign.get_context(),
+        character_backstories=campaign.get_backstories(),
+        recent_transcript=transcript_manager.get_window(minutes=2),
+    )
+    response = await self.provider.generate(
+        system=system, prompt=prompt, max_tokens=200
+    )
+    self.cooldown_tracker.register(notification.context_hint, ttl=300)
+    return parse_suggestion(response)
+```
+
+**Panic buttons (unchanged — already pull-based):**
+Same as before. One click, specialized prompt, immediate response.
+
+```python
+async def panic_button(self, button_id: str) -> Suggestion:
+    """Panic buttons use stripped-down prompts for faster response."""
+    system, prompt = self.prompt_builder.build_panic(
+        button_id=button_id,
+        campaign_context=campaign.get_context(),
+        character_backstories=campaign.get_backstories(),
+        recent_transcript=transcript_manager.get_window(seconds=60),
+        full_session_transcript=transcript_manager.get_full(),
+    )
+    response = await self.provider.generate(
+        system=system, prompt=prompt, max_tokens=300
+    )
+    return parse_suggestion(response)
+```
+
+**Ad-hoc questions (unchanged):**
+DM types a question, submits, gets an answer.
+
+#### 4d. Resource Usage Comparison: Push vs Pull
+
+| Metric | Old Push Model (45s cycle) | New Pull Model |
+|--------|--------------------------|----------------|
+| LLM calls per 4-hr session | ~300 proactive + 15 panic + 10 questions = **~325** | ~20 suggest + 15 panic + 10 questions + 10 notifications = **~55** |
+| GPU active time per session | ~25 min (325 × ~5s each) | ~4 min (55 × ~5s each) |
+| GPU idle % | ~90% | **~98%** |
+| API cost (Claude Sonnet) | ~$2.50-3.50 | **~$0.40-0.60** |
+| Battery impact | Significant — constant GPU cycling | Minimal — GPU only when DM asks |
+| Fan noise | Frequent spikes every 45 seconds | Rare, only on user action |
+| Laptop thermal | Sustained warm | Cool most of the time |
+
+This makes the app genuinely laptop-friendly. A MacBook Air or a thin
+gaming laptop can run this without thermal throttling or battery anxiety.
+
+**The prompt is the same regardless of provider.** This is still true.
+Pull vs push changes when the prompt fires, not what it contains.
+Prompt improvements benefit both local and Claude modes.
 
 **Prompt template (core of the product — this is the craft):**
 
@@ -752,17 +917,37 @@ CREATE TABLE sessions (
 );
 
 -- Entity mention cooldowns (in-memory, not persisted)
--- Suggestion history (persisted per session for export)
+
+-- Suggestion history (persisted per session for after action report)
 CREATE TABLE suggestions (
     id TEXT PRIMARY KEY,
     session_id TEXT REFERENCES sessions(id),
-    type TEXT,
+    type TEXT,               -- RECALL, RULES, THREAD, COMBAT, SPELL, IMPROV, BACKSTORY, PACING
+    source TEXT,             -- 'pull' (Suggest button), 'panic' (panic button), 'notification' (badge click), 'question' (ad-hoc)
+    trigger TEXT,            -- what caused this: panic button id, notification hint, or 'manual'
     title TEXT,
     body TEXT,
     dm_only BOOLEAN,
-    timestamp REAL,  -- seconds since session start
-    was_dismissed BOOLEAN DEFAULT FALSE,
-    was_pinned BOOLEAN DEFAULT FALSE
+    timestamp REAL,          -- seconds since session start
+    transcript_context TEXT,  -- the transcript window that was active when this was generated
+    scene_state TEXT,        -- COMBAT, EXPLORATION, SOCIAL, etc. at time of generation
+    outcome TEXT DEFAULT 'generated',  -- generated, used, dismissed, pinned, expired
+    outcome_timestamp REAL,  -- when the DM acted on it (used/dismissed/pinned)
+    was_pinned BOOLEAN DEFAULT FALSE,
+    dm_rating INTEGER        -- optional 1-5 star rating, NULL if unrated
+);
+
+-- Notification history (tracks ALL detections, including ones the DM never clicked)
+CREATE TABLE notifications (
+    id TEXT PRIMARY KEY,
+    session_id TEXT REFERENCES sessions(id),
+    type TEXT,               -- RECALL, THREAD, BACKSTORY, COMBAT, RULES, PACING
+    trigger TEXT,            -- what the analyzer detected: "NPC: Fendrel", "Backstory: Gruuk + Pelor"
+    score REAL,              -- relevance score from the analyzer (0.0-1.0)
+    timestamp REAL,          -- seconds since session start
+    outcome TEXT DEFAULT 'shown',  -- shown (badge appeared), clicked (DM expanded), expired (5 min timeout), suppressed (cooldown)
+    suggestion_id TEXT,      -- links to the suggestion generated if clicked, NULL if expired
+    transcript_snippet TEXT  -- the ~30s of transcript that triggered detection
 );
 ```
 
@@ -775,19 +960,435 @@ alongside the session. Keeps SQLite lean while allowing easy export.
 {"ts": 148.3, "text": "I got a 17", "confidence": 0.95}
 ```
 
-### 7. Export
+### 7. After Action Report + Export
 
-**Markdown export:** One-click generates a `.md` file containing:
-- Session metadata (date, duration, campaign name)
-- Campaign context snapshot
-- Full transcript with timestamps
-- All suggestions generated (with types and timestamps)
-- All ad-hoc Q&A pairs
-- Auto-generated session summary (calls LLM once on export)
+When the session ends, the app generates a DM After Action Report — a
+structured debrief that helps the DM improve their craft and captures
+everything the app observed during the session.
 
-**JSON export:** Same data in structured JSON for programmatic use.
+**What gets logged during the session (automatically, no DM action):**
 
-**Future:** Foundry VTT module export, Obsidian vault integration.
+| Data | Source | Cost |
+|------|--------|------|
+| Every suggestion generated | Suggestion cards | Already in memory |
+| DM's action on each suggestion | Used / dismissed / pinned / expired | UI events |
+| Every notification the analyzer detected | Background analyzer | Zero (keyword matching) |
+| Which notifications the DM clicked vs ignored | Badge interactions | UI events |
+| Which notifications expired unclicked | 5-minute timeout | Timer |
+| Scene state timeline | Scene classifier | Zero (keywords) |
+| Music transitions | Crossfade events | Audio engine |
+| Panic button usage (which, when, what was generated) | Panic dispatch | Already logged |
+| Ad-hoc questions and answers | Q&A pairs | Already in memory |
+| Session pacing data (elapsed time, scene durations) | Timers | Zero |
+
+**The After Action Report has three sections:**
+
+#### Section 1: Session Summary (LLM-generated)
+
+Generated from the full transcript on session end. One LLM call.
+Includes: narrative recap, key events, decisions made, NPCs encountered,
+character moments, and unresolved threads. This is the "previously on..."
+the DM reads aloud next session.
+
+#### Section 2: App Activity Log (Automatic, no LLM)
+
+A chronological record of every interaction between the DM and the app:
+
+```markdown
+## App Activity Log — Session 12
+
+### Notifications Detected: 14
+  📋 00:12:31 — NPC detected: "Fendrel" (score: 0.82) → CLICKED → Suggestion used
+  🧵 00:18:45 — Plot hook: "coded letter" (score: 0.71) → EXPIRED (unclicked)
+  🎭 00:34:12 — Backstory: Gruuk + Pelor (score: 0.88) → CLICKED → Suggestion used
+  📖 00:41:55 — Rules: "grapple while prone" (score: 0.73) → CLICKED → Suggestion dismissed
+  ⚔️ 00:48:30 — Combat: planned encounter detected (score: 0.78) → CLICKED → Suggestion pinned
+  🎭 01:02:18 — Backstory: Elowen + Thessaly (score: 0.91) → EXPIRED (unclicked)  ← AVAILABLE NEXT SESSION
+  📋 01:15:44 — NPC detected: "Toblen" (score: 0.77) → CLICKED → Suggestion used
+  ⏱️ 01:23:00 — Pacing: combat running 35 min (score: 0.65) → CLICKED → Suggestion used
+  ...
+
+### Suggestions Generated: 8
+  Pulled (Suggest button): 3
+  Panic buttons: 2 (📱 Phones Out, 🗺️ Off Script)
+  Notification clicks: 3
+
+### Suggestion Outcomes:
+  Used: 5  (62%)
+  Dismissed: 1  (12%)
+  Pinned: 1  (12%)
+  Expired: 1  (12%)
+
+### Unread Notifications — Available for Next Session:
+  🧵 00:18:45 — Plot hook: "coded letter"
+     Context: Players discussed the letter they found but moved on.
+     The app detected a match to the unresolved "coded letter" hook.
+     This could be revisited next session.
+
+  🎭 01:02:18 — Backstory: Elowen + Thessaly
+     Context: The party passed through the noble's gallery.
+     Elowen's mentor Thessaly was last seen at a noble court.
+     This connection was never surfaced to the DM.
+     ★ CONSIDER: Revisit this opportunity next session.
+
+### Panic Button Usage:
+  📱 01:45:22 — Phones Out → Targeted Elowen (least active 12 min)
+     Generated hook referencing Thessaly's lute in the portrait.
+     Outcome: USED. Player re-engaged immediately.
+
+  🗺️ 02:10:08 — Off Script → Party went to tavern instead of castle
+     Generated improvised scene with Toblen Stonehill.
+     Outcome: USED. Scene ran 20 min and reconnected to main quest.
+
+### Scene Timeline:
+  00:00 - 00:15  SOCIAL (tavern)           🎵 "The Warm Hearth"
+  00:15 - 00:45  EXPLORATION (ruins)       🎵 "Forgotten Paths"
+  00:45 - 01:22  COMBAT (cultists)         🎵 "Clash of Steel"
+  01:22 - 01:25  COMBAT → TENSION          🎵 crossfade
+  01:25 - 01:45  SOCIAL (interrogation)    🎵 "Something Stirs"
+  01:45 - 02:10  DRAMATIC (Elowen moment)  🎵 "Revelation"
+  02:10 - 02:40  SOCIAL (tavern improv)    🎵 "The Warm Hearth"
+  02:40 - 02:50  DOWNTIME (long rest)      🎵 "Rest by the Fire"
+```
+
+#### Section 3: Opportunities & Recommendations (LLM-generated)
+
+A second LLM call that analyzes the activity log and transcript together
+to generate planning insights for the DM:
+
+```markdown
+## Session 12 — Strategic Review
+
+### Moments That Landed
+- The Phones Out intervention at 01:45 re-engaged Lily effectively.
+  The backstory connection (Thessaly's lute) was well-received.
+- The Off Script improvisation at 02:10 felt natural and reconnected
+  to the main quest without railroading.
+- Combat pacing notification at 01:23 was acted on immediately —
+  the surrender transition kept energy up.
+
+### Threads to Pick Up
+- **Elowen + Thessaly (01:02):** The backstory connection between the
+  noble's gallery and Thessaly's disappearance at a noble court was
+  detected but the notification expired. This is a strong hook —
+  consider revisiting it next session. The portrait could still be
+  mentioned in passing, or another character could bring it up.
+- **Coded letter (00:18):** The players mentioned the letter but the
+  notification expired while you were managing a scene transition.
+  The letter is an unresolved thread for 7 sessions now. Consider
+  having an NPC ask about it to remind the players.
+
+### Backstory Spotlight Tracker
+  Gruuk:   ★★★★★  (Pelor chapel moment — player initiated RP for first time)
+  Elowen:  ★★★☆☆  (Phones Out hook worked, but the Thessaly connection is still open)
+  Aldric:  ★★☆☆☆  (No backstory moments this session — opportunity next time)
+  Mira:    ★☆☆☆☆  (Mira's backstory hasn't been touched in 4 sessions)
+  Kael:    ★★★☆☆  (Minor moment during combat — could be deepened)
+
+### Player Engagement Estimate
+  Based on transcript frequency analysis (not a perfect measure):
+  Kat:     [========--] Very active (drove negotiation scene)
+  James:   [=======---] Active (strong in combat)
+  Sam:     [===-------] Quiet → [========] after Pelor moment
+  Lily:    [==--------] Disengaged → [======] after Phones Out
+  David:   [====------] Moderate (consistent but not driving scenes)
+
+### For Next Session
+  1. Revisit the Elowen/Thessaly connection — the gallery scene
+  2. Surface the coded letter — 7 sessions unresolved
+  3. Find a moment for Mira's backstory (her sister, the spy)
+  4. Sam responded strongly to the Pelor connection — build on it
+```
+
+**UI note:** Player engagement and backstory scores should use styled
+progress bars or percentage fills in the app UI, not Unicode block
+characters (which render inconsistently across platforms and fonts).
+
+#### Section 4: Suggestion Archive (Pure Data, Browseable)
+
+Every suggestion generated during the session is preserved with its
+full context — the transcript window that was active when it fired,
+the scene state, the trigger source, and the DM's action. This is NOT
+just for accountability. It's a **campaign planning resource.**
+
+Many suggestions the DM dismissed or ignored during play contain ideas
+worth revisiting later. A BACKSTORY suggestion dismissed at minute 45
+because combat was about to start might be the perfect opening scene
+for next session. An IMPROV NPC generated by a panic button might
+deserve a permanent place in the campaign.
+
+```markdown
+## Suggestion Archive — Session 12
+
+### Suggestion #3 (01:02:18) — EXPIRED, NEVER SEEN
+  Source: Notification (backstory match)
+  Type: BACKSTORY
+  Trigger: "Pelor" in transcript matched Elowen backstory keywords
+  Scene: EXPLORATION (noble's gallery)
+
+  Transcript at time of detection:
+  > DM: "The gallery stretches along the east wing. Portraits of the
+  >  Ashford family line the walls. At the far end, a large painting
+  >  shows a woman in ceremonial robes holding a lute."
+  > Kat: "I look at the painting. Anything unusual?"
+  > DM: "It's well-painted. The woman looks serene. The lute has
+  >  a silver rose on the neck."
+
+  Generated suggestion (expanded when reviewing, not during session):
+
+    🎭 BACKSTORY: Elowen + Thessaly
+    Elowen's mentor Thessaly was last seen performing at a noble court.
+    The woman in the portrait could be Thessaly, or could own Thessaly's
+    lute. Elowen would recognize the silver rose inlay — it was
+    Thessaly's signature mark.
+
+    Possible hooks:
+    - Elowen recognizes the lute and asks about the woman
+    - The Ashford family knows what happened to Thessaly
+    - Thessaly's disappearance connects to the noble family's secrets
+
+  ★ DM NOTES (added post-session): "Using this next session. The portrait
+    IS Thessaly. Lady Ashford was her patron. She knows where Thessaly
+    went but won't say unless the party does something for her first."
+
+### Suggestion #5 (02:10:08) — USED
+  Source: Panic button (Off Script)
+  Type: IMPROV
+  Trigger: DM pressed 🗺️ Off Script
+  Scene: SOCIAL (tavern, unplanned)
+
+  Transcript at time of trigger:
+  > Player: "I want to go back to the tavern and interrogate the bartender."
+
+  Generated:
+    💡 IMPROV: The Suspicious Bartender
+    Toblen Stonehill has been getting late-night visits from a hooded
+    figure. If pressed, he reveals he's paying protection money to
+    someone connected to the Black Spider.
+
+  ★ DM NOTES (added post-session): "Toblen is now a recurring NPC.
+    Adding him to the campaign DB with a connection to the Black Spider
+    subplot. Players loved this scene — Sam especially engaged."
+```
+
+The archive is browseable in the app after the session. The DM can:
+- Read every suggestion with full transcript context
+- Add notes to any suggestion ("use this next time" / "expand this NPC")
+- Promote an improvised NPC to the campaign database with one click
+- Promote a dismissed backstory hook to a plot thread
+- Mark suggestions as "seed for next session" which feeds the MCP
+  server's session_prep prompt
+
+#### Section 5: Campaign-Level Analysis (Cross-Session, LLM-Generated)
+
+The single-session AAR is valuable. But the real power comes from
+analyzing patterns across an entire campaign. This runs on-demand (not
+every session) — the DM clicks "Campaign Review" when they want a
+big-picture view.
+
+**Data available across sessions (all in SQLite, no LLM cost to collect):**
+
+| Metric | What It Shows |
+|--------|-------------|
+| Backstory integration per character per session | Who's being neglected over time |
+| Plot hook age (sessions since created, still unresolved) | Threads that are going stale |
+| Suggestion type distribution | What the DM asks for most (combat help? improv? backstory?) |
+| Panic button frequency over time | Is the DM gaining confidence or relying on the app more? |
+| Average combat duration trend | Are combats getting longer or shorter? |
+| Player engagement curves | Who's consistently quiet? Who's trending down? |
+| Scene type balance | Is the campaign combat-heavy? RP-heavy? Exploration-light? |
+| Notification click rate over time | Is the DM trusting the app's detections more or less? |
+
+**Campaign review prompt (LLM call, on-demand):**
+
+```markdown
+## Campaign Review — Curse of the Hollow King (Sessions 1-12)
+
+### Campaign Arc Health
+  Main quest progress: ~60% (party has 3 of 5 plot tokens)
+  Sessions since last major plot advancement: 2
+  Estimated sessions remaining at current pace: 8-10
+
+### Character Backstory Integration Over Time
+
+  Gruuk:   S1[--] S2[--] S3[--] S4[★-] S5[--] S6[--] S7[--] S8[--] S9[--] S10[--] S11[--] S12[★★]
+  Elowen:  S1[★-] S2[--] S3[--] S4[--] S5[★-] S6[--] S7[--] S8[--] S9[--] S10[--] S11[--] S12[★-]
+  Aldric:  S1[--] S2[★-] S3[★-] S4[--] S5[--] S6[--] S7[--] S8[★-] S9[--] S10[--] S11[--] S12[★-]
+  Mira:    S1[--] S2[--] S3[★★] S4[★-] S5[--] S6[--] S7[--] S8[--] S9[--] S10[--] S11[--] S12[--]
+  Kael:    S1[★-] S2[--] S3[--] S4[--] S5[--] S6[★-] S7[--] S8[--] S9[★-] S10[--] S11[--] S12[★-]
+
+  ⚠️ Mira hasn't had a backstory moment in 8 sessions.
+  Her sister (the spy) hasn't been referenced since Session 4.
+  OPPORTUNITY: Introducing Mira's sister in the next 1-2 sessions
+  would reconnect the player with their character's story.
+
+### Plot Thread Status
+
+  | Thread | Created | Age | Status | Ready to Surface? |
+  |--------|---------|-----|--------|------------------|
+  | Retrieve the Ashen Crown | S1 | 12 sessions | Active, progressing | On track |
+  | Coded letter (spider seal) | S5 | 7 sessions | Waiting — no progress | ★ Yes |
+  | Sable's promise to Oldroot | S4 | 8 sessions | Unresolved | When relevant |
+  | Fendrel's Shadow Guild connection | S6 | 6 sessions | Discovered S12 | Active |
+  | Captain Thane investigating party | S6 | 6 sessions | No progress | When relevant |
+  | Thessaly's disappearance (Elowen) | S1 | 12 sessions | Dormant | ★ Yes |
+  | Gruuk's monastery attack | S1 | 12 sessions | Seed planted S12 | Active |
+  | Mira's sister | S3 | 9 sessions | Dormant | ★★ Soon |
+
+  3 threads have been waiting a while. Players may have forgotten them.
+  Consider having an NPC reference the coded letter or Thessaly to
+  remind the table these threads exist.
+
+### Session Pacing Trends
+
+  Average session length: 2hr 45min
+  Average combat duration: 28 min (trending UP from 22 min in sessions 1-6)
+  Average RP/social duration: 45 min (stable)
+  Average exploration: 35 min (trending DOWN)
+
+  Combat is getting longer as the party levels up and has more abilities
+  to manage. Consider using fewer, harder enemies instead of many weak
+  ones to keep combat under 25 minutes.
+
+### Scene Balance Across Campaign
+
+  Combat:      [=========-] 32%
+  Social/RP:   [========--] 30%
+  Exploration: [======----] 22%
+  Dramatic:    [===-------] 10%
+  Downtime:    [==--------]  6%
+
+  The campaign is well-balanced between combat and social but light on
+  dramatic moments. The backstory connections (Gruuk/Pelor, Elowen/Thessaly)
+  are your best source of drama — lean into them.
+
+### Suggested Campaign Beats (Next 3-5 Sessions)
+
+  1. **Session 13:** Resolve the Elowen/Thessaly thread. The portrait in
+     the gallery is the hook. Lady Ashford can become a patron or obstacle.
+
+  2. **Session 13-14:** Introduce Mira's sister. She could appear as a
+     spy working for the Shadow Guild (connects to Fendrel thread) or
+     as someone who's been tracking the Black Spider independently.
+
+  3. **Session 14-15:** Force the coded letter to surface. An NPC who
+     recognizes the spider seal approaches the party, or an enemy
+     demands they hand it over — revealing its importance.
+
+  4. **Session 15-16:** Gruuk's monastery connection deepens. The cult
+     that attacked the village chapel is the same one that attacked
+     his monastery. The Hollow King is connected.
+
+  5. **Session 16-18:** Campaign climax arc begins. Multiple threads
+     converge: the Ashen Crown, the Hollow King, the Shadow Guild,
+     and the personal backstories all intersect at Cragmaw Castle
+     or whatever the final destination is.
+```
+
+**The campaign review is the feature that makes experienced DMs say
+"this is worth $35."** A new DM gets help at the table. A veteran DM
+gets a strategic planning tool that tracks every thread, every character
+arc, and every untapped opportunity across months of play.
+
+**When the report generates:**
+- Section 1 (Summary): One LLM call on session end, ~10-15 seconds.
+- Section 2 (Activity Log): Pure data, no LLM call, generated instantly
+  from the SQLite tables.
+- Section 3 (Insights): One LLM call that takes the activity log + transcript
+  as input, ~15-20 seconds. Optional — the DM can skip this or run it
+  later via the MCP server.
+
+**DM rating flow:**
+After the session (or during the next week), the DM can open the activity
+log and rate each suggestion 1-5 stars. This data accumulates over time
+and serves two purposes:
+1. The DM can see which suggestion types are most valuable to them
+   (maybe they never use RULES suggestions but love BACKSTORY ones)
+2. Future prompt tuning — if a pattern of low-rated suggestions emerges
+   for a specific type, the prompts for that type need work
+
+**Export formats:**
+- **Markdown:** Full report as a single `.md` file, readable anywhere.
+- **JSON:** Structured data for programmatic use or import into other tools.
+- **MCP integration:** The MCP server's `post_session_review` prompt can
+  read the activity log and generate additional analysis in Claude Desktop.
+
+---
+
+## Table Hardware Setup
+
+### Microphone: Center-Table Omnidirectional
+
+A single wireless mic on the DM won't work. Players across the table
+would be distant and muffled — the app needs to hear everyone to detect
+NPC mentions, backstory references, and who's been quiet.
+
+**Recommended: USB omnidirectional conference mic, center of table.**
+
+| Mic | Price | Pickup Range | Notes |
+|-----|-------|-------------|-------|
+| TONOR G11 (USB conference) | ~$25 | 360°, 10ft radius | Best value. Designed for 4-6 people around a table. Plug and play. |
+| Ansten Conference Mic (USB) | ~$30 | 360°, 10ft radius | Similar to TONOR, slightly better noise reduction. |
+| Blue Snowball (omni mode) | ~$50 | 360°, ~6ft radius | TTRPG actual-play community standard. Trusted and well-documented. |
+| Laptop built-in mic | $0 | Forward-facing, 2-3ft | Usable for 2-3 players sitting close. Not reliable for a full table. |
+
+**Setup:** Mic sits center-table, USB cable runs to the DM's laptop.
+That's it. No audio interface, no mixer, no per-player mics.
+
+**Known challenges at a real table:**
+- **Overlapping speech:** When two people talk at once or everyone laughs,
+  whisper.cpp accuracy drops. The app handles this by producing fewer
+  notifications during noisy periods — the background analyzer simply
+  finds fewer confident matches in garbled transcript.
+- **Distance variation:** The DM 18 inches from the mic is much louder
+  than a player 5 feet away. Whisper.cpp's VAD (Voice Activity Detection)
+  helps, and audio normalization in the pipeline is a v1.1 improvement.
+- **Background noise:** Game stores with other tables nearby are hard.
+  A home game with a closed door is fine. Dice on a hard surface are
+  surprisingly loud — a dice tray or rolling mat helps.
+- **Music feedback:** If the app plays music through the laptop speakers,
+  the mic picks it up and whisper.cpp transcribes the lyrics. Use a
+  separate Bluetooth speaker for music output, or headphones if playing
+  ambient audio just for yourself.
+
+### Audio Device Configuration
+
+```
+Input:  USB Conference Mic (captures table conversation)
+Output: Bluetooth Speaker (plays music to the table)
+        — OR —
+        Laptop speakers with music disabled
+        — OR —
+        Headphones (DM-only audio monitoring)
+```
+
+The app MUST use different devices for input and output. The first-run
+wizard includes a mic test step: "Speak normally. Now have someone
+across the table speak. Can you see both in the transcript preview?"
+
+### Physical Setup at the Table
+
+```
+        ┌─────────────────────────┐
+        │      Player 3            │
+        │                          │
+Player 2│     🎤 USB Mic          │ Player 4
+        │     (center table)       │
+        │                          │
+        │      Player 1            │
+        └─────────────┬───────────┘
+                      │ USB cable
+              ┌───────▼────────┐
+              │  DM's Laptop   │    🔊 Bluetooth Speaker
+              │  (running app) │    (music output, separate
+              │  Screen facing │     from mic to avoid feedback)
+              │  DM only       │
+              └────────────────┘
+```
+
+The DM's laptop screen shows the app. The suggestion panel, panic
+buttons, and notification badges face the DM. Players don't see it —
+it's like the DM's notes, just smarter.
 
 ---
 
@@ -867,20 +1468,226 @@ a lightweight ultrabook at the table might *prefer* Claude mode even if
 they have a gaming rig at home, because they want the laptop at the table
 and the desktop is running Foundry VTT.
 
-**Latency targets:**
+## Latency Analysis
 
-| Operation | Local (GPU) | Local (CPU) | Claude | 
-|-----------|------------|-------------|--------|
-| Transcript display | < 3s | < 3s | < 3s (always local) |
-| Proactive suggestion | 5-8s | 15-25s | 2-5s |
-| Panic button response | 3-5s | 10-15s | 2-4s |
-| Ad-hoc question | 5-10s | 15-25s | 2-5s |
-| Session export + summary | 30-60s | 60-120s | 10-20s |
+### The Full Pipeline
 
-Claude mode is consistently faster than local CPU and comparable to local
-GPU, because Anthropic's inference infrastructure is purpose-built for
-throughput. This means the "premium" experience isn't just better quality
-suggestions — it's also snappier response times.
+When someone speaks at the table, the response chain is:
+
+```
+Speech → Mic capture → whisper.cpp chunks (500ms step) → Transcript appears
+                                                               ↓
+                                              Suggestion cycle triggers (45-60s timer)
+                                                               ↓
+                                              Prompt assembled (~2,000-2,500 input tokens)
+                                                               ↓
+                                              LLM generates response (~100-150 output tokens)
+                                                               ↓
+                                              Response parsed → Suggestion card appears
+```
+
+Each stage has different latency characteristics. Music transitions are
+the exception — the keyword-based scene classifier runs in microseconds
+and crossfade is a local audio operation, so scene detection to music
+change is under 100ms. Latency is a non-issue for the music system.
+
+### Stage 1: Transcription (Always Local)
+
+whisper.cpp in stream mode with 500ms step and 5s context window. Text
+appears roughly 2-4 seconds after someone finishes speaking.
+
+| Hardware | Whisper Model | Latency | Notes |
+|----------|-------------|---------|-------|
+| Apple Silicon (M1/M2+) | small.en | ~2 sec | Excellent, near-real-time |
+| Apple Silicon (M1/M2+) | base.en | ~1.5 sec | Faster but lower accuracy |
+| Modern CPU (i7/Ryzen 7+) | small.en | ~3-4 sec | Good, feels like live captioning |
+| Modern CPU (i7/Ryzen 7+) | base.en | ~2-3 sec | Adequate for MVP |
+| Older CPU (i5/Ryzen 5) | tiny.en | ~2-3 sec | Usable but noticeably less accurate |
+
+**Streaming revision behavior:** whisper.cpp sometimes revises recent
+output as more audio context arrives. "I want to search the chest" may
+update to "I want to search the chest for traps" a second later. The
+Transcript Manager should handle this by replacing the last line rather
+than appending a correction, to avoid visual jitter in the UI.
+
+### Stage 2: Suggestion Cycle (Timer-Based, Background)
+
+Proactive suggestions fire on a 45-60 second timer. The DM doesn't know
+when the cycle triggers, so perceived latency is the time from cycle
+trigger to card appearing — NOT from when something was said.
+
+**Prompt size per cycle:**
+- System prompt + campaign context + backstories: ~1,500 tokens
+- Transcript window (last 3 min): ~500-800 tokens
+- Active suggestions + dedup list: ~200 tokens
+- **Total input: ~2,000-2,500 tokens**
+- **Expected output: ~100-150 tokens** (one suggestion card)
+
+**LLM generation time by hardware (Llama 3.1 8B Q4_K_M, ~130 token output):**
+
+| Hardware | Gen Speed | Prompt Eval | Generation | Total | Feel |
+|----------|----------|------------|-----------|-------|------|
+| RTX 4090 (24GB) | ~128 tok/s | ~0.5 sec | ~1 sec | **~1.5-2 sec** | Near-instant, best local experience |
+| RTX 3090 (24GB) | ~112 tok/s | ~0.5 sec | ~1.2 sec | **~2 sec** | Excellent, indistinguishable from 4090 for this use |
+| RTX 4070 (12GB) | ~68 tok/s | ~0.5 sec | ~2 sec | **~2.5-3 sec** | Snappy, feels responsive |
+| M3 Max (Ollama) | ~50-60 tok/s | ~1 sec | ~2.5 sec | **~3-4 sec** | Good, very usable |
+| RTX 4060 Ti (16GB) | ~40-50 tok/s | ~0.5 sec | ~3 sec | **~3.5-4.5 sec** | Good |
+| RTX 3060 (12GB) | ~38-45 tok/s | ~0.5 sec | ~3.5 sec | **~4-5 sec** | Fine, arrives between conversation beats |
+| M1/M2 Pro (Ollama) | ~30-40 tok/s | ~1 sec | ~4 sec | **~5-6 sec** | Acceptable |
+| M1/M2 base (Ollama) | ~28 tok/s | ~1 sec | ~4.5 sec | **~6-7 sec** | Noticeable delay, still usable |
+| Modern CPU, no GPU | ~5-10 tok/s | ~3 sec | ~15-25 sec | **~18-28 sec** | Slow, recommend 3B model or Claude |
+
+**Note on Apple Silicon vs NVIDIA:** Apple Silicon gets a lot of attention
+in the local LLM community because its unified memory lets you run 70B+
+models that won't fit on any single consumer GPU. But for models that fit
+in VRAM (like the 8B model this app uses), NVIDIA GPUs with dedicated VRAM
+are significantly faster. An RTX 4090 generates tokens roughly 4-5x faster
+than a base M1 Mac. The Apple Silicon advantage is memory capacity, not
+speed — which matters less for this app since the 8B model fits comfortably
+on any modern GPU.
+
+### Stage 3: Panic Buttons (User-Initiated, Latency-Critical)
+
+Panic buttons are the critical latency test. The DM clicks a button
+because they need help *right now*. If "Phones Out" takes 15 seconds,
+the DM is sitting in awkward silence waiting for their AI to think.
+The moment passes. The feature fails.
+
+| Hardware | Model | Latency | Usable for Panic? |
+|----------|-------|---------|------------------|
+| RTX 4090 / 3090 | 8B Q4_K_M | 1.5-2 sec | ✅ Instant — faster than flipping a page |
+| RTX 4070 | 8B Q4_K_M | 2.5-3 sec | ✅ Yes — very responsive |
+| M3 Max (Ollama) | 8B Q4_K_M | 3-4 sec | ✅ Yes — comfortable |
+| RTX 4060 Ti / 3060 | 8B Q4_K_M | 3.5-5 sec | ✅ Yes — like checking notes |
+| M1/M2 Pro (Ollama) | 8B Q4_K_M | 5-6 sec | ⚠️ Marginal — fill time with narration |
+| M1/M2 base (Ollama) | 8B Q4_K_M | 6-7 sec | ⚠️ Marginal |
+| Modern CPU, no GPU | 8B Q4_K_M | 18-28 sec | ❌ Too slow — moment passes |
+| Any hardware | Claude Sonnet | 2-4 sec | ✅ Yes — feels instant |
+
+**Panic button prompt optimization:** The proactive cycle sends the full
+context (~2,500 tokens input). For panic buttons, use a stripped-down
+prompt with only the relevant character's backstory and the last 60
+seconds of transcript (~800-1,000 tokens). This cuts prompt eval time
+roughly in half, which is meaningful on local hardware.
+
+```python
+# Panic button uses shorter context for faster response
+def build_panic_prompt(self, button_id, campaign_context,
+                       character_backstories, recent_transcript,
+                       full_session_transcript):
+    # For player-targeting buttons, only include that character's backstory
+    if button_id in ("phones_out", "quiet_player", "dead_air"):
+        target = self.identify_least_active_character(recent_transcript)
+        backstory = self.get_single_backstory(target, character_backstories)
+    else:
+        backstory = character_backstories  # Full backstories for non-targeted
+
+    # Shorter transcript window for speed
+    short_transcript = recent_transcript[-60_seconds:]
+
+    return system_prompt, PANIC_PROMPTS[button_id].format(
+        context=campaign_context,
+        backstory=backstory,
+        transcript=short_transcript
+    )
+```
+
+### Stage 4: Ad-Hoc Questions (User-Initiated, Moderate Priority)
+
+The DM types a question and submits it. They're waiting for an answer
+but it's not as time-critical as a panic button — they chose to type
+rather than react in the moment.
+
+| Hardware | Model | Latency | Feel |
+|----------|-------|---------|------|
+| RTX 4090 / 3090 | 8B Q4_K_M | 2-3 sec | Conversational, feels instant |
+| RTX 4070 / M3 Max | 8B Q4_K_M | 3-4 sec | Very responsive |
+| RTX 4060 Ti / 3060 | 8B Q4_K_M | 4-6 sec | Good, like asking a knowledgeable friend |
+| M1/M2 Pro | 8B Q4_K_M | 6-7 sec | Acceptable |
+| M1/M2 base | 8B Q4_K_M | 7-8 sec | Noticeable wait but tolerable |
+| Modern CPU, no GPU | 8B Q4_K_M | 18-28 sec | Slow but tolerable for a typed question |
+| Any hardware | Claude Sonnet | 2-4 sec | Instant, conversational |
+
+### Stage 5: Session Export + Summary (End of Session, Not Time-Critical)
+
+Runs once at session end. The DM clicks "End Session" and waits for a
+summary. Latency tolerance is high — 30 seconds to 2 minutes is fine.
+
+The summary prompt is larger (~5,000-10,000 input tokens if it includes
+the full transcript) and the output is longer (~300-500 tokens for a
+narrative summary). This is the one place where Claude Opus is worth
+the cost — better prose quality at a moment where latency doesn't matter.
+
+| Hardware | Model | Latency | Notes |
+|----------|-------|---------|-------|
+| RTX 4090 / 3090 | 8B Q4_K_M | 10-20 sec | Fast, DM barely notices |
+| RTX 4070 / M3 Max | 8B Q4_K_M | 15-30 sec | Quick |
+| RTX 3060 / 4060 Ti | 8B Q4_K_M | 20-40 sec | Fine, DM is packing up |
+| M1/M2 | 8B Q4_K_M | 30-60 sec | Acceptable |
+| Modern CPU | 8B Q4_K_M | 60-120 sec | Slow but it's end of session |
+| Any hardware | Claude Sonnet | 8-15 sec | Fast |
+| Any hardware | Claude Opus | 15-30 sec | Best quality, still fast enough |
+
+### Hardware Recommendation Matrix
+
+Based on the latency analysis, here's what to recommend in the first-run
+wizard and documentation:
+
+| Hardware Profile | Recommendation |
+|-----------------|---------------|
+| NVIDIA RTX 4090/3090 (24GB VRAM) | **Local mode is outstanding.** Everything including panic buttons in ~2 seconds. Claude unnecessary for speed — only for quality upgrade. Best local experience possible. |
+| NVIDIA RTX 4070 / M3 Max | **Local mode recommended.** All features work well including panic buttons (3-4 sec). Claude optional for quality upgrade. |
+| NVIDIA RTX 4060 Ti / RTX 3060 | **Local mode works well.** Suggestions and panic buttons in 4-5 seconds. Claude optional — better for quality than for speed at this tier. |
+| Apple Silicon M1/M2 Pro | **Local mode usable.** Background suggestions fine (5-6 sec). Panic buttons marginal — consider Claude for time-critical features. |
+| Apple Silicon M1/M2 base (16GB) | **Hybrid recommended.** Local for background suggestions (6-7 sec). Claude for panic buttons and ad-hoc questions. |
+| Any machine, no discrete GPU | **Claude mode recommended for real-time features.** Local 3B model as offline fallback. Panic buttons require Claude for usable latency. |
+| Low-spec machine (8GB RAM, older CPU) | **Claude mode required.** Local transcription with tiny/base whisper model. All LLM calls via Claude API. |
+
+**First-run wizard messaging (example for RTX 3060):**
+
+```
+Detecting your hardware...
+
+GPU detected: NVIDIA RTX 3060 (12GB VRAM) — ~40 tok/s with 8B model
+RAM: 16GB
+
+✅ Local transcription: Excellent (whisper small.en recommended)
+✅ Local suggestions: Fast (~4-5 sec per suggestion)
+✅ Local panic buttons: Good (~4-5 sec response time)
+✅ Claude mode: Available for premium quality (2-4 sec, requires API key)
+
+Recommendation: Local mode handles everything well on your hardware.
+Add a Claude API key if you want the highest quality backstory and
+improvisation suggestions.
+
+[ Continue with Local ]  [ Set Up Claude Mode ]  [ Use Both ]
+```
+
+### Latency Optimization Strategies
+
+| Strategy | Impact | Effort | When |
+|----------|--------|--------|------|
+| Shorter panic button prompts (~800 vs 2,500 tokens) | -40-50% panic latency | Low | MVP |
+| Use 3B model for entity recall, 8B for creative tasks | Mixed — fast recalls, good creative | Medium | v1.1 |
+| Pre-warm the model with a keep-alive ping every 30s | Eliminates cold-start on first call | Low | MVP |
+| Cache common rule lookups (grappling, concentration, etc.) | Instant for cached rules, no LLM call | Medium | v1.1 |
+| Speculative decoding (draft model + validator) | Up to 2-3x generation speedup | High | v2.0 |
+| Stream LLM output to UI (show suggestion as it generates) | Perceived latency drops significantly | Medium | v1.1 |
+| Ollama's `keep_alive` parameter to prevent model unloading | Eliminates 5-10s reload penalty | Low | MVP |
+
+**Streaming to UI** deserves special attention. Instead of waiting for the
+full 130-token response and then showing the card, you can stream tokens
+as they arrive and render the suggestion card progressively. The DM starts
+reading the title while the body is still generating. This cuts *perceived*
+latency roughly in half on local hardware and makes the experience feel
+dramatically more responsive. Both Ollama and the Anthropic API support
+streaming natively.
+
+**Ollama keep_alive** is critical. By default, Ollama may unload the model
+from GPU memory after a period of inactivity. If the suggestion cycle is
+45 seconds and the model unloads after 30 seconds, every cycle incurs a
+5-10 second model reload penalty. Set `keep_alive: -1` (never unload) or
+`keep_alive: "10m"` in the Ollama API call to prevent this.
 
 ---
 

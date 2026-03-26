@@ -1,27 +1,5 @@
 # DM Assistant — Project Context
 
-## Implementation Status
-
-**Phase:** Pre-implementation. Specs complete, implementation plan written, no code yet.
-
-**Active plan:** `docs/plans/2026-03-10-testable-mvp.md` — 9 tasks to get a testable MVP.
-
-**MVP approach:** Pure TypeScript/React web app (Vite + Tailwind + Vitest). No Tauri/Rust yet (cargo not installed). Core logic in `src/lib/` is framework-agnostic and will move into Tauri unchanged. Manual transcript input simulates whisper.cpp. Hits Ollama over HTTP at localhost:11434.
-
-**MVP scope:** Campaign context input, manual transcript, suggestion engine with 45s cycle, response parsing, entity cooldown, suggestion cards with pin/dismiss, ad-hoc questions, 3 panic buttons (Phones Out, Need an NPC, Recap), LLM provider abstraction (Ollama implemented, Anthropic stubbed).
-
-**NOT in MVP:** Tauri shell, whisper.cpp, SQLite persistence, adaptive music, session export, full 10 panic buttons, MCP server, first-run wizard.
-
-## Development Environment
-
-- **OS:** Windows 11, Git Bash shell
-- **Package manager:** npm (better Windows/Tauri compatibility than bun)
-- **Python:** 3.14.0 (for MCP server later)
-- **Ollama:** 0.14.3 installed (start with `ollama serve`)
-- **Rust/cargo:** NOT INSTALLED — Tauri integration deferred
-- **Test runner:** Vitest (configured in vite.config.ts)
-- **Commands:** `npm run dev`, `npm test`, `npm run build`
-
 ## What This Is
 
 A desktop app that acts as a real-time AI copilot for tabletop RPG Dungeon Masters. It listens to the session via microphone, transcribes in real time, and proactively surfaces contextual suggestions — NPC details, rules clarifications, backstory connections, and improvisation prompts — so the DM can stay focused on running the game.
@@ -40,42 +18,125 @@ A desktop app that acts as a real-time AI copilot for tabletop RPG Dungeon Maste
 | App shell | **Tauri** (Rust + React/TypeScript) | Desktop app, lightweight (~5MB), cross-platform |
 | STT | **whisper.cpp** (bundled, always local) | Live mic → transcript, <3s latency, audio never leaves machine |
 | LLM (local) | **Ollama** (llama3.1:8b-instruct Q4_K_M) | Suggestion generation, free, private, offline |
-| LLM (cloud) | **Anthropic API** (claude-sonnet-4-6, user's own key) | Optional upgrade for superior suggestion quality |
+| LLM (cloud) | **Anthropic API** (claude-sonnet-4-6, user's own key) | Optional upgrade for superior suggestion quality and faster responses |
 | Storage | **SQLite** | Campaign persistence, session history, config |
 | Music | **Built-in crossfade player** + optional Syrinscape/local folders | Automatic scene-adaptive background music |
 | MCP Server | **FastMCP** (Python, separate package) | Free companion — connects campaign DB to Claude Desktop for session prep |
 
-### LLM Provider Abstraction
+### Suggestion Engine: Pull-Based + Smart Notifications
 
-The suggestion engine talks to an `LLMProvider` interface, never directly to Ollama or Claude. Both backends use identical prompts. The quality difference comes from model capability, not different code paths. Users can switch providers mid-session in settings.
+The DM is never bombarded with unsolicited suggestions. Instead:
 
-```
-Suggestion Engine → LLMProvider Interface → OllamaProvider (local, free)
-                                          → AnthropicProvider (cloud, BYOK)
-```
+1. **Pull (primary):** DM clicks "Suggest" or a panic button → LLM generates response.
+2. **Notify (secondary):** A lightweight background analyzer (keyword matching, zero LLM cost) monitors the transcript. When it detects a high-relevance match (NPC mentioned, backstory keyword, plot hook reference), it lights up a notification badge. DM clicks when ready → THEN the LLM fires.
+
+This means LLM calls happen ~55 times per session instead of ~325 (push model). GPU sits idle 98% of the time. Laptops stay cool. Battery lasts.
+
+**Notification triggers (zero LLM cost, keyword matching only):**
+- NPC name from campaign context appears in transcript → 📋 badge
+- Plot hook keywords detected → 🧵 badge  
+- Character backstory keyword match → 🎭 badge
+- Combat keywords + planned encounters exist → ⚔️ badge
+- Rules-heavy action attempted → 📖 badge
+
+Notifications are a subtle badge glow, not a popup. Unclicked notifications expire after 5 minutes. The threshold is configurable.
 
 ### Data Flow During a Session
 
 ```
-Mic → whisper.cpp → Transcript Manager → Scene Classifier → Music Controller
-                           ↓                    ↓
-                    Suggestion Engine ←── Campaign Context (SQLite)
-                           ↓                    ↑
-                    LLM Provider ───────── Character Backstories
-                           ↓
-                    Suggestion Panel (UI)
+Mic → whisper.cpp → Transcript Manager → Background Analyzer (keywords, no LLM)
+                           ↓                        ↓
+                    Scene Classifier ──→ Music    Notification Badge (glow)
+                           ↓                        ↓ (DM clicks)
+                    Campaign Context (SQLite) ──→ LLM Provider ──→ Suggestion Card
+                                                     ↑
+                              DM clicks: Suggest / Panic Button / Question
 ```
+
+### LLM Provider Abstraction
+
+The suggestion engine talks to an `LLMProvider` interface, never directly to Ollama or Claude. Both backends use identical prompts. Users can switch providers mid-session.
+
+```
+Pull Request → LLMProvider Interface → OllamaProvider (local, free)
+                                     → AnthropicProvider (cloud, BYOK)
+```
+
+### Table Hardware Setup
+
+A USB omnidirectional conference mic ($25-50) sits center-table, plugged
+into the DM's laptop. Music plays through a separate Bluetooth speaker
+(not the laptop speakers). That's the entire physical setup.
+
+Recommended mic: TONOR G11 (~$25) or Blue Snowball in omni mode (~$50).
+Laptop built-in mic works for 2-3 players nearby but won't cover a full table.
+
+## Latency Profile
+
+The pipeline from speech to suggestion is a chain, not a single number.
+Full analysis with hardware benchmarks is in `specs/04-architecture.md`.
+
+### Summary by Operation
+
+| Operation | RTX 4090/3090 | RTX 3060/4060Ti | M1/M2 base (Ollama) | CPU-only | Claude Sonnet |
+|-----------|--------------|----------------|-------------------|---------|--------------|
+| Transcription | ~2-3 sec | ~2-3 sec | ~2-3 sec | ~3-4 sec | ~2 sec (always local) |
+| Proactive suggestion | 1.5-2 sec | 4-5 sec | 6-7 sec | 18-28 sec | 2-4 sec |
+| Panic button | 1.5-2 sec | 4-5 sec | 6-7 sec | 18-28 sec | 2-4 sec |
+| Ad-hoc question | 2-3 sec | 4-6 sec | 7-8 sec | 18-28 sec | 2-4 sec |
+| Post-session summary | 10-20 sec | 20-40 sec | 30-60 sec | 60-120 sec | 8-15 sec |
+| Music transition | <100ms | <100ms | <100ms | <100ms | <100ms (always local) |
+
+**Note on Apple Silicon vs NVIDIA:** Apple Silicon's unified memory
+lets you run very large models (70B+) that won't fit on consumer GPUs.
+But for the 8B model this app uses, NVIDIA GPUs with dedicated VRAM
+are significantly faster. An RTX 4090 (~128 tok/s) is roughly 4-5x
+faster than a base M1 Mac (~28 tok/s). Apple Silicon's advantage is
+memory capacity, not inference speed.
+
+### Panic Buttons Are the Critical Test
+
+Proactive suggestions fire in the background on a 45-second timer — latency
+is invisible to the DM. But panic buttons are user-initiated and time-critical.
+"Phones Out" needs to produce a usable hook before the moment passes.
+
+| Hardware | Local 8B | Claude Sonnet | Recommendation |
+|----------|---------|--------------|----------------|
+| RTX 4090/3090 (24GB) | 1.5-2 sec ✅ | 2-4 sec ✅ | Local is faster than cloud |
+| RTX 4070 / M3 Max | 3-4 sec ✅ | 2-4 sec ✅ | Both excellent |
+| RTX 4060 Ti / RTX 3060 | 4-5 sec ✅ | 2-4 sec ✅ | Local works well |
+| M1/M2 Pro | 5-6 sec ⚠️ | 2-4 sec ✅ | Claude recommended for best experience |
+| M1/M2 base | 6-7 sec ⚠️ | 2-4 sec ✅ | Claude recommended |
+| CPU-only | 18-28 sec ❌ | 2-4 sec ✅ | Claude required |
+
+### Hardware Recommendation (for first-run wizard)
+
+| Hardware Profile | Default Mode |
+|-----------------|-------------|
+| NVIDIA RTX 4090/3090 (24GB) | Local mode. Faster than Claude. Claude optional for quality only. |
+| NVIDIA RTX 4070 / M3 Max | Local mode. Claude optional for quality. |
+| NVIDIA RTX 4060 Ti / RTX 3060 (12-16GB) | Local mode. Claude optional — quality upgrade, not speed. |
+| Apple Silicon M1/M2 Pro | Local mode usable. Claude recommended for panic buttons. |
+| Apple Silicon M1/M2 base (16GB) | Hybrid. Local for suggestions, Claude for panic buttons. |
+| No discrete GPU | Claude mode for real-time. Local 3B as offline fallback. |
+| Low-spec (8GB RAM, older CPU) | Claude mode required. Tiny/base whisper for transcription. |
+
+### Key Optimizations
+
+- **Shorter panic button prompts** (~800 tokens vs ~2,500): send only the target character's backstory and last 60 seconds of transcript. Cuts local latency ~40-50%.
+- **Streaming to UI**: render suggestion card progressively as tokens arrive. Cuts perceived latency roughly in half.
+- **Ollama keep_alive**: set `keep_alive: -1` or `keep_alive: "10m"` to prevent model unloading between cycles. Eliminates 5-10 second reload penalty.
+- **Pre-warm model**: send a lightweight keep-alive ping every 30 seconds to prevent cold starts.
+- **Cache common rules**: grappling, concentration, opportunity attacks — serve from cache without LLM call.
 
 ## Key Features
 
-### 1. Real-Time Suggestions (proactive, every 45-60 seconds)
-- NPC/entity recall when mentioned by name or indirectly
-- Rules clarification when mechanical questions arise
-- Plot thread reminders when unresolved hooks become relevant
-- Monster stat surfacing when combat starts
-- Spell/ability details when players use them
-- Backstory weaving — connects current scene to character personal stories
-- Improvisation support when players go off-script
+### 1. Pull-Based Suggestions + Smart Notifications
+- DM clicks "Suggest" for on-demand help — LLM generates contextual suggestion
+- Background analyzer (keyword matching, zero LLM cost) watches transcript
+- Notification badge glows when something relevant is detected (NPC mentioned, backstory keyword, plot hook)
+- DM clicks the notification when ready → full suggestion generated
+- No unsolicited suggestions. No noise. DM is always in control.
 
 ### 2. Panic Buttons (one-click, immediate response)
 10 hotkey buttons for common DM problems:
@@ -95,7 +156,10 @@ Player backstories, bonds, flaws, and goals are first-class data. The suggestion
 ### 4. Adaptive Music System
 Scene classifier (keyword-based, runs every 15-30s) detects: COMBAT, COMBAT_BOSS, EXPLORATION, SOCIAL, DRAMATIC, TENSION, DOWNTIME, AMBIENT. Crossfades between music tracks automatically. Three tiers: built-in loops (ships with app), local MP3 folders, Syrinscape URI triggers. Panic buttons have audio hooks (stings, ducks, fades).
 
-### 5. MCP Server Companion (separate package, free, open-source)
+### 5. After Action Report
+Every interaction between the DM and the app is logged: suggestions generated, notification detections (including ones the DM never clicked), panic button usage, scene timeline, and music transitions. On session end, the app generates a multi-part report: narrative summary (LLM), chronological activity log (pure data), suggestion archive with full transcript context (browseable for campaign planning ideas), strategic review with threads to pick up and per-character backstory spotlight tracking (LLM), and campaign-level analysis across sessions showing plot thread aging, pacing trends, and scene balance. DMs can rate suggestions 1-5 stars to track which types are most valuable. The archive doubles as a campaign planning workbench — dismissed suggestions often contain seeds for future sessions.
+
+### 6. MCP Server Companion (separate package, free, open-source)
 FastMCP Python server that reads/writes the same SQLite database. Exposes campaign data as MCP resources and provides tools for Claude Desktop to add NPCs, plot hooks, session summaries. Includes pre-built prompts for session prep, post-session review, backstory integration, encounter building, and worldbuilding.
 
 ## Tech Stack Details
@@ -106,6 +170,7 @@ FastMCP Python server that reads/writes the same SQLite database. Exposes campai
 - Status bar: scene badge, LLM provider indicator, music controls, session timer
 - Suggestion cards with type badges (📋 Recall, 📖 Rules, 🧵 Thread, ⚔️ Combat, ✨ Spell, 💡 Improv, ⏱️ Pacing), pin/dismiss, DM ONLY label
 - Virtualized transcript list for 4+ hour session stability
+- Streaming suggestion rendering (show card progressively as tokens arrive)
 
 ### Backend (Tauri / Rust)
 - Spawns and manages whisper.cpp process via stdio pipe
@@ -115,6 +180,7 @@ FastMCP Python server that reads/writes the same SQLite database. Exposes campai
 - Scene classifier with 10-second stability dampening
 - Audio playback + crossfade engine
 - Audio device enumeration (separate input/output)
+- Ollama keep_alive management to prevent model unloading
 
 ### Database Schema (SQLite)
 Tables: campaigns, characters, npcs, plot_hooks, encounters, sessions, suggestions. Transcripts stored as JSONL files alongside sessions. Full schema in specs/04-architecture.md.
@@ -124,18 +190,22 @@ Tables: campaigns, characters, npcs, plot_hooks, encounters, sessions, suggestio
 - Uses `--prompt` flag with pre-registered character/NPC names from campaign context to improve fantasy name accuracy
 - `whisper-stream` mode: 500ms step, 5s context window
 - Output piped to Transcript Manager which buffers, timestamps, and deduplicates
+- Handles streaming revisions (replaces last line rather than appending corrections)
 
 ### Ollama Integration
 - Default model: `llama3.1:8b-instruct-q4_K_M` (~5-6GB VRAM)
 - Health check via `GET /api/tags`
-- Chat completions via `POST /api/chat`
+- Chat completions via `POST /api/chat` with `stream: true` for progressive rendering
 - First-run wizard detects Ollama, recommends model based on hardware
+- `keep_alive: -1` to prevent model unloading between suggestion cycles
 
 ### Anthropic API Integration
 - Provider: `AnthropicProvider` implementing `LLMProvider` interface
 - Endpoint: `POST https://api.anthropic.com/v1/messages`
 - Headers: `x-api-key`, `anthropic-version: 2023-06-01`
-- Default model: `claude-sonnet-4-6`
+- Default model: `claude-sonnet-4-6` (recommended for real-time features)
+- Optional: `claude-haiku-4-5` for simple entity recall, `claude-opus-4-6` for post-session summaries
+- Streaming via SSE for progressive suggestion rendering
 - API key stored in OS keychain (macOS Keychain, Windows Credential Manager)
 - Estimated cost: ~$2.50-3.50 per 4-hour session with Sonnet
 
@@ -228,8 +298,8 @@ dm-assistant/
 |------|-------|-----------------|
 | 1 | Foundation | Tauri shell + React UI, whisper.cpp integration, Ollama API wiring |
 | 2 | Core Features | Suggestion engine + prompts, campaign editor, panic buttons, backstory editor |
-| 3 | Music + Claude + Polish | Scene classifier, built-in music player, Anthropic provider, crossfade, export |
-| 4 | Distribution | Installers (.dmg/.msi/.AppImage), first-run wizard, docs, community launch |
+| 3 | Music + Claude + Polish | Scene classifier, built-in music player, Anthropic provider, streaming rendering, crossfade, export |
+| 4 | Distribution | Installers (.dmg/.msi/.AppImage), first-run wizard with hardware detection, docs, community launch |
 | 5 | MCP Server (optional) | FastMCP resources/tools/prompts, PyPI publish, Anthropic directory submission |
 
 ## Coding Conventions
@@ -241,9 +311,11 @@ dm-assistant/
 
 ## Important Design Decisions
 
-1. **Prompts are the product.** The prompt templates in the suggestion engine and panic buttons are the core IP. Invest time in tuning them. A good prompt to an 8B model beats a lazy prompt to GPT-4.
+1. **Pull-based, not push-based.** The DM asks for help when they need it. The background analyzer detects relevant moments and lights up a notification, but the LLM only fires when the DM clicks. This keeps the app quiet and laptop-friendly (~55 LLM calls/session instead of ~325).
 
-2. **Silence is a feature.** The suggestion engine should return NONE more often than not. Over-suggesting trains the DM to ignore it. Only surface something when it's genuinely useful.
+2. **Prompts are the product.** The prompt templates in the suggestion engine and panic buttons are the core IP. Invest time in tuning them. A good prompt to an 8B model beats a lazy prompt to GPT-4.
+
+3. **Notifications are subtle, not interruptive.** A notification badge glows when the analyzer detects something relevant. No popups, no sounds, no toasts. Unclicked notifications expire after 5 minutes. The DM's attention stays on the game.
 
 3. **DM ONLY labeling is non-negotiable.** Any suggestion containing information the players shouldn't see must be visually flagged. The DM's screen is visible at the table.
 
@@ -255,6 +327,12 @@ dm-assistant/
 
 7. **The MCP server shares the SQLite database.** Both the app and the MCP server read/write the same file. This is the integration point. No API, no sync — just a shared DB.
 
+8. **Stream LLM output to UI.** Both Ollama and the Anthropic API support streaming. Render suggestion cards progressively as tokens arrive. This cuts perceived latency roughly in half.
+
+9. **Ollama keep_alive is mandatory.** Set `keep_alive: -1` or `keep_alive: "10m"` to prevent model unloading between suggestion cycles. Without this, every cycle incurs a 5-10 second model reload penalty.
+
+10. **Panic button prompts are shorter.** Send only the target character's backstory and 60 seconds of transcript (~800 tokens vs ~2,500). This cuts local latency ~40-50%.
+
 ## Spec Documents Reference
 
 | Document | Contents | When to Reference |
@@ -264,8 +342,6 @@ dm-assistant/
 | `specs/01-mvp-features-bdd.md` | 39 BDD scenarios for Session Setup, Transcription, Suggestions, Questions, Export | Implementing MVP features |
 | `specs/02-suggestion-engine-bdd.md` | 52 BDD scenarios across 7 suggestion categories + quality behaviors | Building the suggestion engine |
 | `specs/03-pain-points-and-features.md` | Reddit pain point research, backstory weaver spec, panic button spec with BDD | Building backstory integration and panic buttons |
-| `specs/04-architecture.md` | Full technical architecture: components, code samples, provider abstraction, DB schema, build plan, performance budget, risk register | All implementation work |
+| `specs/04-architecture.md` | Full technical architecture: components, code samples, provider abstraction, DB schema, latency analysis, build plan, performance budget, risk register | All implementation work |
 | `specs/05-mcp-server.md` | MCP server spec: FastMCP resources, tools, prompts, database integration, distribution | Building the MCP companion |
 | `specs/06-adaptive-music.md` | Music system: scene classifier, crossfade engine, audio tiers, panic button audio, BDD scenarios | Building the music system |
-| `specs/07-gap-coverage-bdd.md` | 108 BDD scenarios covering gaps: LLM provider management, campaign persistence, first-run wizard, transcript internals, entity cooldown, suggestion parsing, session resilience, security/privacy, settings UI, MCP server | All implementation work — complements specs 01-06 |
-| `docs/plans/2026-03-10-testable-mvp.md` | 9-task implementation plan: scaffold, types, parser, cooldown, prompt builder, Ollama provider, suggestion engine, React UI, smoke test | **Active plan** — execute with superpowers:executing-plans |

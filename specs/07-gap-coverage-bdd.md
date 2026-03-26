@@ -1072,21 +1072,513 @@ Feature: MCP Server Companion
 
 ---
 
+## 11. Panic Button Edge Cases
+
+Specs 03 and the scenarios above cover the happy paths for panic buttons.
+These scenarios cover boundary conditions, misuse, and degenerate inputs
+that the DM will inevitably hit during a real session.
+
+```gherkin
+Feature: Panic Button Edge Cases
+  As a Dungeon Master
+  I want panic buttons to handle unusual situations gracefully
+  So that they never make a bad moment worse
+
+  # --- SINGLE PLAYER ---
+
+  Scenario: Phones Out with only one player character
+    Given the campaign has only one character "Vex"
+    And a session is active
+    When the DM clicks "Phones Out"
+    Then the response should target Vex by name
+    And the hook should reference Vex's backstory
+    And it should NOT say "the least active player" (there is only one)
+
+  Scenario: Quiet Player with only one player character
+    Given the campaign has only one character "Vex"
+    When the DM clicks "Quiet Player"
+    Then the response should suggest a spotlight moment for Vex
+    And it should NOT compare activity levels across players
+
+  # --- WRONG CONTEXT ---
+
+  Scenario: Too Easy pressed outside of combat
+    Given the recent transcript contains no combat-related keywords
+    And no initiative has been called
+    When the DM clicks "Too Easy"
+    Then the response should acknowledge no combat is active
+    And suggest a way to introduce a challenge into the current scene
+    And it should NOT reference monster stats or HP
+
+  Scenario: Too Hard pressed outside of combat
+    Given the recent transcript contains no combat-related keywords
+    When the DM clicks "Too Hard"
+    Then the response should acknowledge no combat is active
+    And suggest a way to ease tension in the current social or exploration scene
+
+  # --- EMPTY / MINIMAL STATE ---
+
+  Scenario: Recap when session just started
+    Given the session has been active for less than 2 minutes
+    And the transcript has fewer than 3 entries
+    When the DM clicks "Recap"
+    Then the response should indicate there is not enough session content to summarize
+    And it should suggest the DM try again after more table conversation
+
+  Scenario: Need an NPC avoids name collision with existing campaign NPCs
+    Given the campaign has NPCs named "Mayor Hild", "Reva the Red", and "Oldroot"
+    When the DM clicks "Need an NPC"
+    Then the generated NPC should have a name different from all existing campaign NPCs
+    And the response should fit the current scene context
+
+  # --- RAPID USE ---
+
+  Scenario: Same panic button pressed twice within 30 seconds
+    Given the DM clicks "Need an NPC" and receives a result
+    When the DM clicks "Need an NPC" again within 30 seconds
+    Then the second response should generate a DIFFERENT NPC
+    And it should NOT return the same name, personality, or quirk
+
+  Scenario: Deliberation Loop during active combat
+    Given the recent transcript indicates combat is in progress
+    When the DM clicks "Deliberation Loop"
+    Then the interruption event should be combat-appropriate
+      (e.g., reinforcements arrive, terrain shifts, time pressure)
+    And it should NOT generate a social or exploration event
+```
+
+---
+
+## 12. Error UX
+
+Specs cover error *handling* (graceful degradation, fallback) but not
+what the user actually *sees*. These scenarios define error display,
+messaging quality, and recovery guidance.
+
+```gherkin
+Feature: Error UX
+  As a Dungeon Master
+  I want error messages to be clear and actionable
+  So that I can fix problems quickly without losing session flow
+
+  # --- PROVIDER ERRORS ---
+
+  Scenario: Ollama crashes mid-suggestion — user notification
+    Given a session is active with local provider
+    And a suggestion cycle is in progress
+    When Ollama becomes unreachable during the API call
+    Then the status bar should change to "Local — Disconnected" with a red indicator
+    And a toast notification should appear: "Ollama stopped responding. Suggestions paused."
+    And the toast should include an action: "Switch to Claude" (if API key configured)
+    And the transcript panel should continue functioning normally
+
+  Scenario: Ollama recovers — user notification
+    Given the status bar shows "Local — Disconnected"
+    When Ollama becomes reachable again (detected by next health check)
+    Then the status bar should change to "Local — Connected" with a green indicator
+    And a brief toast should appear: "Ollama reconnected. Suggestions resumed."
+    And the suggestion cycle should resume automatically
+
+  Scenario: Anthropic API key rejected — actionable error
+    Given the DM enters an API key in settings
+    When the DM clicks "Test Connection"
+    And the API returns 401 Unauthorized
+    Then the error should display: "API key is invalid. Check that you copied the full key from console.anthropic.com"
+    And the test button should NOT show a generic "Error" message
+
+  Scenario: Anthropic rate limit hit — user guidance
+    Given a session is active with Claude provider
+    When the API returns 429 Too Many Requests
+    Then a toast should appear: "Claude rate limit reached. Retrying in 60 seconds."
+    And the toast should include an action: "Switch to Local"
+    And the suggestion cycle should automatically retry after the backoff period
+    And no duplicate suggestions should be generated during retry
+
+  # --- TRANSCRIPTION ERRORS ---
+
+  Scenario: whisper.cpp process dies during session
+    Given a session is active with transcription running
+    When the whisper.cpp process exits unexpectedly
+    Then the transcript panel should show: "Transcription interrupted. Attempting to restart..."
+    And the app should attempt to respawn whisper.cpp automatically
+    And if restart succeeds, the message should clear
+    And if restart fails after 3 attempts, show: "Transcription could not restart. You can continue with manual input."
+
+  Scenario: Microphone disconnected during session
+    Given a session is active with transcription running
+    When the selected microphone device is disconnected
+    Then the transcript panel should show: "Microphone disconnected."
+    And the status bar audio indicator should turn red
+    And when the device is reconnected, transcription should resume automatically
+
+  # --- SUGGESTION ENGINE ERRORS ---
+
+  Scenario: LLM returns unparseable response
+    Given a suggestion cycle completes
+    When the LLM response cannot be parsed into a suggestion card
+    Then no suggestion card should appear (silent failure)
+    And the error should be logged internally
+    And the DM should NOT see an error message (noise reduction)
+    And the next suggestion cycle should proceed normally
+
+  Scenario: Panic button fails — visible feedback
+    Given the DM clicks a panic button
+    When the LLM provider fails to respond within 15 seconds
+    Then the panic button loading indicator should stop spinning
+    And a toast should appear: "Could not generate a response. Try again or check your connection."
+    And the panic button should become clickable again immediately
+
+  # --- DATABASE ERRORS ---
+
+  Scenario: Database file is locked by another process
+    Given the MCP server has a write lock on the SQLite database
+    When the app attempts to save a suggestion
+    Then the write should be retried after a brief delay (100ms)
+    And if retries succeed, no error should be shown to the user
+    And if retries fail after 5 attempts, a toast should appear:
+      "Could not save data. Another process may be using the database."
+
+  Scenario: Database file is corrupted
+    Given the SQLite database file is corrupted
+    When the app attempts to open it on launch
+    Then the app should show: "Campaign database appears corrupted."
+    And offer two actions: "Create New Database" and "Select Backup"
+    And the app should still launch (not crash on startup)
+```
+
+---
+
+## 13. whisper.cpp Process Lifecycle
+
+Spec 07 section 4 covers transcript *data* internals. These scenarios
+cover the whisper.cpp process itself: spawning, monitoring, crash
+recovery, and resource management.
+
+```gherkin
+Feature: whisper.cpp Process Lifecycle
+  As a Dungeon Master
+  I want speech-to-text to start reliably and recover from failures
+  So that I never lose transcription during a session
+
+  # --- PROCESS STARTUP ---
+
+  Scenario: whisper.cpp spawned on session start
+    Given a whisper model is available on disk
+    And a microphone device is selected
+    When the DM clicks "Start Session"
+    Then the app should spawn a whisper.cpp process
+    And the process should be configured with:
+      | flag       | value                            |
+      | --model    | path to selected whisper model   |
+      | --prompt   | NPC and character names from campaign |
+    And the transcript panel should show "Listening..." within 3 seconds
+
+  Scenario: whisper.cpp binary not found
+    Given the whisper.cpp binary is missing from the expected path
+    When the DM clicks "Start Session"
+    Then the app should show: "Speech-to-text engine not found. Reinstall or update the app."
+    And the session should start without transcription
+    And the manual transcript input should be available as fallback
+
+  # --- CRASH RECOVERY ---
+
+  Scenario: whisper.cpp crashes and auto-restarts
+    Given a session is active with transcription running
+    When the whisper.cpp process exits with a non-zero exit code
+    Then the app should detect the crash within 2 seconds
+    And attempt to respawn the process automatically
+    And the new process should resume transcription from the microphone
+    And there should be a gap in the transcript (not duplicated content)
+
+  Scenario: whisper.cpp crashes repeatedly — gives up
+    Given a session is active
+    When whisper.cpp crashes 3 times within 60 seconds
+    Then the app should stop trying to restart it
+    And show: "Speech-to-text keeps crashing. You can continue with manual input."
+    And the session should remain active (not end)
+
+  # --- RESOURCE MANAGEMENT ---
+
+  Scenario: whisper.cpp process cleaned up on session end
+    Given a session is active with transcription running
+    When the DM clicks "End Session"
+    Then the whisper.cpp process should be terminated
+    And its resources (memory, file handles) should be released
+    And no orphan process should remain running
+
+  Scenario: whisper.cpp process cleaned up on app exit
+    Given a session is active with transcription running
+    When the DM closes the application
+    Then the whisper.cpp process should be terminated before the app exits
+    And no orphan process should remain running in the background
+```
+
+---
+
+## 14. Export Completeness
+
+Spec 01 covers basic export scenarios. These scenarios cover content
+completeness and edge cases for the export feature.
+
+```gherkin
+Feature: Export Completeness
+  As a Dungeon Master
+  I want session exports to include everything that happened
+  So that I have a complete record for future reference
+
+  Scenario: Export includes ad-hoc Q&A pairs
+    Given the DM asked 3 ad-hoc questions during the session
+    When the DM exports the session as Markdown
+    Then the export should include a "Questions & Answers" section
+    And each Q&A pair should show the question text and the AI's response
+    And Q&A entries should be positioned chronologically within the transcript
+
+  Scenario: Export includes panic button responses
+    Given the DM used "Need an NPC" and "Recap" panic buttons during the session
+    When the DM exports the session as Markdown
+    Then the export should include a "Panic Button Responses" section
+    And each response should be labeled with the button that triggered it
+    And responses should include timestamps
+
+  Scenario: Export handles a 4+ hour session
+    Given the session ran for 4 hours and 30 minutes
+    And the transcript has over 2,000 entries
+    When the DM exports the session as Markdown
+    Then the export should complete within 30 seconds
+    And the file should contain all transcript entries without truncation
+    And the file size should be reasonable (under 5MB for text-only export)
+
+  Scenario: Export file naming convention
+    Given the campaign is "Curse of the Hollow King"
+    And this is session 7
+    And the date is 2026-03-10
+    When the DM exports the session
+    Then the suggested filename should be "2026-03-10-curse-of-the-hollow-king-session-7.md"
+    And the DM should be able to change the filename before saving
+```
+
+---
+
+## 15. Input Validation Boundaries
+
+No scenarios test limits on user inputs. These cover boundary conditions
+that a DM will naturally hit when pasting large campaign notes or using
+non-English character names.
+
+```gherkin
+Feature: Input Validation Boundaries
+  As a Dungeon Master
+  I want the app to handle unusual inputs gracefully
+  So that I can use any campaign content without breaking the app
+
+  # --- LARGE INPUTS ---
+
+  Scenario: Very large campaign context paste
+    Given the DM pastes campaign context that is 15,000 words long
+    When the context is saved
+    Then it should be accepted and stored without error
+    And the suggestion engine should use a truncated or summarized version
+      to stay within the LLM's context window
+    And a warning should appear: "Campaign context is very large. Consider summarizing for better suggestion quality."
+
+  Scenario: Very long backstory text
+    Given the DM pastes a character backstory that is 5,000 words
+    When the backstory is saved
+    Then it should be stored in full
+    And the prompt builder should truncate to a reasonable window for LLM calls
+    And no error or crash should occur
+
+  # --- SPECIAL CHARACTERS ---
+
+  Scenario: Unicode characters in NPC names
+    Given the DM adds an NPC named "Ælindra Thün-Voss"
+    When the NPC is saved and later referenced in suggestions
+    Then the name should display correctly with all diacritical marks
+    And the entity cooldown tracker should match the name correctly
+    And the whisper --prompt flag should include the name for transcription accuracy
+
+  Scenario: Markdown formatting in campaign context
+    Given the campaign context contains Markdown syntax:
+      """
+      ## The Hollow King
+      He has **three** lieutenants:
+      - Vrak the Undying
+      - Sister Morrow
+      - The Pale Count
+      """
+    When the context is sent to the LLM provider
+    Then the Markdown should be passed through as-is (not rendered or stripped)
+    And suggestion quality should not be affected
+
+  # --- EMPTY / MISSING DATA ---
+
+  Scenario: Session started with no campaign context and no backstories
+    Given the DM has not entered any campaign context
+    And no character backstories are configured
+    When the DM starts a session
+    Then the session should start successfully
+    And suggestions should be generated based on transcript only
+    And suggestion quality should degrade gracefully (more generic responses)
+    And a subtle prompt should appear: "Add campaign context for better suggestions"
+
+  Scenario: All campaign fields are empty strings
+    Given campaign context is ""
+    And all character backstory fields are ""
+    When a suggestion cycle runs
+    Then the prompt should be constructed without errors
+    And the LLM should receive valid (if minimal) context
+    And the engine should not crash or produce malformed requests
+```
+
+---
+
+## 16. Cross-Provider Prompt Parity
+
+The architecture mandates identical prompts for both providers.
+These scenarios verify that the prompt layer has no provider-specific
+branching and that both providers produce parseable output.
+
+```gherkin
+Feature: Cross-Provider Prompt Parity
+  As a developer
+  I want the same prompt template used for both Ollama and Claude
+  So that suggestion quality differences come only from model capability
+
+  Scenario: Suggestion prompt is identical across providers
+    Given the same campaign context, backstories, and transcript
+    When a suggestion prompt is built for the Ollama provider
+    And a suggestion prompt is built for the Anthropic provider
+    Then the system prompt text should be byte-identical
+    And the user prompt text should be byte-identical
+    And no provider-specific instructions should exist in either prompt
+
+  Scenario: Panic button prompt is identical across providers
+    Given the same session state
+    When a "Phones Out" panic prompt is built for the Ollama provider
+    And a "Phones Out" panic prompt is built for the Anthropic provider
+    Then the system and user prompts should be byte-identical
+
+  Scenario: Both providers produce parseable responses
+    Given the same suggestion prompt
+    When sent to Ollama (llama3.1:8b-instruct)
+    Then the response should be parseable into a Suggestion or NONE
+    When sent to Anthropic (claude-sonnet-4-6)
+    Then the response should also be parseable into a Suggestion or NONE
+    And both responses should use the TYPE/TITLE/BODY/DM_ONLY format
+```
+
+---
+
+## 17. Quick-Hide and Player-Safe Display
+
+The DM's screen is visible at the table. Beyond DM ONLY labels on
+individual cards, the app needs a way to hide everything instantly
+and optionally show a player-safe view.
+
+```gherkin
+Feature: Quick-Hide and Player-Safe Display
+  As a Dungeon Master
+  I want to hide sensitive information instantly
+  So that players never accidentally see DM-only content on my screen
+
+  Scenario: Quick-hide entire app with hotkey
+    Given a session is active with suggestion cards visible
+    And some cards are marked DM ONLY
+    When the DM presses the quick-hide hotkey (default: Escape)
+    Then the app window should minimize or show a neutral screen
+    And no suggestion content should be visible
+    And the session should continue running in the background
+    And pressing the hotkey again should restore the full view
+
+  Scenario: Player-safe view mode
+    Given a session is active with mixed suggestion cards
+    When the DM activates "Player View" mode
+    Then all DM ONLY suggestion cards should be hidden
+    And the transcript panel should remain visible
+    And the panic toolbar should be hidden
+    And the question input should be hidden
+    And a visible indicator should show "Player View Active"
+    When the DM deactivates Player View
+    Then all panels and DM ONLY cards should reappear
+
+  Scenario: Player-safe view hides campaign secrets in context
+    Given the campaign context contains NPC secrets
+    And Player View mode is active
+    Then the campaign context panel should not be accessible
+    And no NPC secret text should be visible anywhere on screen
+
+  Scenario: Quick-hide does not interrupt active processes
+    Given a suggestion cycle is in progress
+    When the DM presses the quick-hide hotkey
+    Then the suggestion cycle should complete in the background
+    And the result should appear when the view is restored
+    And transcription should continue uninterrupted
+```
+
+---
+
+## 18. Database Migration
+
+When the app updates between versions, the SQLite schema may change.
+These scenarios cover safe migration behavior.
+
+```gherkin
+Feature: Database Migration
+  As a Dungeon Master
+  I want my campaign data preserved when the app updates
+  So that I never lose session history or campaign notes
+
+  Scenario: App upgrade with schema changes
+    Given the DM has campaign data in schema version 1
+    When the DM installs app version 2 which uses schema version 2
+    And launches the app
+    Then the app should detect the schema version mismatch
+    And run migration scripts to update the database
+    And all existing data should be preserved
+    And new columns or tables should be created with safe defaults
+
+  Scenario: Migration creates automatic backup
+    Given the DM launches the app after an update with schema changes
+    When the migration begins
+    Then the app should create a backup copy of the database first
+      (e.g., campaigns.db.backup-v1)
+    And the migration should proceed on the original file
+    And if migration fails, the backup should be available for manual recovery
+
+  Scenario: MCP server handles schema version mismatch
+    Given the MCP server expects schema version 2
+    And the database is at schema version 1
+    When the MCP server starts
+    Then it should show a warning: "Database schema is outdated. Update the DM Assistant app."
+    And it should operate in read-only mode to avoid corrupting data
+    And write tools should return errors explaining the version mismatch
+```
+
+---
+
 ## Scenario Summary
 
 | Gap Area                      | Scenarios | Priority |
 |-------------------------------|-----------|----------|
-| LLM Provider Management      | 17        | Critical |
+| LLM Provider Management       | 17        | Critical |
 | Campaign Data Persistence     | 14        | High     |
 | First-Run Wizard              | 10        | High     |
 | Transcript Manager Internals  | 8         | Medium   |
 | Entity Cooldown & Dedup       | 8         | Medium   |
 | Suggestion Response Parsing   | 9         | Medium   |
-| Session Lifecycle & Resilience| 12        | Medium   |
+| Session Lifecycle & Resilience | 12       | Medium   |
 | Security & Privacy            | 8         | High     |
 | Settings UI                   | 9         | Medium   |
 | MCP Server                    | 13        | Medium   |
-| **Total**                     | **108**   |          |
+| Panic Button Edge Cases       | 8         | Medium   |
+| Error UX                      | 10        | **High** |
+| whisper.cpp Process Lifecycle  | 6         | Medium   |
+| Export Completeness            | 4         | Low      |
+| Input Validation Boundaries   | 6         | Medium   |
+| Cross-Provider Prompt Parity  | 3         | Low      |
+| Quick-Hide / Player Safety    | 4         | **High** |
+| Database Migration            | 3         | Low      |
+| **Total**                     | **152**   |          |
 
 Combined with the existing 150+ scenarios from specs 01-06, this brings
-total BDD coverage to approximately **260 scenarios** across all features.
+total BDD coverage to approximately **305 scenarios** across all features.
