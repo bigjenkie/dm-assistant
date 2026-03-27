@@ -21,6 +21,8 @@ export type Suggestion = {
   pinned: boolean
   dismissed: boolean
   source: 'suggest' | 'notification' | 'panic' | 'question'
+  rawResponse?: string           // full LLM response text
+  triggerTranscript?: string     // transcript that triggered this suggestion
 }
 
 export const SUGGESTION_ICONS: Record<SuggestionType, string> = {

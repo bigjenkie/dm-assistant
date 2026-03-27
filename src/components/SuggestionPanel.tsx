@@ -5,9 +5,10 @@ type Props = {
   suggestions: Suggestion[]
   onPin: (id: string) => void
   onDismiss: (id: string) => void
+  onSelect?: (id: string) => void
 }
 
-export function SuggestionPanel({ suggestions, onPin, onDismiss }: Props) {
+export function SuggestionPanel({ suggestions, onPin, onDismiss, onSelect }: Props) {
   const pinned = suggestions.filter((s) => s.pinned && !s.dismissed)
   const unpinned = suggestions.filter((s) => !s.pinned && !s.dismissed)
 
@@ -26,12 +27,12 @@ export function SuggestionPanel({ suggestions, onPin, onDismiss }: Props) {
               Pinned
             </div>
             {pinned.map((s) => (
-              <SuggestionCard key={s.id} suggestion={s} onPin={onPin} onDismiss={onDismiss} />
+              <SuggestionCard key={s.id} suggestion={s} onPin={onPin} onDismiss={onDismiss} onClick={onSelect} />
             ))}
           </div>
         )}
         {unpinned.map((s) => (
-          <SuggestionCard key={s.id} suggestion={s} onPin={onPin} onDismiss={onDismiss} />
+          <SuggestionCard key={s.id} suggestion={s} onPin={onPin} onDismiss={onDismiss} onClick={onSelect} />
         ))}
         {suggestions.filter((s) => !s.dismissed).length === 0 && (
           <p className="text-sm italic" style={{ color: 'var(--surface-600)' }}>

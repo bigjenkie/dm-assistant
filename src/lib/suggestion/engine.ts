@@ -65,6 +65,8 @@ export class SuggestionEngine {
       pinned: false,
       dismissed: false,
       source: 'suggest',
+      rawResponse: response.text,
+      triggerTranscript: ctx.recentTranscript,
     }
   }
 
@@ -82,6 +84,8 @@ export class SuggestionEngine {
       pinned: false,
       dismissed: false,
       source: 'panic',
+      rawResponse: response.text,
+      triggerTranscript: ctx.recentTranscript,
     }
   }
 
@@ -116,6 +120,8 @@ DM'S QUESTION: ${question}`
       pinned: false,
       dismissed: false,
       source: 'question',
+      rawResponse: response.text,
+      triggerTranscript: ctx.recentTranscript,
     }
   }
 

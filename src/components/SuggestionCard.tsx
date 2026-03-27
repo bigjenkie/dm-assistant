@@ -5,9 +5,10 @@ type Props = {
   suggestion: Suggestion
   onPin: (id: string) => void
   onDismiss: (id: string) => void
+  onClick?: (id: string) => void
 }
 
-export function SuggestionCard({ suggestion, onPin, onDismiss }: Props) {
+export function SuggestionCard({ suggestion, onPin, onDismiss, onClick }: Props) {
   const icon = SUGGESTION_ICONS[suggestion.type] ?? '💬'
   const sourceLabel = suggestion.source === 'question' ? 'Q&A' : suggestion.source === 'panic' ? 'Panic' : suggestion.source === 'notification' ? 'Alert' : ''
 
@@ -98,7 +99,11 @@ export function SuggestionCard({ suggestion, onPin, onDismiss }: Props) {
           </button>
         </div>
       </div>
-      <p className="text-sm mt-1.5 leading-relaxed" style={{ color: 'var(--surface-300)' }}>
+      <p
+        className="text-sm mt-1.5 leading-relaxed"
+        style={{ color: 'var(--surface-300)', cursor: onClick ? 'pointer' : 'default' }}
+        onClick={() => onClick?.(suggestion.id)}
+      >
         {suggestion.body}
       </p>
     </div>
