@@ -55,8 +55,8 @@ describe('buildPanicPrompt', () => {
 
   it('builds a phones_out prompt that targets least-active player', () => {
     const { user } = buildPanicPrompt('phones_out', context)
-    expect(user).toContain('disengaged')
     expect(user).toContain('LEAST')
+    expect(user).toContain('READ ALOUD')
     expect(user).toContain('backstory')
   })
 
@@ -80,17 +80,17 @@ describe('buildPanicPrompt', () => {
 
   // --- NEW PANIC BUTTONS ---
 
-  it('builds a quiet_player prompt that creates a spotlight moment', () => {
+  it('builds a quiet_player prompt that creates a speakable hook', () => {
     const { user } = buildPanicPrompt('quiet_player', context)
-    expect(user).toContain('quiet')
-    expect(user).toContain('spotlight')
+    expect(user).toContain('LEAST')
+    expect(user).toContain('READ ALOUD')
     expect(user).toContain(context.recentTranscript)
   })
 
   it('builds a deliberation_loop prompt that injects urgency', () => {
     const { user } = buildPanicPrompt('deliberation_loop', context)
-    expect(user).toContain('urgen')
-    expect(user).toContain('act')
+    expect(user).toContain('READ ALOUD')
+    expect(user).toContain('impossible')
     expect(user).toContain(context.recentTranscript)
   })
 
@@ -106,10 +106,10 @@ describe('buildPanicPrompt', () => {
     expect(user).toContain(context.recentTranscript)
   })
 
-  it('builds a dead_air prompt that breaks silence with a character hook', () => {
+  it('builds a dead_air prompt that breaks silence with a speakable hook', () => {
     const { user } = buildPanicPrompt('dead_air', context)
-    expect(user).toContain('silence')
-    expect(user).toContain('character')
+    expect(user).toContain('silent')
+    expect(user).toContain('READ ALOUD')
     expect(user).toContain(context.characterBackstories)
   })
 
@@ -122,7 +122,7 @@ describe('buildPanicPrompt', () => {
 
   it('builds an energy_low prompt that injects excitement', () => {
     const { user } = buildPanicPrompt('energy_low', context)
-    expect(user).toContain('energy')
+    expect(user).toContain('READ ALOUD')
     expect(user).toContain(context.recentTranscript)
   })
 })

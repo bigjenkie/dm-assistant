@@ -68,11 +68,11 @@ Generate ONE suggestion or respond NONE.`
 }
 
 const PANIC_PROMPTS: Record<PanicButtonId, (ctx: PanicContext) => string> = {
-  phones_out: (ctx) => `A player seems disengaged. Analyze the recent transcript and identify the character who has spoken the LEAST recently. Generate a narrative hook that:
-1. Calls them out by character name
-2. Connects to their backstory if possible
-3. Requires them to respond with a decision or action
-4. Can be spoken aloud by the DM immediately
+  phones_out: (ctx) => `A player is on their phone. Identify the character who has spoken the LEAST in the transcript.
+
+DO NOT analyze the situation. Write 1-2 sentences the DM can READ ALOUD right now that force this character into the spotlight using their backstory.
+
+The hook must require the player to respond — a question, a choice, or something only their character would notice.
 
 CHARACTER BACKSTORIES:
 ${ctx.characterBackstories}
@@ -80,11 +80,14 @@ ${ctx.characterBackstories}
 RECENT TRANSCRIPT:
 ${ctx.recentTranscript}`,
 
-  quiet_player: (ctx) => `A player has been quiet. Analyze the recent transcript and identify the character who has spoken the LEAST. Create a spotlight moment for that quiet character that:
-1. Fits the current scene naturally (not forced)
-2. Gives them something only their character can do or notice
-3. Requires a decision or response from them
-4. Can be delivered by the DM in one or two sentences
+  quiet_player: (ctx) => `A player has been quiet. Identify the character who has spoken the LEAST in the transcript.
+
+DO NOT analyze the situation. DO NOT explain who is quiet or why. Instead, write 1-2 sentences the DM can READ ALOUD to the table right now that pull this character into the scene.
+
+Use their backstory to make it personal. Example format:
+"Gruuk — as you stand near the doorway, you notice scratch marks on the frame. They look like claw marks. The same kind you saw on the monastery walls. What do you do?"
+
+The output must be a ready-to-speak narrative prompt, not advice to the DM.
 
 CHARACTER BACKSTORIES:
 ${ctx.characterBackstories}
@@ -92,11 +95,11 @@ ${ctx.characterBackstories}
 RECENT TRANSCRIPT:
 ${ctx.recentTranscript}`,
 
-  deliberation_loop: (ctx) => `The party is stuck deliberating and can't decide what to do. Inject an urgency event that forces them to act NOW. The event should:
-1. Be appropriate to the current scene
-2. Create a time pressure (something is happening, arriving, or expiring)
-3. Make further deliberation dangerous or impossible
-4. Be dramatic but not unfair
+  deliberation_loop: (ctx) => `The party is stuck deliberating. Write 2-3 sentences the DM can READ ALOUD right now that force a decision.
+
+Something happens that makes waiting impossible — a timer starts, enemies arrive, the floor cracks, a hostage screams. Fit the current scene.
+
+DO NOT give options or advice. Write the actual narration.
 
 RECENT TRANSCRIPT:
 ${ctx.recentTranscript}`,
@@ -125,11 +128,11 @@ ${ctx.campaignContext}
 RECENT TRANSCRIPT:
 ${ctx.recentTranscript}`,
 
-  dead_air: (ctx) => `There's an awkward silence at the table. Break it with a character-specific narrative prompt that:
-1. Targets a specific character by name
-2. Uses their backstory, bonds, or personality
-3. Describes something they notice, feel, or remember in this moment
-4. Invites them to respond in character
+  dead_air: (ctx) => `The table has gone silent. Write 1-2 sentences the DM can READ ALOUD right now to break the silence.
+
+Pick a specific character and describe something they notice, feel, or remember in this moment — using their backstory. End with "What do you do?" or a direct question to that character.
+
+DO NOT give advice. Write the actual words the DM should speak.
 
 CHARACTER BACKSTORIES:
 ${ctx.characterBackstories}
@@ -148,11 +151,11 @@ ${ctx.campaignContext}
 RECENT TRANSCRIPT:
 ${ctx.recentTranscript}`,
 
-  energy_low: (ctx) => `The table energy is low — players seem bored or disengaged. Inject a high-energy narrative beat that:
-1. Is dramatic, surprising, or exciting
-2. Involves the current scene and characters
-3. Demands immediate reaction from the players
-4. Can be delivered in 2-3 sentences by the DM
+  energy_low: (ctx) => `The table energy is low. Write 2-3 sentences the DM can READ ALOUD right now that inject drama and force immediate reaction.
+
+Something happens — loud, sudden, or threatening. A crash, an arrival, a revelation, a sound. Make it fit the current scene.
+
+DO NOT give advice or options. Write the actual narration the DM should deliver.
 
 CHARACTER BACKSTORIES:
 ${ctx.characterBackstories}

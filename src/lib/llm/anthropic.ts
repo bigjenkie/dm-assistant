@@ -22,13 +22,20 @@ export function createAnthropicProvider(config: AnthropicConfig): LLMProvider {
     async generate(system: string, user: string, maxTokens: number): Promise<LLMResponse> {
       const start = performance.now()
 
-      const response = await fetch(`${baseUrl}/v1/messages`, {
+      // When going through the dev proxy, send the key in a query param.
+      // The proxy strips it and injects the proper headers server-side.
+      // When calling the API directly (Tauri), use standard headers.
+      const isProxy = baseUrl.startsWith('/')
+      const url = isProxy
+        ? `${baseUrl}/v1/messages?key=${encodeURIComponent(config.apiKey)}`
+        : `${baseUrl}/v1/messages`
+      const headers: Record<string, string> = isProxy
+        ? { 'Content-Type': 'application/json' }
+        : { 'Content-Type': 'application/json', 'x-api-key': config.apiKey, 'anthropic-version': '2023-06-01' }
+
+      const response = await fetch(url, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': config.apiKey,
-          'anthropic-version': '2023-06-01',
-        },
+        headers,
         body: JSON.stringify({
           model: config.model,
           max_tokens: maxTokens,
@@ -57,13 +64,16 @@ export function createAnthropicProvider(config: AnthropicConfig): LLMProvider {
 
     async healthCheck(): Promise<boolean> {
       try {
-        const response = await fetch(`${baseUrl}/v1/messages`, {
+        const isProxy = baseUrl.startsWith('/')
+        const url = isProxy
+          ? `${baseUrl}/v1/messages?key=${encodeURIComponent(config.apiKey)}`
+          : `${baseUrl}/v1/messages`
+        const headers: Record<string, string> = isProxy
+          ? { 'Content-Type': 'application/json' }
+          : { 'Content-Type': 'application/json', 'x-api-key': config.apiKey, 'anthropic-version': '2023-06-01' }
+        const response = await fetch(url, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-api-key': config.apiKey,
-            'anthropic-version': '2023-06-01',
-          },
+          headers,
           body: JSON.stringify({
             model: config.model,
             max_tokens: 10,

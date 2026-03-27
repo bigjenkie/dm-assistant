@@ -30,14 +30,14 @@ function App({ provider, anthropicProvider }: Props) {
   const [questionLoading, setQuestionLoading] = useState(false)
   const [sessionElapsed, setSessionElapsed] = useState(0)
   const [providerStatus] = useState<ProviderStatus>('connected')
-  const [activeProviderName, setActiveProviderName] = useState(provider.name)
+  const [activeProviderName, setActiveProviderName] = useState(anthropicProvider ? anthropicProvider.name : provider.name)
   const [toast, setToast] = useState<string | null>(null)
   const [showApiKeySetup, setShowApiKeySetup] = useState(false)
   const [anthropicConfigured, setAnthropicConfigured] = useState(!!anthropicProvider)
   const anthropicRef = useRef<LLMProvider | undefined>(anthropicProvider)
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  const engineRef = useRef(new SuggestionEngine(provider))
+  const engineRef = useRef(new SuggestionEngine(anthropicProvider ?? provider))
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const sessionStartRef = useRef<number>(0)
 
@@ -149,30 +149,6 @@ function App({ provider, anthropicProvider }: Props) {
     setShowApiKeySetup(false)
   }, [])
 
-  // --- Suggest (Pull) ---
-
-  const handleSuggest = useCallback(async () => {
-    setSuggestLoading(true)
-    try {
-      const suggestion = await engineRef.current.runSuggest({
-        campaignContext,
-        characterBackstories: backstories,
-        recentTranscript: getRecentTranscript(),
-        fullTranscript: getFullTranscript(),
-        sessionElapsed: getCurrentElapsed(),
-      })
-      if (suggestion) {
-        setSuggestions((prev) => [...prev, suggestion])
-      } else {
-        showToast('No suggestion for the current context — try adding more transcript.')
-      }
-    } catch (err) {
-      showToast(`LLM error: ${err instanceof Error ? err.message : 'Check your connection.'}`)
-    } finally {
-      setSuggestLoading(false)
-    }
-  }, [campaignContext, backstories, transcript])
-
   // --- Toast ---
 
   const showToast = useCallback((message: string) => {
@@ -181,12 +157,41 @@ function App({ provider, anthropicProvider }: Props) {
     toastTimerRef.current = setTimeout(() => setToast(null), 4000)
   }, [])
 
-  // Cleanup toast timer on unmount
   useEffect(() => {
     return () => {
       if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
     }
   }, [])
+
+  // --- Suggest (Pull) ---
+
+  const handleSuggest = useCallback(async () => {
+    setSuggestLoading(true)
+    console.log('[DM] handleSuggest called')
+    console.log('[DM] context length:', campaignContext.length, 'backstories:', backstories.length, 'transcript:', transcript.length)
+    try {
+      const ctx = {
+        campaignContext,
+        characterBackstories: backstories,
+        recentTranscript: getRecentTranscript(),
+        fullTranscript: getFullTranscript(),
+        sessionElapsed: getCurrentElapsed(),
+      }
+      console.log('[DM] recentTranscript length:', ctx.recentTranscript.length)
+      const suggestion = await engineRef.current.runSuggest(ctx)
+      console.log('[DM] suggestion result:', suggestion)
+      if (suggestion) {
+        setSuggestions((prev) => [...prev, suggestion])
+      } else {
+        showToast('No suggestion for the current context — try adding more transcript.')
+      }
+    } catch (err) {
+      console.error('[DM] suggest error:', err)
+      showToast(`LLM error: ${err instanceof Error ? err.message : 'Check your connection.'}`)
+    } finally {
+      setSuggestLoading(false)
+    }
+  }, [campaignContext, backstories, transcript, showToast])
 
   // --- Panic Buttons ---
 
