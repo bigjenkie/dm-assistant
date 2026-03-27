@@ -1,7 +1,8 @@
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import type { LLMProvider } from './lib/llm/provider'
 import type { Suggestion, TranscriptEntry, PanicButtonId, SessionState, ProviderStatus } from './lib/types'
 import { SuggestionEngine } from './lib/suggestion/engine'
+import { validatePanicButton } from './lib/suggestion/panic-validation'
 import { CampaignEditor } from './components/CampaignEditor'
 import { TranscriptPanel } from './components/TranscriptPanel'
 import { SuggestionPanel } from './components/SuggestionPanel'
@@ -25,6 +26,8 @@ function App({ provider }: Props) {
   const [questionLoading, setQuestionLoading] = useState(false)
   const [sessionElapsed, setSessionElapsed] = useState(0)
   const [providerStatus] = useState<ProviderStatus>('connected')
+  const [toast, setToast] = useState<string | null>(null)
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const engineRef = useRef(new SuggestionEngine(provider))
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -102,24 +105,47 @@ function App({ provider }: Props) {
     }
   }, [campaignContext, backstories, transcript])
 
+  // --- Toast ---
+
+  const showToast = useCallback((message: string) => {
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
+    setToast(message)
+    toastTimerRef.current = setTimeout(() => setToast(null), 4000)
+  }, [])
+
+  // Cleanup toast timer on unmount
+  useEffect(() => {
+    return () => {
+      if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
+    }
+  }, [])
+
   // --- Panic Buttons ---
 
   const handlePanic = useCallback(async (buttonId: PanicButtonId) => {
+    const ctx = {
+      campaignContext,
+      characterBackstories: backstories,
+      recentTranscript: getRecentTranscript(),
+      fullTranscript: getFullTranscript(),
+    }
+
+    const warning = validatePanicButton(buttonId, ctx)
+    if (warning) {
+      showToast(warning)
+      return
+    }
+
     setPanicLoading(buttonId)
     try {
-      const suggestion = await engineRef.current.runPanic(buttonId, {
-        campaignContext,
-        characterBackstories: backstories,
-        recentTranscript: getRecentTranscript(),
-        fullTranscript: getFullTranscript(),
-      })
+      const suggestion = await engineRef.current.runPanic(buttonId, ctx)
       if (suggestion) {
         setSuggestions((prev) => [...prev, suggestion])
       }
     } finally {
       setPanicLoading(null)
     }
-  }, [campaignContext, backstories, transcript])
+  }, [campaignContext, backstories, transcript, showToast])
 
   // --- Questions ---
 
@@ -289,6 +315,20 @@ function App({ provider }: Props) {
           </div>
         </div>
       </div>
+
+      {/* Toast */}
+      {toast && (
+        <div
+          className="px-4 py-2 text-sm"
+          style={{
+            background: 'var(--amber-900)',
+            borderTop: '1px solid var(--amber-700)',
+            color: 'var(--amber-300)',
+          }}
+        >
+          {toast}
+        </div>
+      )}
 
       {/* Status Bar */}
       <StatusBar

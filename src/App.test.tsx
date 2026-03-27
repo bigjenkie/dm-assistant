@@ -182,7 +182,14 @@ describe('Feature: DM Session Workflow', () => {
         'TYPE: IMPROV\nTITLE: Spotlight: Gruuk\nBODY: Gruuk notices something familiar about the chapel.\nDM_ONLY: false'
       )
       render(<App provider={provider} />)
+
+      // Expand manual edit and add required backstories + transcript
+      await user.click(screen.getByRole('button', { name: /edit manually/i }))
+      await user.type(screen.getByPlaceholderText(/character name/i), 'Gruuk: Half-orc barbarian')
       await user.click(screen.getByRole('button', { name: /Start Session/i }))
+      const input = screen.getByPlaceholderText(/what's being said/i)
+      await user.type(input, 'The party explores the ruins')
+      await user.click(screen.getByRole('button', { name: /^Add$/i }))
 
       // When
       await user.click(screen.getByRole('button', { name: /Phones Out/i }))
@@ -199,6 +206,10 @@ describe('Feature: DM Session Workflow', () => {
         'TYPE: IMPROV\nTITLE: Grel the Dockhand\nBODY: Half-orc, gruff but fair. Always chewing a fish bone.\nDM_ONLY: false'
       )
       render(<App provider={provider} />)
+
+      // Add required campaign context
+      await user.click(screen.getByRole('button', { name: /edit manually/i }))
+      await user.type(screen.getByPlaceholderText(/campaign notes/i), 'Fantasy port town')
       await user.click(screen.getByRole('button', { name: /Start Session/i }))
 
       await user.click(screen.getByRole('button', { name: /Need an NPC/i }))
@@ -215,9 +226,60 @@ describe('Feature: DM Session Workflow', () => {
       render(<App provider={provider} />)
       await user.click(screen.getByRole('button', { name: /Start Session/i }))
 
+      // Add required transcript
+      const input = screen.getByPlaceholderText(/what's being said/i)
+      await user.type(input, 'The party explored the cave')
+      await user.click(screen.getByRole('button', { name: /^Add$/i }))
+
       await user.click(screen.getByRole('button', { name: /Recap/i }))
 
       expect(await screen.findByText('Session Recap')).toBeInTheDocument()
+    })
+  })
+
+  // --- PANIC BUTTON VALIDATION ---
+
+  describe('Scenario: DM clicks Phones Out with no backstories loaded', () => {
+    it('Then a toast warning appears instead of firing the LLM', async () => {
+      const provider = mockProvider('NONE')
+      render(<App provider={provider} />)
+      await user.click(screen.getByRole('button', { name: /Start Session/i }))
+
+      // No backstories loaded, no transcript — click Phones Out
+      await user.click(screen.getByRole('button', { name: /Phones Out/i }))
+
+      // Then — toast appears, LLM not called
+      expect(await screen.findByText(/backstor/i)).toBeInTheDocument()
+      expect(provider.generate).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('Scenario: DM clicks Recap with no transcript', () => {
+    it('Then a toast warning about missing transcript appears', async () => {
+      const provider = mockProvider('NONE')
+      render(<App provider={provider} />)
+      await user.click(screen.getByRole('button', { name: /Start Session/i }))
+
+      await user.click(screen.getByRole('button', { name: /Recap/i }))
+
+      expect(await screen.findByText(/Add some transcript first/i)).toBeInTheDocument()
+      expect(provider.generate).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('Scenario: Toast auto-dismisses after a few seconds', () => {
+    it('Then the toast disappears after 4 seconds', async () => {
+      const provider = mockProvider('NONE')
+      render(<App provider={provider} />)
+      await user.click(screen.getByRole('button', { name: /Start Session/i }))
+
+      await user.click(screen.getByRole('button', { name: /Recap/i }))
+      expect(await screen.findByText(/Add some transcript first/i)).toBeInTheDocument()
+
+      // Advance time past toast duration
+      await vi.advanceTimersByTimeAsync(4500)
+
+      expect(screen.queryByText(/Add some transcript first/i)).not.toBeInTheDocument()
     })
   })
 
