@@ -10,6 +10,7 @@ import { PanicToolbar } from './components/PanicToolbar'
 import { QuestionInput } from './components/QuestionInput'
 import { StatusBar } from './components/StatusBar'
 import { SuggestionDetail } from './components/SuggestionDetail'
+import { LoadingSpinner } from './components/LoadingSpinner'
 import { ApiKeySetup } from './components/ApiKeySetup'
 import { createAnthropicProvider } from './lib/llm/anthropic'
 import { DEMO_CONTEXT, DEMO_BACKSTORIES, DEMO_TRANSCRIPT_ENTRIES } from './lib/test-data'
@@ -299,6 +300,7 @@ function App({ provider, anthropicProvider }: Props) {
   const isIdle = sessionState === 'idle'
   const visibleSuggestions = suggestions.filter((s) => !s.dismissed)
   const selectedSuggestion = selectedSuggestionId ? suggestions.find((s) => s.id === selectedSuggestionId) : null
+  const isLoading = suggestLoading || !!panicLoading || questionLoading
 
   return (
     <div className="flex flex-col h-screen" style={{ background: 'var(--surface-950)', color: 'var(--surface-200)' }}>
@@ -438,7 +440,22 @@ function App({ provider, anthropicProvider }: Props) {
             disabled={!isActive}
             loading={questionLoading}
           />
-          <div className="flex-1 overflow-hidden">
+          <div className="flex-1 overflow-hidden relative">
+            {isLoading && (
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  background: 'oklch(10% 0.008 55 / 80%)',
+                  zIndex: 20,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <LoadingSpinner message={panicLoading ? 'Generating...' : suggestLoading ? 'Thinking...' : 'Asking...'} />
+              </div>
+            )}
             {selectedSuggestion ? (
               <SuggestionDetail
                 suggestion={selectedSuggestion}

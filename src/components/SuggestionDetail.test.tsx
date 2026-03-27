@@ -43,15 +43,21 @@ describe('SuggestionDetail', () => {
     expect(screen.getByText('DM ONLY')).toBeInTheDocument()
   })
 
-  it('shows the transcript that triggered the suggestion', () => {
+  it('shows a compact trigger context', () => {
     render(<SuggestionDetail suggestion={baseSuggestion} onClose={onClose} onFollowUp={onFollowUp} />)
 
+    expect(screen.getByText(/Triggered by/)).toBeInTheDocument()
     expect(screen.getByText(/go talk to the mayor/)).toBeInTheDocument()
   })
 
-  it('shows the raw LLM response', () => {
+  it('shows the raw LLM response after toggling', async () => {
     render(<SuggestionDetail suggestion={baseSuggestion} onClose={onClose} onFollowUp={onFollowUp} />)
 
+    // Raw response hidden by default
+    expect(screen.queryByText(/TYPE: RECALL/)).not.toBeInTheDocument()
+
+    // Toggle open
+    await user.click(screen.getByText(/Show raw response/i))
     expect(screen.getByText(/TYPE: RECALL/)).toBeInTheDocument()
   })
 
