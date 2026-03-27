@@ -80,6 +80,86 @@ ${ctx.characterBackstories}
 RECENT TRANSCRIPT:
 ${ctx.recentTranscript}`,
 
+  quiet_player: (ctx) => `A player has been quiet. Analyze the recent transcript and identify the character who has spoken the LEAST. Create a spotlight moment for that quiet character that:
+1. Fits the current scene naturally (not forced)
+2. Gives them something only their character can do or notice
+3. Requires a decision or response from them
+4. Can be delivered by the DM in one or two sentences
+
+CHARACTER BACKSTORIES:
+${ctx.characterBackstories}
+
+RECENT TRANSCRIPT:
+${ctx.recentTranscript}`,
+
+  deliberation_loop: (ctx) => `The party is stuck deliberating and can't decide what to do. Inject an urgency event that forces them to act NOW. The event should:
+1. Be appropriate to the current scene
+2. Create a time pressure (something is happening, arriving, or expiring)
+3. Make further deliberation dangerous or impossible
+4. Be dramatic but not unfair
+
+RECENT TRANSCRIPT:
+${ctx.recentTranscript}`,
+
+  too_easy: (ctx) => `The current combat is too easy — the party is winning without challenge. Suggest a combat escalation that:
+1. Fits the current encounter and environment
+2. Raises the stakes without being unfair
+3. Could be reinforcements, a new ability, terrain change, or complication
+4. Can be introduced mid-combat naturally
+
+CAMPAIGN CONTEXT:
+${ctx.campaignContext}
+
+RECENT TRANSCRIPT:
+${ctx.recentTranscript}`,
+
+  too_hard: (ctx) => `The current combat is too hard — the party is getting overwhelmed. Suggest a way to de-escalate that:
+1. Preserves narrative believability (no deus ex machina)
+2. Could be: enemies retreat, environment shifts, an NPC intervenes, enemies offer terms
+3. Gives the party a way out that feels earned
+4. Doesn't make the players feel cheated
+
+CAMPAIGN CONTEXT:
+${ctx.campaignContext}
+
+RECENT TRANSCRIPT:
+${ctx.recentTranscript}`,
+
+  dead_air: (ctx) => `There's an awkward silence at the table. Break it with a character-specific narrative prompt that:
+1. Targets a specific character by name
+2. Uses their backstory, bonds, or personality
+3. Describes something they notice, feel, or remember in this moment
+4. Invites them to respond in character
+
+CHARACTER BACKSTORIES:
+${ctx.characterBackstories}
+
+RECENT TRANSCRIPT:
+${ctx.recentTranscript}`,
+
+  off_script: (ctx) => `The party has gone off-script into unplanned territory. The DM needs material NOW. Generate:
+1. A quick location description (2-3 sentences)
+2. An NPC they might encounter (name, personality, one useful piece of info)
+3. A hook that can connect this tangent back to the main campaign
+
+CAMPAIGN CONTEXT:
+${ctx.campaignContext}
+
+RECENT TRANSCRIPT:
+${ctx.recentTranscript}`,
+
+  energy_low: (ctx) => `The table energy is low — players seem bored or disengaged. Inject a high-energy narrative beat that:
+1. Is dramatic, surprising, or exciting
+2. Involves the current scene and characters
+3. Demands immediate reaction from the players
+4. Can be delivered in 2-3 sentences by the DM
+
+CHARACTER BACKSTORIES:
+${ctx.characterBackstories}
+
+RECENT TRANSCRIPT:
+${ctx.recentTranscript}`,
+
   need_npc: (ctx) => `The DM needs an NPC right now. Generate one that fits the current scene:
 - Name (setting-appropriate)
 - Race and gender (brief)

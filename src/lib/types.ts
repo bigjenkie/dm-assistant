@@ -81,6 +81,13 @@ export type SessionState = 'idle' | 'active' | 'ended'
 
 export type PanicButtonId =
   | 'phones_out'
+  | 'quiet_player'
+  | 'deliberation_loop'
+  | 'too_easy'
+  | 'too_hard'
+  | 'dead_air'
+  | 'off_script'
+  | 'energy_low'
   | 'need_npc'
   | 'recap'
 
@@ -93,6 +100,13 @@ export type PanicButton = {
 
 export const PANIC_BUTTONS: PanicButton[] = [
   { id: 'phones_out', label: 'Phones Out', icon: '📱', description: 'Re-engage a distracted player' },
+  { id: 'quiet_player', label: 'Quiet Player', icon: '🤫', description: 'Spotlight the least-active character' },
+  { id: 'deliberation_loop', label: 'Deliberation Loop', icon: '⏳', description: 'Break analysis paralysis' },
+  { id: 'too_easy', label: 'Too Easy', icon: '💀', description: 'Escalate a trivial combat' },
+  { id: 'too_hard', label: 'Too Hard', icon: '🔥', description: 'De-escalate an overwhelming combat' },
+  { id: 'dead_air', label: 'Dead Air', icon: '🎭', description: 'Break an awkward silence' },
+  { id: 'off_script', label: 'Off Script', icon: '🗺️', description: 'Handle an unplanned tangent' },
+  { id: 'energy_low', label: 'Energy Low', icon: '⚡', description: 'Inject high-energy moment' },
   { id: 'need_npc', label: 'Need an NPC', icon: '🎲', description: 'Generate an NPC on the fly' },
   { id: 'recap', label: 'Recap', icon: '📜', description: 'Summarize the session so far' },
 ]

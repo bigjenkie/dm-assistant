@@ -77,4 +77,52 @@ describe('buildPanicPrompt', () => {
     const { user } = buildPanicPrompt('recap', context)
     expect(user).toContain('Session starts')
   })
+
+  // --- NEW PANIC BUTTONS ---
+
+  it('builds a quiet_player prompt that creates a spotlight moment', () => {
+    const { user } = buildPanicPrompt('quiet_player', context)
+    expect(user).toContain('quiet')
+    expect(user).toContain('spotlight')
+    expect(user).toContain(context.recentTranscript)
+  })
+
+  it('builds a deliberation_loop prompt that injects urgency', () => {
+    const { user } = buildPanicPrompt('deliberation_loop', context)
+    expect(user).toContain('urgen')
+    expect(user).toContain('act')
+    expect(user).toContain(context.recentTranscript)
+  })
+
+  it('builds a too_easy prompt that escalates combat', () => {
+    const { user } = buildPanicPrompt('too_easy', context)
+    expect(user).toContain('escalat')
+    expect(user).toContain(context.recentTranscript)
+  })
+
+  it('builds a too_hard prompt that de-escalates combat', () => {
+    const { user } = buildPanicPrompt('too_hard', context)
+    expect(user).toContain('de-escalat')
+    expect(user).toContain(context.recentTranscript)
+  })
+
+  it('builds a dead_air prompt that breaks silence with a character hook', () => {
+    const { user } = buildPanicPrompt('dead_air', context)
+    expect(user).toContain('silence')
+    expect(user).toContain('character')
+    expect(user).toContain(context.characterBackstories)
+  })
+
+  it('builds an off_script prompt for unplanned tangents', () => {
+    const { user } = buildPanicPrompt('off_script', context)
+    expect(user).toContain('off-script')
+    expect(user).toContain(context.campaignContext)
+    expect(user).toContain(context.recentTranscript)
+  })
+
+  it('builds an energy_low prompt that injects excitement', () => {
+    const { user } = buildPanicPrompt('energy_low', context)
+    expect(user).toContain('energy')
+    expect(user).toContain(context.recentTranscript)
+  })
 })
