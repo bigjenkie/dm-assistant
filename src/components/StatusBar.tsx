@@ -16,27 +16,38 @@ function formatElapsed(seconds: number): string {
 }
 
 const STATUS_COLORS: Record<ProviderStatus, string> = {
-  connected: 'text-green-400',
-  disconnected: 'text-red-400',
-  error: 'text-red-400',
-  'no-model': 'text-yellow-400',
-  unconfigured: 'text-gray-500',
+  connected: 'var(--success)',
+  disconnected: 'oklch(58% 0.22 25)',
+  error: 'oklch(58% 0.22 25)',
+  'no-model': 'var(--amber-500)',
+  unconfigured: 'var(--surface-500)',
 }
 
 export function StatusBar({ sessionState, providerName, providerStatus, sessionElapsed, suggestionCount }: Props) {
   return (
-    <div className="flex items-center justify-between bg-gray-900 border-t border-gray-800 px-4 py-1.5 text-xs text-gray-400">
+    <div
+      className="flex items-center justify-between px-4 py-1.5 text-xs"
+      style={{
+        background: 'var(--surface-900)',
+        borderTop: '1px solid var(--surface-800)',
+        color: 'var(--surface-500)',
+      }}
+    >
       <div className="flex items-center gap-4">
         <span>
           {sessionState === 'active' ? '🟢 Session Active' : sessionState === 'ended' ? '⏹️ Session Ended' : '⏸️ No Session'}
         </span>
-        <span className={STATUS_COLORS[providerStatus]}>
-          {providerName === 'ollama' ? '🖥️' : '☁️'} {providerName} — {providerStatus}
+        <span style={{ color: STATUS_COLORS[providerStatus] }}>
+          {providerName === 'ollama' ? '🖥️' : providerName === 'mock' ? '🔧' : '☁️'} {providerName} — {providerStatus}
         </span>
       </div>
       <div className="flex items-center gap-4">
         <span>{suggestionCount} suggestions</span>
-        {sessionState === 'active' && <span>⏱️ {formatElapsed(sessionElapsed)}</span>}
+        {sessionState === 'active' && (
+          <span style={{ fontFamily: 'var(--font-mono)' }}>
+            ⏱️ {formatElapsed(sessionElapsed)}
+          </span>
+        )}
       </div>
     </div>
   )

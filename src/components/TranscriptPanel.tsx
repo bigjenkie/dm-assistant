@@ -25,20 +25,26 @@ export function TranscriptPanel({ entries, onAddEntry }: Props) {
 
   return (
     <div className="flex flex-col h-full">
-      <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2">
+      <h2
+        className="text-xs font-semibold uppercase tracking-wider mb-2"
+        style={{ color: 'var(--surface-500)', letterSpacing: '0.08em' }}
+      >
         Transcript
       </h2>
       <div className="flex-1 overflow-y-auto space-y-1 mb-2">
         {entries.map((entry) => (
           <div key={entry.id} className="text-sm">
-            <span className="text-gray-500 font-mono text-xs mr-2">
+            <span
+              className="text-xs mr-2"
+              style={{ color: 'var(--surface-600)', fontFamily: 'var(--font-mono)' }}
+            >
               [{formatTime(entry.ts)}]
             </span>
-            <span className="text-gray-300">{entry.text}</span>
+            <span style={{ color: 'var(--surface-300)' }}>{entry.text}</span>
           </div>
         ))}
         {entries.length === 0 && (
-          <p className="text-gray-600 text-sm italic">
+          <p className="text-sm italic" style={{ color: 'var(--surface-600)' }}>
             Type table conversation below to simulate transcription...
           </p>
         )}
@@ -48,11 +54,31 @@ export function TranscriptPanel({ entries, onAddEntry }: Props) {
           name="transcript-input"
           type="text"
           placeholder="Type what's being said at the table..."
-          className="flex-1 bg-gray-800 border border-gray-700 rounded px-3 py-1.5 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-gray-500"
+          className="flex-1 text-sm px-3 py-1.5"
+          style={{
+            background: 'var(--surface-900)',
+            border: '1px solid var(--surface-700)',
+            borderRadius: 'var(--radius-md)',
+            color: 'var(--surface-200)',
+            outline: 'none',
+            transition: 'border-color var(--duration-fast) var(--ease-out)',
+          }}
+          onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--amber-700)' }}
+          onBlur={(e) => { e.currentTarget.style.borderColor = 'var(--surface-700)' }}
         />
         <button
           type="submit"
-          className="bg-gray-700 hover:bg-gray-600 text-gray-200 text-sm px-3 py-1.5 rounded"
+          className="text-sm px-3 py-1.5"
+          style={{
+            background: 'var(--surface-800)',
+            color: 'var(--surface-300)',
+            border: 'none',
+            borderRadius: 'var(--radius-md)',
+            cursor: 'pointer',
+            transition: 'background var(--duration-fast) var(--ease-out)',
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--surface-700)' }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--surface-800)' }}
         >
           Add
         </button>
