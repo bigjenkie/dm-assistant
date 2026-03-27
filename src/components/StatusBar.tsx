@@ -8,6 +8,7 @@ type Props = {
   sessionElapsed: number
   suggestionCount: number
   onProviderSwitch?: (provider: ProviderType) => void
+  onConfigureAnthropic?: () => void
   anthropicKeyConfigured?: boolean
 }
 
@@ -33,6 +34,7 @@ export function StatusBar({
   sessionElapsed,
   suggestionCount,
   onProviderSwitch,
+  onConfigureAnthropic,
   anthropicKeyConfigured = false,
 }: Props) {
   const [switcherOpen, setSwitcherOpen] = useState(false)
@@ -127,21 +129,27 @@ export function StatusBar({
               {/* Anthropic option */}
               <div
                 data-active={providerName === 'anthropic' ? 'true' : 'false'}
-                onClick={() => anthropicKeyConfigured ? handleSelect('anthropic') : undefined}
+                onClick={() => {
+                  if (anthropicKeyConfigured) {
+                    handleSelect('anthropic')
+                  } else {
+                    onConfigureAnthropic?.()
+                    setSwitcherOpen(false)
+                  }
+                }}
                 className="px-3 py-1.5 text-xs cursor-pointer flex items-center justify-between"
                 style={{
-                  color: providerName === 'anthropic' ? 'var(--amber-400)' : anthropicKeyConfigured ? 'var(--surface-300)' : 'var(--surface-600)',
+                  color: providerName === 'anthropic' ? 'var(--amber-400)' : 'var(--surface-300)',
                   background: providerName === 'anthropic' ? 'var(--accent-muted)' : 'transparent',
-                  cursor: anthropicKeyConfigured ? 'pointer' : 'default',
                   transition: 'background var(--duration-fast) var(--ease-out)',
                 }}
-                onMouseEnter={(e) => { if (anthropicKeyConfigured && providerName !== 'anthropic') e.currentTarget.style.background = 'var(--surface-800)' }}
+                onMouseEnter={(e) => { if (providerName !== 'anthropic') e.currentTarget.style.background = 'var(--surface-800)' }}
                 onMouseLeave={(e) => { if (providerName !== 'anthropic') e.currentTarget.style.background = 'transparent' }}
               >
                 <span>☁️ Claude (Anthropic)</span>
                 {providerName === 'anthropic' && <span>✓</span>}
                 {!anthropicKeyConfigured && (
-                  <span className="text-xs" style={{ color: 'var(--surface-600)' }}>No API key</span>
+                  <span className="text-xs" style={{ color: 'var(--amber-500)' }}>Set up</span>
                 )}
               </div>
             </div>

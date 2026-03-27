@@ -372,4 +372,54 @@ describe('Feature: DM Session Workflow', () => {
       expect(screen.getByText('1 suggestions')).toBeInTheDocument()
     })
   })
+
+  // --- ANTHROPIC SETUP ---
+
+  describe('Scenario: DM clicks Anthropic in switcher with no key', () => {
+    it('Then a settings panel opens with an API key input', async () => {
+      render(<App provider={mockProvider()} />)
+
+      // Open switcher, click Anthropic
+      await user.click(screen.getByRole('button', { name: /mock/i }))
+      await user.click(screen.getByText(/Claude \(Anthropic\)/i))
+
+      // Settings panel appears
+      expect(screen.getByPlaceholderText(/sk-ant-/i)).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /Save/i })).toBeInTheDocument()
+    })
+  })
+
+  describe('Scenario: DM saves a valid Anthropic API key', () => {
+    it('Then the provider switches to Anthropic', async () => {
+      render(<App provider={mockProvider()} />)
+
+      // Open settings via switcher
+      await user.click(screen.getByRole('button', { name: /mock/i }))
+      await user.click(screen.getByText(/Claude \(Anthropic\)/i))
+
+      // Enter key and save
+      const keyInput = screen.getByPlaceholderText(/sk-ant-/i)
+      await user.type(keyInput, 'sk-ant-test123')
+      await user.click(screen.getByRole('button', { name: /Save/i }))
+
+      // Settings panel closes, provider shows anthropic
+      expect(screen.queryByPlaceholderText(/sk-ant-/i)).not.toBeInTheDocument()
+      expect(screen.getByText(/anthropic/i)).toBeInTheDocument()
+    })
+  })
+
+  describe('Scenario: DM closes the settings panel without saving', () => {
+    it('Then the provider remains unchanged', async () => {
+      render(<App provider={mockProvider()} />)
+
+      await user.click(screen.getByRole('button', { name: /mock/i }))
+      await user.click(screen.getByText(/Claude \(Anthropic\)/i))
+
+      // Close without saving
+      await user.click(screen.getByRole('button', { name: /Cancel/i }))
+
+      expect(screen.queryByPlaceholderText(/sk-ant-/i)).not.toBeInTheDocument()
+      expect(screen.getByText(/mock/i)).toBeInTheDocument()
+    })
+  })
 })

@@ -13,6 +13,7 @@ describe('StatusBar — Provider Switcher', () => {
     sessionElapsed: 0,
     suggestionCount: 0,
     onProviderSwitch: vi.fn(),
+    onConfigureAnthropic: vi.fn(),
     anthropicKeyConfigured: false,
   }
 
@@ -64,12 +65,22 @@ describe('StatusBar — Provider Switcher', () => {
     expect(ollamaOption.closest('[data-active="true"]')).toBeInTheDocument()
   })
 
-  it('Anthropic option shows "No API key" when key not configured', async () => {
+  it('Anthropic option shows "Set up" when key not configured', async () => {
     render(<StatusBar {...defaultProps} anthropicKeyConfigured={false} />)
 
     await user.click(screen.getByRole('button', { name: /ollama/i }))
 
-    expect(screen.getByText(/No API key/i)).toBeInTheDocument()
+    expect(screen.getByText(/Set up/i)).toBeInTheDocument()
+  })
+
+  it('clicking Anthropic without key calls onConfigureAnthropic instead of switching', async () => {
+    render(<StatusBar {...defaultProps} anthropicKeyConfigured={false} />)
+
+    await user.click(screen.getByRole('button', { name: /ollama/i }))
+    await user.click(screen.getByText(/Claude \(Anthropic\)/i))
+
+    expect(defaultProps.onConfigureAnthropic).toHaveBeenCalled()
+    expect(defaultProps.onProviderSwitch).not.toHaveBeenCalled()
   })
 
   it('clicking outside the switcher closes it', async () => {

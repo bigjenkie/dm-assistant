@@ -9,6 +9,8 @@ import { SuggestionPanel } from './components/SuggestionPanel'
 import { PanicToolbar } from './components/PanicToolbar'
 import { QuestionInput } from './components/QuestionInput'
 import { StatusBar } from './components/StatusBar'
+import { ApiKeySetup } from './components/ApiKeySetup'
+import { createAnthropicProvider } from './lib/llm/anthropic'
 
 type Props = {
   provider: LLMProvider
@@ -29,6 +31,9 @@ function App({ provider, anthropicProvider }: Props) {
   const [providerStatus] = useState<ProviderStatus>('connected')
   const [activeProviderName, setActiveProviderName] = useState(provider.name)
   const [toast, setToast] = useState<string | null>(null)
+  const [showApiKeySetup, setShowApiKeySetup] = useState(false)
+  const [anthropicConfigured, setAnthropicConfigured] = useState(!!anthropicProvider)
+  const anthropicRef = useRef<LLMProvider | undefined>(anthropicProvider)
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const engineRef = useRef(new SuggestionEngine(provider))
@@ -90,14 +95,31 @@ function App({ provider, anthropicProvider }: Props) {
   // --- Provider Switching ---
 
   const handleProviderSwitch = useCallback((providerType: ProviderType) => {
-    if (providerType === 'anthropic' && anthropicProvider) {
-      engineRef.current.setProvider(anthropicProvider)
-      setActiveProviderName(anthropicProvider.name)
+    if (providerType === 'anthropic' && anthropicRef.current) {
+      engineRef.current.setProvider(anthropicRef.current)
+      setActiveProviderName(anthropicRef.current.name)
     } else {
       engineRef.current.setProvider(provider)
       setActiveProviderName(provider.name)
     }
-  }, [provider, anthropicProvider])
+  }, [provider])
+
+  const handleConfigureAnthropic = useCallback(() => {
+    setShowApiKeySetup(true)
+  }, [])
+
+  const handleApiKeySave = useCallback((apiKey: string) => {
+    const newProvider = createAnthropicProvider({
+      apiKey,
+      model: 'claude-sonnet-4-6',
+      temperature: 0.7,
+    })
+    anthropicRef.current = newProvider
+    setAnthropicConfigured(true)
+    engineRef.current.setProvider(newProvider)
+    setActiveProviderName(newProvider.name)
+    setShowApiKeySetup(false)
+  }, [])
 
   // --- Suggest (Pull) ---
 
@@ -330,6 +352,14 @@ function App({ provider, anthropicProvider }: Props) {
         </div>
       </div>
 
+      {/* API Key Setup Panel */}
+      {showApiKeySetup && (
+        <ApiKeySetup
+          onSave={handleApiKeySave}
+          onCancel={() => setShowApiKeySetup(false)}
+        />
+      )}
+
       {/* Toast */}
       {toast && (
         <div
@@ -352,7 +382,8 @@ function App({ provider, anthropicProvider }: Props) {
         sessionElapsed={sessionElapsed}
         suggestionCount={visibleSuggestions.length}
         onProviderSwitch={handleProviderSwitch}
-        anthropicKeyConfigured={!!anthropicProvider}
+        onConfigureAnthropic={handleConfigureAnthropic}
+        anthropicKeyConfigured={anthropicConfigured}
       />
     </div>
   )
