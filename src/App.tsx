@@ -125,6 +125,11 @@ function App({ provider, anthropicProvider }: Props) {
     timerRef.current = setInterval(() => {
       setSessionElapsed(Math.floor((Date.now() - sessionStartRef.current) / 1000))
     }, 1000)
+
+    // If no Anthropic provider configured, prompt for API key
+    if (!anthropicRef.current) {
+      setShowApiKeySetup(true)
+    }
   }, [])
 
   const handleConfigureAnthropic = useCallback(() => {
