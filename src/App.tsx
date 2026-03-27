@@ -9,7 +9,6 @@ import { SuggestionPanel } from './components/SuggestionPanel'
 import { PanicToolbar } from './components/PanicToolbar'
 import { QuestionInput } from './components/QuestionInput'
 import { StatusBar } from './components/StatusBar'
-import { SuggestionDetail } from './components/SuggestionDetail'
 import { ApiKeySetup } from './components/ApiKeySetup'
 import { createAnthropicProvider } from './lib/llm/anthropic'
 import { DEMO_CONTEXT, DEMO_BACKSTORIES, DEMO_TRANSCRIPT_ENTRIES } from './lib/test-data'
@@ -34,7 +33,6 @@ function App({ provider, anthropicProvider }: Props) {
   const [activeProviderName, setActiveProviderName] = useState(anthropicProvider ? anthropicProvider.name : provider.name)
   const [toast, setToast] = useState<string | null>(null)
   const [showApiKeySetup, setShowApiKeySetup] = useState(false)
-  const [selectedSuggestionId, setSelectedSuggestionId] = useState<string | null>(null)
   const [anthropicConfigured, setAnthropicConfigured] = useState(!!anthropicProvider)
   const anthropicRef = useRef<LLMProvider | undefined>(anthropicProvider)
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -263,18 +261,9 @@ function App({ provider, anthropicProvider }: Props) {
     )
   }, [])
 
-  // --- Suggestion Detail ---
-
-  const handleSelectSuggestion = useCallback((id: string) => {
-    setSelectedSuggestionId(id)
-  }, [])
-
-  const handleCloseDetail = useCallback(() => {
-    setSelectedSuggestionId(null)
-  }, [])
+  // --- Follow-Up from Suggestion Card ---
 
   const handleFollowUp = useCallback(async (question: string) => {
-    setSelectedSuggestionId(null)
     setQuestionLoading(true)
     try {
       const suggestion = await engineRef.current.runQuestion(question, {
@@ -298,7 +287,6 @@ function App({ provider, anthropicProvider }: Props) {
   const isActive = sessionState === 'active'
   const isIdle = sessionState === 'idle'
   const visibleSuggestions = suggestions.filter((s) => !s.dismissed)
-  const selectedSuggestion = selectedSuggestionId ? suggestions.find((s) => s.id === selectedSuggestionId) : null
 
   return (
     <div className="flex flex-col h-screen" style={{ background: 'var(--surface-950)', color: 'var(--surface-200)' }}>
@@ -439,20 +427,12 @@ function App({ provider, anthropicProvider }: Props) {
             loading={questionLoading}
           />
           <div className="flex-1 overflow-hidden">
-            {selectedSuggestion ? (
-              <SuggestionDetail
-                suggestion={selectedSuggestion}
-                onClose={handleCloseDetail}
-                onFollowUp={handleFollowUp}
-              />
-            ) : (
-              <SuggestionPanel
-                suggestions={suggestions}
-                onPin={handlePin}
-                onDismiss={handleDismiss}
-                onSelect={handleSelectSuggestion}
-              />
-            )}
+            <SuggestionPanel
+              suggestions={suggestions}
+              onPin={handlePin}
+              onDismiss={handleDismiss}
+              onFollowUp={handleFollowUp}
+            />
           </div>
         </div>
       </div>
