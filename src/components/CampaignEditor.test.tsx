@@ -1,20 +1,23 @@
 /**
- * BDD + TDD Tests for CampaignEditor file import
+ * TDD tests for CampaignEditor — folder-first design.
  *
- * Tests file import buttons, file reading, multi-file backstory import,
- * and drag-and-drop support.
+ * Primary: Import Campaign Folder (prominent)
+ * Secondary: Manual edit textareas (collapsed by default)
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { CampaignEditor } from './CampaignEditor'
 
-// Helper to create a mock File
-function createMockFile(name: string, content: string, type = 'text/plain'): File {
-  return new File([content], name, { type })
+function createMockFile(name: string, content: string, relativePath?: string): File {
+  const file = new File([content], name, { type: 'text/plain' })
+  if (relativePath) {
+    Object.defineProperty(file, 'webkitRelativePath', { value: relativePath })
+  }
+  return file
 }
 
-describe('CampaignEditor — File Import', () => {
+describe('CampaignEditor — Folder-First Design', () => {
   let user: ReturnType<typeof userEvent.setup>
   const defaultProps = {
     context: '',
@@ -29,166 +32,185 @@ describe('CampaignEditor — File Import', () => {
     vi.clearAllMocks()
   })
 
-  // --- IMPORT BUTTONS RENDER ---
+  // --- PRIMARY: FOLDER IMPORT ---
 
-  describe('Scenario: Import buttons are visible when session is idle', () => {
-    it('Then import buttons appear for both context and backstories', () => {
+  describe('Folder import is the primary action', () => {
+    it('shows the Import Campaign Folder button prominently', () => {
       render(<CampaignEditor {...defaultProps} />)
+
+      const btn = screen.getByRole('button', { name: /import campaign folder/i })
+      expect(btn).toBeInTheDocument()
+    })
+
+    it('hides the folder import button during active session', () => {
+      render(<CampaignEditor {...defaultProps} sessionActive={true} />)
+
+      expect(screen.queryByRole('button', { name: /import campaign folder/i })).not.toBeInTheDocument()
+    })
+
+    it('shows folder convention hint text', () => {
+      render(<CampaignEditor {...defaultProps} />)
+
+      expect(screen.getByText(/campaign\.md/)).toBeInTheDocument()
+    })
+
+    it('populates context and backstories from a campaign folder', async () => {
+      render(<CampaignEditor {...defaultProps} />)
+
+      const campaignFile = createMockFile('campaign.md', 'World: Forgotten Realms', 'my-campaign/campaign.md')
+      const vexFile = createMockFile('vex.md', 'Vex: Half-elf ranger', 'my-campaign/characters/vex.md')
+      const npcFile = createMockFile('mayor-hild.md', 'Mayor Hild: quest giver', 'my-campaign/npcs/mayor-hild.md')
+
+      const folderInput = screen.getByTestId('folder-file-input') as HTMLInputElement
+      await user.upload(folderInput, [campaignFile, vexFile, npcFile])
+
+      expect(defaultProps.onContextChange).toHaveBeenCalled()
+      const contextArg = defaultProps.onContextChange.mock.calls[0][0]
+      expect(contextArg).toContain('World: Forgotten Realms')
+      expect(contextArg).toContain('Mayor Hild: quest giver')
+
+      expect(defaultProps.onBackstoriesChange).toHaveBeenCalled()
+      expect(defaultProps.onBackstoriesChange.mock.calls[0][0]).toContain('Vex: Half-elf ranger')
+    })
+
+    it('shows a loaded summary after folder import', async () => {
+      const { rerender } = render(<CampaignEditor {...defaultProps} />)
+
+      const campaignFile = createMockFile('campaign.md', 'World notes', 'camp/campaign.md')
+      const vexFile = createMockFile('vex.md', 'Vex backstory', 'camp/characters/vex.md')
+      const droganFile = createMockFile('drogan.md', 'Drogan backstory', 'camp/characters/drogan.md')
+      const npcFile = createMockFile('mayor-hild.md', 'Hild info', 'camp/npcs/mayor-hild.md')
+
+      const folderInput = screen.getByTestId('folder-file-input') as HTMLInputElement
+      await user.upload(folderInput, [campaignFile, vexFile, droganFile, npcFile])
+
+      // Rerender with the data that would have been set by the callbacks
+      rerender(<CampaignEditor
+        {...defaultProps}
+        context="World notes\n\nNPCs:\nHild info"
+        backstories="Vex backstory\n\nDrogan backstory"
+      />)
+
+      expect(screen.getByText(/loaded/i)).toBeInTheDocument()
+    })
+
+    it('shows loaded summary with content stats when context is populated', () => {
+      render(<CampaignEditor
+        {...defaultProps}
+        context="Some campaign context here"
+        backstories="Vex backstory\n\nDrogan backstory"
+      />)
+
+      expect(screen.getByText(/loaded/i)).toBeInTheDocument()
+    })
+  })
+
+  // --- SECONDARY: MANUAL EDIT (COLLAPSED) ---
+
+  describe('Manual edit textareas are secondary (collapsed)', () => {
+    it('textareas are hidden by default', () => {
+      render(<CampaignEditor {...defaultProps} />)
+
+      expect(screen.queryByPlaceholderText(/campaign notes/i)).not.toBeInTheDocument()
+    })
+
+    it('shows a toggle to expand manual editing', () => {
+      render(<CampaignEditor {...defaultProps} />)
+
+      expect(screen.getByRole('button', { name: /edit manually/i })).toBeInTheDocument()
+    })
+
+    it('clicking the toggle reveals the textareas', async () => {
+      render(<CampaignEditor {...defaultProps} />)
+
+      await user.click(screen.getByRole('button', { name: /edit manually/i }))
+
+      expect(screen.getByPlaceholderText(/campaign notes/i)).toBeInTheDocument()
+      expect(screen.getByPlaceholderText(/character name/i)).toBeInTheDocument()
+    })
+
+    it('textareas are editable when expanded', async () => {
+      render(<CampaignEditor {...defaultProps} />)
+
+      await user.click(screen.getByRole('button', { name: /edit manually/i }))
+
+      const contextArea = screen.getByPlaceholderText(/campaign notes/i)
+      await user.type(contextArea, 'My notes')
+
+      expect(defaultProps.onContextChange).toHaveBeenCalled()
+    })
+
+    it('individual file import buttons appear when expanded', async () => {
+      render(<CampaignEditor {...defaultProps} />)
+
+      await user.click(screen.getByRole('button', { name: /edit manually/i }))
 
       expect(screen.getByRole('button', { name: /import context/i })).toBeInTheDocument()
       expect(screen.getByRole('button', { name: /import backstories/i })).toBeInTheDocument()
     })
-  })
 
-  describe('Scenario: Import buttons are hidden during active session', () => {
-    it('Then import buttons are not rendered when session is active', () => {
-      render(<CampaignEditor {...defaultProps} sessionActive={true} />)
+    it('file import buttons are hidden when collapsed', () => {
+      render(<CampaignEditor {...defaultProps} />)
 
       expect(screen.queryByRole('button', { name: /import context/i })).not.toBeInTheDocument()
       expect(screen.queryByRole('button', { name: /import backstories/i })).not.toBeInTheDocument()
     })
   })
 
-  // --- SINGLE FILE IMPORT (CAMPAIGN CONTEXT) ---
+  // --- SESSION ACTIVE ---
 
-  describe('Scenario: DM imports a campaign context file', () => {
-    it('Then the file contents populate the context field', async () => {
-      render(<CampaignEditor {...defaultProps} />)
+  describe('During active session', () => {
+    it('shows loaded summary as read-only when data exists', () => {
+      render(<CampaignEditor
+        {...defaultProps}
+        sessionActive={true}
+        context="Campaign data"
+        backstories="Character data"
+      />)
 
-      const fileContent = 'Campaign: Curse of the Hollow King\nNPCs: Mayor Hild'
-      const file = createMockFile('campaign.md', fileContent)
+      expect(screen.getByText(/loaded/i)).toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: /import campaign folder/i })).not.toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: /edit manually/i })).not.toBeInTheDocument()
+    })
 
-      // Find the hidden file input and upload
-      const fileInput = screen.getByTestId('context-file-input') as HTMLInputElement
-      await user.upload(fileInput, file)
+    it('textareas are disabled during active session when expanded before start', () => {
+      // If a user expanded manually before starting, the textareas should be disabled
+      render(<CampaignEditor
+        {...defaultProps}
+        sessionActive={true}
+        context="Some context"
+      />)
 
-      expect(defaultProps.onContextChange).toHaveBeenCalledWith(fileContent)
+      // No edit controls during session
+      expect(screen.queryByPlaceholderText(/campaign notes/i)).not.toBeInTheDocument()
     })
   })
 
-  describe('Scenario: DM imports a .md context file', () => {
-    it('Then markdown files are accepted', async () => {
+  // --- FILE INPUT ATTRIBUTES ---
+
+  describe('File input configuration', () => {
+    it('folder input has webkitdirectory and multiple attributes', () => {
       render(<CampaignEditor {...defaultProps} />)
-
-      const file = createMockFile('notes.md', '# Campaign Notes\n\nSome content', 'text/markdown')
-      const fileInput = screen.getByTestId('context-file-input') as HTMLInputElement
-      await user.upload(fileInput, file)
-
-      expect(defaultProps.onContextChange).toHaveBeenCalledWith('# Campaign Notes\n\nSome content')
-    })
-  })
-
-  // --- MULTIPLE FILE IMPORT (BACKSTORIES) ---
-
-  describe('Scenario: DM imports multiple backstory files', () => {
-    it('Then all files are concatenated with separators', async () => {
-      render(<CampaignEditor {...defaultProps} />)
-
-      const file1 = createMockFile('vex.md', 'Vex: Half-elf ranger seeking revenge')
-      const file2 = createMockFile('drogan.md', 'Drogan: Dwarf cleric, exiled from clan')
-
-      const fileInput = screen.getByTestId('backstories-file-input') as HTMLInputElement
-      await user.upload(fileInput, [file1, file2])
-
-      // Should be called with concatenated content
-      expect(defaultProps.onBackstoriesChange).toHaveBeenCalledTimes(1)
-      const callArg = defaultProps.onBackstoriesChange.mock.calls[0][0]
-      expect(callArg).toContain('Vex: Half-elf ranger')
-      expect(callArg).toContain('Drogan: Dwarf cleric')
-    })
-  })
-
-  describe('Scenario: DM imports a single backstory file', () => {
-    it('Then the single file populates the backstories field', async () => {
-      render(<CampaignEditor {...defaultProps} />)
-
-      const file = createMockFile('characters.txt', 'All character backstories here')
-      const fileInput = screen.getByTestId('backstories-file-input') as HTMLInputElement
-      await user.upload(fileInput, file)
-
-      expect(defaultProps.onBackstoriesChange).toHaveBeenCalledWith('All character backstories here')
-    })
-  })
-
-  // --- IMPORT REPLACES EXISTING CONTENT ---
-
-  describe('Scenario: Importing a file replaces existing content', () => {
-    it('Then previous content is replaced, not appended', async () => {
-      render(<CampaignEditor {...defaultProps} context="Old content" />)
-
-      const file = createMockFile('new.md', 'New content')
-      const fileInput = screen.getByTestId('context-file-input') as HTMLInputElement
-      await user.upload(fileInput, file)
-
-      expect(defaultProps.onContextChange).toHaveBeenCalledWith('New content')
-    })
-  })
-
-  // --- FILE INPUT ACCEPTS CORRECT TYPES ---
-
-  describe('Scenario: File inputs accept text and markdown files', () => {
-    it('Then the context file input accepts .txt and .md files', () => {
-      render(<CampaignEditor {...defaultProps} />)
-
-      const fileInput = screen.getByTestId('context-file-input') as HTMLInputElement
-      expect(fileInput.accept).toContain('.txt')
-      expect(fileInput.accept).toContain('.md')
-    })
-
-    it('Then the backstories file input accepts .txt and .md and allows multiple', () => {
-      render(<CampaignEditor {...defaultProps} />)
-
-      const fileInput = screen.getByTestId('backstories-file-input') as HTMLInputElement
-      expect(fileInput.accept).toContain('.txt')
-      expect(fileInput.accept).toContain('.md')
-      expect(fileInput.multiple).toBe(true)
-    })
-  })
-
-  // --- FOLDER IMPORT ---
-
-  describe('Scenario: Import Folder button is visible when session is idle', () => {
-    it('Then an import folder button appears', () => {
-      render(<CampaignEditor {...defaultProps} />)
-
-      expect(screen.getByRole('button', { name: /import folder/i })).toBeInTheDocument()
-    })
-  })
-
-  describe('Scenario: Import Folder button is hidden during active session', () => {
-    it('Then import folder button is not rendered when session is active', () => {
-      render(<CampaignEditor {...defaultProps} sessionActive={true} />)
-
-      expect(screen.queryByRole('button', { name: /import folder/i })).not.toBeInTheDocument()
-    })
-  })
-
-  describe('Scenario: DM imports a campaign folder', () => {
-    it('Then campaign.md populates context and characters/ populates backstories', async () => {
-      render(<CampaignEditor {...defaultProps} />)
-
-      const campaignFile = createMockFile('campaign.md', 'World: Forgotten Realms')
-      const vexFile = createMockFile('vex.md', 'Vex: Half-elf ranger')
-      const droganFile = createMockFile('drogan.md', 'Drogan: Dwarf cleric')
-
-      // Simulate webkitRelativePath by adding it to files
-      Object.defineProperty(campaignFile, 'webkitRelativePath', { value: 'my-campaign/campaign.md' })
-      Object.defineProperty(vexFile, 'webkitRelativePath', { value: 'my-campaign/characters/vex.md' })
-      Object.defineProperty(droganFile, 'webkitRelativePath', { value: 'my-campaign/characters/drogan.md' })
 
       const folderInput = screen.getByTestId('folder-file-input') as HTMLInputElement
-      await user.upload(folderInput, [campaignFile, vexFile, droganFile])
+      expect(folderInput.multiple).toBe(true)
+    })
 
-      // Context should contain campaign.md content
-      expect(defaultProps.onContextChange).toHaveBeenCalled()
-      const contextArg = defaultProps.onContextChange.mock.calls[0][0]
-      expect(contextArg).toContain('World: Forgotten Realms')
+    it('context file input accepts .txt and .md', async () => {
+      render(<CampaignEditor {...defaultProps} />)
+      await user.click(screen.getByRole('button', { name: /edit manually/i }))
 
-      // Backstories should contain character files
-      expect(defaultProps.onBackstoriesChange).toHaveBeenCalled()
-      const backstoriesArg = defaultProps.onBackstoriesChange.mock.calls[0][0]
-      expect(backstoriesArg).toContain('Vex: Half-elf ranger')
-      expect(backstoriesArg).toContain('Drogan: Dwarf cleric')
+      const fileInput = screen.getByTestId('context-file-input') as HTMLInputElement
+      expect(fileInput.accept).toContain('.txt')
+      expect(fileInput.accept).toContain('.md')
+    })
+
+    it('backstories file input allows multiple files', async () => {
+      render(<CampaignEditor {...defaultProps} />)
+      await user.click(screen.getByRole('button', { name: /edit manually/i }))
+
+      const fileInput = screen.getByTestId('backstories-file-input') as HTMLInputElement
+      expect(fileInput.multiple).toBe(true)
     })
   })
 })

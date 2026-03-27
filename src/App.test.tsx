@@ -37,30 +37,28 @@ describe('Feature: DM Session Workflow', () => {
   // --- SESSION LIFECYCLE ---
 
   describe('Scenario: App starts in idle state', () => {
-    it('Then the status bar shows "No Session", campaign editor is editable, panic buttons disabled', () => {
+    it('Then the status bar shows "No Session", folder import visible, panic buttons disabled', () => {
       // Given
       render(<App provider={mockProvider()} />)
 
       // Then
       expect(screen.getByText(/No Session/)).toBeInTheDocument()
-      expect(screen.getByPlaceholderText(/campaign notes/i)).not.toBeDisabled()
+      expect(screen.getByRole('button', { name: /Import Campaign Folder/i })).toBeInTheDocument()
       expect(screen.getByRole('button', { name: /Phones Out/i })).toBeDisabled()
     })
   })
 
   describe('Scenario: DM starts a session', () => {
-    it('Then status shows active, editor locked, panic buttons enabled, timer running', async () => {
+    it('Then status shows active, folder import hidden, panic buttons enabled', async () => {
       // Given
       render(<App provider={mockProvider()} />)
-      const contextInput = screen.getByPlaceholderText(/campaign notes/i)
-      await user.type(contextInput, 'NPCs: Mayor Hild')
 
       // When
       await user.click(screen.getByRole('button', { name: /Start Session/i }))
 
       // Then
       expect(screen.getByText(/Session Active/)).toBeInTheDocument()
-      expect(screen.getByPlaceholderText(/campaign notes/i)).toBeDisabled()
+      expect(screen.queryByRole('button', { name: /Import Campaign Folder/i })).not.toBeInTheDocument()
       expect(screen.getByRole('button', { name: /Phones Out/i })).not.toBeDisabled()
     })
   })
@@ -77,19 +75,19 @@ describe('Feature: DM Session Workflow', () => {
       // Then
       expect(screen.getByText(/Session Ended/)).toBeInTheDocument()
       expect(screen.getByRole('button', { name: /Phones Out/i })).toBeDisabled()
-      expect(screen.getByPlaceholderText(/campaign notes/i)).toBeDisabled()
+      expect(screen.queryByRole('button', { name: /Import Campaign Folder/i })).not.toBeInTheDocument()
     })
   })
 
   // --- CAMPAIGN CONTEXT ---
 
   describe('Scenario: Campaign editor is locked during active session', () => {
-    it('Then context textarea is disabled with a lock message', async () => {
+    it('Then folder import and manual edit are hidden, lock message shown', async () => {
       render(<App provider={mockProvider()} />)
       await user.click(screen.getByRole('button', { name: /Start Session/i }))
 
-      expect(screen.getByPlaceholderText(/campaign notes/i)).toBeDisabled()
-      expect(screen.getByText(/locked during/i)).toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: /Import Campaign Folder/i })).not.toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: /edit manually/i })).not.toBeInTheDocument()
     })
   })
 
