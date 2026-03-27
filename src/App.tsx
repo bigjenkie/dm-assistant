@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import type { LLMProvider } from './lib/llm/provider'
-import type { Suggestion, TranscriptEntry, PanicButtonId, SessionState, ProviderStatus } from './lib/types'
+import type { Suggestion, TranscriptEntry, PanicButtonId, SessionState, ProviderStatus, ProviderType } from './lib/types'
 import { SuggestionEngine } from './lib/suggestion/engine'
 import { validatePanicButton } from './lib/suggestion/panic-validation'
 import { CampaignEditor } from './components/CampaignEditor'
@@ -12,9 +12,10 @@ import { StatusBar } from './components/StatusBar'
 
 type Props = {
   provider: LLMProvider
+  anthropicProvider?: LLMProvider
 }
 
-function App({ provider }: Props) {
+function App({ provider, anthropicProvider }: Props) {
   // --- State ---
   const [sessionState, setSessionState] = useState<SessionState>('idle')
   const [campaignContext, setCampaignContext] = useState('')
@@ -26,6 +27,7 @@ function App({ provider }: Props) {
   const [questionLoading, setQuestionLoading] = useState(false)
   const [sessionElapsed, setSessionElapsed] = useState(0)
   const [providerStatus] = useState<ProviderStatus>('connected')
+  const [activeProviderName, setActiveProviderName] = useState(provider.name)
   const [toast, setToast] = useState<string | null>(null)
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -84,6 +86,18 @@ function App({ provider }: Props) {
     }
     setTranscript((prev) => [...prev, entry])
   }, [])
+
+  // --- Provider Switching ---
+
+  const handleProviderSwitch = useCallback((providerType: ProviderType) => {
+    if (providerType === 'anthropic' && anthropicProvider) {
+      engineRef.current.setProvider(anthropicProvider)
+      setActiveProviderName(anthropicProvider.name)
+    } else {
+      engineRef.current.setProvider(provider)
+      setActiveProviderName(provider.name)
+    }
+  }, [provider, anthropicProvider])
 
   // --- Suggest (Pull) ---
 
@@ -333,10 +347,12 @@ function App({ provider }: Props) {
       {/* Status Bar */}
       <StatusBar
         sessionState={sessionState}
-        providerName={provider.name}
+        providerName={activeProviderName}
         providerStatus={providerStatus}
         sessionElapsed={sessionElapsed}
         suggestionCount={visibleSuggestions.length}
+        onProviderSwitch={handleProviderSwitch}
+        anthropicKeyConfigured={!!anthropicProvider}
       />
     </div>
   )

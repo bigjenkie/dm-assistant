@@ -1,4 +1,5 @@
-import type { ProviderStatus, SessionState } from '../lib/types'
+import { useState, useRef, useEffect } from 'react'
+import type { ProviderStatus, ProviderType, SessionState } from '../lib/types'
 
 type Props = {
   sessionState: SessionState
@@ -6,6 +7,8 @@ type Props = {
   providerStatus: ProviderStatus
   sessionElapsed: number
   suggestionCount: number
+  onProviderSwitch?: (provider: ProviderType) => void
+  anthropicKeyConfigured?: boolean
 }
 
 function formatElapsed(seconds: number): string {
@@ -23,7 +26,39 @@ const STATUS_COLORS: Record<ProviderStatus, string> = {
   unconfigured: 'var(--surface-500)',
 }
 
-export function StatusBar({ sessionState, providerName, providerStatus, sessionElapsed, suggestionCount }: Props) {
+export function StatusBar({
+  sessionState,
+  providerName,
+  providerStatus,
+  sessionElapsed,
+  suggestionCount,
+  onProviderSwitch,
+  anthropicKeyConfigured = false,
+}: Props) {
+  const [switcherOpen, setSwitcherOpen] = useState(false)
+  const switcherRef = useRef<HTMLDivElement>(null)
+
+  // Close on outside click
+  useEffect(() => {
+    if (!switcherOpen) return
+
+    function handleClick(e: MouseEvent) {
+      if (switcherRef.current && !switcherRef.current.contains(e.target as Node)) {
+        setSwitcherOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [switcherOpen])
+
+  const providerIcon = providerName === 'ollama' ? '🖥️' : providerName === 'mock' ? '🔧' : '☁️'
+
+  function handleSelect(provider: ProviderType) {
+    onProviderSwitch?.(provider)
+    setSwitcherOpen(false)
+  }
+
   return (
     <div
       className="flex items-center justify-between px-4 py-1.5 text-xs"
@@ -37,10 +72,83 @@ export function StatusBar({ sessionState, providerName, providerStatus, sessionE
         <span>
           {sessionState === 'active' ? '🟢 Session Active' : sessionState === 'ended' ? '⏹️ Session Ended' : '⏸️ No Session'}
         </span>
-        <span style={{ color: STATUS_COLORS[providerStatus] }}>
-          {providerName === 'ollama' ? '🖥️' : providerName === 'mock' ? '🔧' : '☁️'} {providerName} — {providerStatus}
-        </span>
+
+        {/* Provider indicator — clickable */}
+        <div className="relative" ref={switcherRef}>
+          <button
+            aria-label={`${providerName} — ${providerStatus}`}
+            onClick={() => setSwitcherOpen(!switcherOpen)}
+            className="text-xs"
+            style={{
+              color: STATUS_COLORS[providerStatus],
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: '2px 6px',
+              borderRadius: 'var(--radius-sm)',
+              transition: 'background var(--duration-fast) var(--ease-out)',
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--surface-800)' }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = 'none' }}
+          >
+            {providerIcon} {providerName} — {providerStatus}
+          </button>
+
+          {/* Switcher popover */}
+          {switcherOpen && (
+            <div
+              className="absolute bottom-full left-0 mb-1 py-1"
+              style={{
+                background: 'var(--surface-850)',
+                border: '1px solid var(--surface-700)',
+                borderRadius: 'var(--radius-md)',
+                boxShadow: 'var(--shadow-lg)',
+                minWidth: '200px',
+                zIndex: 100,
+              }}
+            >
+              {/* Ollama option */}
+              <div
+                data-active={providerName === 'ollama' ? 'true' : 'false'}
+                onClick={() => handleSelect('ollama')}
+                className="px-3 py-1.5 text-xs cursor-pointer flex items-center justify-between"
+                style={{
+                  color: providerName === 'ollama' ? 'var(--amber-400)' : 'var(--surface-300)',
+                  background: providerName === 'ollama' ? 'var(--accent-muted)' : 'transparent',
+                  transition: 'background var(--duration-fast) var(--ease-out)',
+                }}
+                onMouseEnter={(e) => { if (providerName !== 'ollama') e.currentTarget.style.background = 'var(--surface-800)' }}
+                onMouseLeave={(e) => { if (providerName !== 'ollama') e.currentTarget.style.background = 'transparent' }}
+              >
+                <span>🖥️ Local (Ollama)</span>
+                {providerName === 'ollama' && <span>✓</span>}
+              </div>
+
+              {/* Anthropic option */}
+              <div
+                data-active={providerName === 'anthropic' ? 'true' : 'false'}
+                onClick={() => anthropicKeyConfigured ? handleSelect('anthropic') : undefined}
+                className="px-3 py-1.5 text-xs cursor-pointer flex items-center justify-between"
+                style={{
+                  color: providerName === 'anthropic' ? 'var(--amber-400)' : anthropicKeyConfigured ? 'var(--surface-300)' : 'var(--surface-600)',
+                  background: providerName === 'anthropic' ? 'var(--accent-muted)' : 'transparent',
+                  cursor: anthropicKeyConfigured ? 'pointer' : 'default',
+                  transition: 'background var(--duration-fast) var(--ease-out)',
+                }}
+                onMouseEnter={(e) => { if (anthropicKeyConfigured && providerName !== 'anthropic') e.currentTarget.style.background = 'var(--surface-800)' }}
+                onMouseLeave={(e) => { if (providerName !== 'anthropic') e.currentTarget.style.background = 'transparent' }}
+              >
+                <span>☁️ Claude (Anthropic)</span>
+                {providerName === 'anthropic' && <span>✓</span>}
+                {!anthropicKeyConfigured && (
+                  <span className="text-xs" style={{ color: 'var(--surface-600)' }}>No API key</span>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
+
       <div className="flex items-center gap-4">
         <span>{suggestionCount} suggestions</span>
         {sessionState === 'active' && (
