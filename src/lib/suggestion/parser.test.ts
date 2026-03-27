@@ -91,4 +91,75 @@ DM_ONLY:   false  `
     expect(result!.title).toBe('Reva the Red')
     expect(result!.body).toBe('Tiefling fence in the market.')
   })
+
+  it('handles BODY with embedded colons', () => {
+    const raw = `TYPE: RULES
+TITLE: Grapple Rules
+BODY: Note: grapple replaces one attack. Important: target must be within reach.
+DM_ONLY: false`
+
+    const result = parseSuggestionResponse(raw)
+    expect(result!.body).toContain('Note: grapple')
+    expect(result!.body).toContain('Important: target')
+  })
+
+  it('handles case-insensitive NONE variants', () => {
+    expect(parseSuggestionResponse('none')).toBeNull()
+    expect(parseSuggestionResponse('None')).toBeNull()
+    expect(parseSuggestionResponse('nOnE')).toBeNull()
+  })
+
+  it('handles response with only BODY field', () => {
+    const raw = `BODY: The merchant is hiding something.
+DM_ONLY: true`
+
+    const result = parseSuggestionResponse(raw)
+    expect(result).not.toBeNull()
+    expect(result!.type).toBe('UNKNOWN')
+    expect(result!.title).toBe('Suggestion')
+    expect(result!.body).toContain('merchant')
+    expect(result!.dmOnly).toBe(true)
+  })
+
+  it('handles unicode and fantasy characters in response', () => {
+    const raw = `TYPE: RECALL
+TITLE: Thälzar the Enchanter
+BODY: Thälzar runs the Mage's Émporium. Known for his "unbreakable" wards — they aren't.
+DM_ONLY: false`
+
+    const result = parseSuggestionResponse(raw)
+    expect(result!.title).toBe('Thälzar the Enchanter')
+    expect(result!.body).toContain('Émporium')
+  })
+
+  it('handles very long BODY gracefully', () => {
+    const longBody = 'A '.repeat(500) // 1000 chars
+    const raw = `TYPE: IMPROV
+TITLE: Extended Scene
+BODY: ${longBody}
+DM_ONLY: false`
+
+    const result = parseSuggestionResponse(raw)
+    expect(result).not.toBeNull()
+    expect(result!.body.length).toBeGreaterThan(900)
+  })
+
+  it('handles response with blank lines between fields', () => {
+    const raw = `TYPE: COMBAT
+
+TITLE: Skeleton Stats
+
+BODY: AC 13, HP 13 (2d8+4). Vulnerable to bludgeoning.
+
+DM_ONLY: false`
+
+    const result = parseSuggestionResponse(raw)
+    expect(result).not.toBeNull()
+    expect(result!.type).toBe('COMBAT')
+    expect(result!.title).toBe('Skeleton Stats')
+  })
+
+  it('returns null for response that is only whitespace and newlines', () => {
+    expect(parseSuggestionResponse('\n\n  \n')).toBeNull()
+  })
 })

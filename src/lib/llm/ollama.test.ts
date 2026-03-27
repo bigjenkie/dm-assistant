@@ -103,4 +103,67 @@ describe('OllamaProvider', () => {
 
     expect(await provider.healthCheck()).toBe(false)
   })
+
+  it('throws on network timeout', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('network timeout')))
+
+    const provider = createOllamaProvider({
+      baseUrl: 'http://localhost:11434',
+      model: 'llama3.1:8b-instruct-q4_K_M',
+      temperature: 0.7,
+    })
+
+    await expect(provider.generate('sys', 'usr', 300)).rejects.toThrow('network timeout')
+  })
+
+  it('throws on malformed JSON response', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.reject(new SyntaxError('Unexpected token')),
+    }))
+
+    const provider = createOllamaProvider({
+      baseUrl: 'http://localhost:11434',
+      model: 'llama3.1:8b-instruct-q4_K_M',
+      temperature: 0.7,
+    })
+
+    await expect(provider.generate('sys', 'usr', 300)).rejects.toThrow()
+  })
+
+  it('handles empty message content', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({ message: { content: '' } }),
+    }))
+
+    const provider = createOllamaProvider({
+      baseUrl: 'http://localhost:11434',
+      model: 'llama3.1:8b-instruct-q4_K_M',
+      temperature: 0.7,
+    })
+
+    const result = await provider.generate('sys', 'usr', 300)
+    expect(result.text).toBe('')
+  })
+
+  it('includes temperature in request options', async () => {
+    const mockFetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({ message: { content: 'NONE' } }),
+    })
+    vi.stubGlobal('fetch', mockFetch)
+
+    const provider = createOllamaProvider({
+      baseUrl: 'http://localhost:11434',
+      model: 'llama3.1:8b-instruct-q4_K_M',
+      temperature: 0.3,
+    })
+
+    await provider.generate('sys', 'usr', 200)
+
+    const body = JSON.parse(mockFetch.mock.calls[0][1].body)
+    expect(body.options.temperature).toBe(0.3)
+    expect(body.options.num_predict).toBe(200)
+  })
 })

@@ -78,4 +78,47 @@ describe('CooldownTracker', () => {
     expect(tracker.isSuppressed('mayor hild')).toBe(true)
     expect(tracker.isSuppressed('MAYOR HILD')).toBe(true)
   })
+
+  it('supports custom TTL per entity', () => {
+    const tracker = new CooldownTracker(300_000) // 5 min default
+    tracker.register('Mayor Hild', 60_000) // 1 min custom
+
+    vi.advanceTimersByTime(61_000)
+
+    expect(tracker.isSuppressed('Mayor Hild')).toBe(false)
+  })
+
+  it('handles empty string entity', () => {
+    const tracker = new CooldownTracker()
+    tracker.register('')
+
+    expect(tracker.isSuppressed('')).toBe(true)
+  })
+
+  it('normalizes whitespace-padded entities', () => {
+    const tracker = new CooldownTracker()
+    tracker.register('  Mayor Hild  ')
+
+    expect(tracker.isSuppressed('mayor hild')).toBe(true)
+  })
+
+  it('returns active cooldown entries', () => {
+    const tracker = new CooldownTracker(300_000)
+    tracker.register('Mayor Hild')
+    tracker.register('Reva the Red')
+
+    expect(tracker.getActive()).toEqual(
+      expect.arrayContaining(['mayor hild', 'reva the red'])
+    )
+    expect(tracker.getActive()).toHaveLength(2)
+  })
+
+  it('getActive excludes expired entries', () => {
+    const tracker = new CooldownTracker(100)
+    tracker.register('Expired Entity')
+
+    vi.advanceTimersByTime(101)
+
+    expect(tracker.getActive()).toHaveLength(0)
+  })
 })

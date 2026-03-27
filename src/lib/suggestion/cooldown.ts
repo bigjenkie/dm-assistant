@@ -36,6 +36,17 @@ export class CooldownTracker {
     }
   }
 
+  getActive(): string[] {
+    const now = Date.now()
+    const active: string[] = []
+    for (const [key, expiry] of this.entries) {
+      if (now <= expiry) {
+        active.push(key)
+      }
+    }
+    return active
+  }
+
   get size(): number {
     return this.entries.size
   }
