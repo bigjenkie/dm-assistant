@@ -1,4 +1,6 @@
 import { useRef } from 'react'
+import { parseCampaignFolder } from '../lib/campaign/folder-parser'
+import type { FileEntry } from '../lib/campaign/folder-parser'
 
 type Props = {
   context: string
@@ -26,6 +28,7 @@ export function CampaignEditor({
 }: Props) {
   const contextFileRef = useRef<HTMLInputElement>(null)
   const backstoriesFileRef = useRef<HTMLInputElement>(null)
+  const folderFileRef = useRef<HTMLInputElement>(null)
 
   const inputStyle = {
     background: 'var(--surface-900)',
@@ -59,6 +62,30 @@ export function CampaignEditor({
       : texts.map((t, i) => `--- ${Array.from(files)[i].name} ---\n${t}`).join('\n\n')
 
     onBackstoriesChange(combined)
+    e.target.value = ''
+  }
+
+  async function handleFolderChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = e.target.files
+    if (!files || files.length === 0) return
+
+    const entries: FileEntry[] = []
+    for (const file of Array.from(files)) {
+      const content = await readFileAsText(file)
+      // webkitRelativePath gives "folder/subfolder/file.md" — strip the root folder name
+      const relativePath = (file as File & { webkitRelativePath?: string }).webkitRelativePath || file.name
+      const parts = relativePath.split('/')
+      const pathWithoutRoot = parts.length > 1 ? parts.slice(1).join('/') : parts[0]
+      entries.push({ path: pathWithoutRoot, content })
+    }
+
+    const parsed = parseCampaignFolder(entries)
+    const contextStr = parsed.toContext()
+    const backstoriesStr = parsed.toBackstories()
+
+    if (contextStr) onContextChange(contextStr)
+    if (backstoriesStr) onBackstoriesChange(backstoriesStr)
+
     e.target.value = ''
   }
 
@@ -160,6 +187,53 @@ export function CampaignEditor({
           onBlur={(e) => { e.currentTarget.style.borderColor = 'var(--surface-700)' }}
         />
       </div>
+
+      {/* Folder Import */}
+      {!sessionActive && (
+        <div
+          className="pt-2"
+          style={{ borderTop: '1px solid var(--surface-800)' }}
+        >
+          <button
+            aria-label="Import Folder"
+            onClick={() => folderFileRef.current?.click()}
+            className="text-xs font-medium px-3 py-1.5 w-full"
+            style={{
+              background: 'var(--surface-900)',
+              color: 'var(--surface-400)',
+              border: '1px dashed var(--surface-700)',
+              borderRadius: 'var(--radius-md)',
+              cursor: 'pointer',
+              transition: 'background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out)',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'var(--surface-850)'
+              e.currentTarget.style.color = 'var(--surface-300)'
+              e.currentTarget.style.borderColor = 'var(--amber-700)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'var(--surface-900)'
+              e.currentTarget.style.color = 'var(--surface-400)'
+              e.currentTarget.style.borderColor = 'var(--surface-700)'
+            }}
+          >
+            Import Campaign Folder
+          </button>
+          <input
+            ref={folderFileRef}
+            data-testid="folder-file-input"
+            type="file"
+            // @ts-expect-error webkitdirectory is not in React's type defs
+            webkitdirectory=""
+            multiple
+            onChange={handleFolderChange}
+            className="hidden"
+          />
+          <p className="text-xs mt-1" style={{ color: 'var(--surface-600)' }}>
+            Select a folder with campaign.md, characters/, npcs/, plot-hooks.md
+          </p>
+        </div>
+      )}
     </div>
   )
 }

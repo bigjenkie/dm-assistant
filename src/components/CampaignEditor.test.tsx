@@ -144,4 +144,51 @@ describe('CampaignEditor — File Import', () => {
       expect(fileInput.multiple).toBe(true)
     })
   })
+
+  // --- FOLDER IMPORT ---
+
+  describe('Scenario: Import Folder button is visible when session is idle', () => {
+    it('Then an import folder button appears', () => {
+      render(<CampaignEditor {...defaultProps} />)
+
+      expect(screen.getByRole('button', { name: /import folder/i })).toBeInTheDocument()
+    })
+  })
+
+  describe('Scenario: Import Folder button is hidden during active session', () => {
+    it('Then import folder button is not rendered when session is active', () => {
+      render(<CampaignEditor {...defaultProps} sessionActive={true} />)
+
+      expect(screen.queryByRole('button', { name: /import folder/i })).not.toBeInTheDocument()
+    })
+  })
+
+  describe('Scenario: DM imports a campaign folder', () => {
+    it('Then campaign.md populates context and characters/ populates backstories', async () => {
+      render(<CampaignEditor {...defaultProps} />)
+
+      const campaignFile = createMockFile('campaign.md', 'World: Forgotten Realms')
+      const vexFile = createMockFile('vex.md', 'Vex: Half-elf ranger')
+      const droganFile = createMockFile('drogan.md', 'Drogan: Dwarf cleric')
+
+      // Simulate webkitRelativePath by adding it to files
+      Object.defineProperty(campaignFile, 'webkitRelativePath', { value: 'my-campaign/campaign.md' })
+      Object.defineProperty(vexFile, 'webkitRelativePath', { value: 'my-campaign/characters/vex.md' })
+      Object.defineProperty(droganFile, 'webkitRelativePath', { value: 'my-campaign/characters/drogan.md' })
+
+      const folderInput = screen.getByTestId('folder-file-input') as HTMLInputElement
+      await user.upload(folderInput, [campaignFile, vexFile, droganFile])
+
+      // Context should contain campaign.md content
+      expect(defaultProps.onContextChange).toHaveBeenCalled()
+      const contextArg = defaultProps.onContextChange.mock.calls[0][0]
+      expect(contextArg).toContain('World: Forgotten Realms')
+
+      // Backstories should contain character files
+      expect(defaultProps.onBackstoriesChange).toHaveBeenCalled()
+      const backstoriesArg = defaultProps.onBackstoriesChange.mock.calls[0][0]
+      expect(backstoriesArg).toContain('Vex: Half-elf ranger')
+      expect(backstoriesArg).toContain('Drogan: Dwarf cleric')
+    })
+  })
 })
