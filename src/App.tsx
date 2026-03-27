@@ -11,6 +11,7 @@ import { QuestionInput } from './components/QuestionInput'
 import { StatusBar } from './components/StatusBar'
 import { ApiKeySetup } from './components/ApiKeySetup'
 import { createAnthropicProvider } from './lib/llm/anthropic'
+import { DEMO_CONTEXT, DEMO_BACKSTORIES, DEMO_TRANSCRIPT_ENTRIES } from './lib/test-data'
 
 type Props = {
   provider: LLMProvider
@@ -103,6 +104,28 @@ function App({ provider, anthropicProvider }: Props) {
       setActiveProviderName(provider.name)
     }
   }, [provider])
+
+  const loadDemo = useCallback(() => {
+    setCampaignContext(DEMO_CONTEXT)
+    setBackstories(DEMO_BACKSTORIES)
+
+    // Load transcript entries with realistic timestamps
+    const entries: TranscriptEntry[] = DEMO_TRANSCRIPT_ENTRIES.map((e, i) => ({
+      id: `demo_${i}`,
+      ts: e.delay,
+      text: e.text,
+      confidence: 1.0,
+    }))
+    setTranscript(entries)
+
+    // Auto-start the session
+    setSessionState('active')
+    sessionStartRef.current = Date.now() - 75_000 // pretend session started 75s ago
+    setSessionElapsed(75)
+    timerRef.current = setInterval(() => {
+      setSessionElapsed(Math.floor((Date.now() - sessionStartRef.current) / 1000))
+    }, 1000)
+  }, [])
 
   const handleConfigureAnthropic = useCallback(() => {
     setShowApiKeySetup(true)
@@ -250,6 +273,24 @@ function App({ provider, anthropicProvider }: Props) {
           )}
         </div>
         <div className="flex gap-2">
+          {isIdle && (
+            <button
+              onClick={loadDemo}
+              className="text-xs px-3 py-1.5"
+              style={{
+                background: 'transparent',
+                color: 'var(--surface-500)',
+                border: '1px solid var(--surface-700)',
+                borderRadius: 'var(--radius-md)',
+                cursor: 'pointer',
+                transition: 'background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out)',
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--surface-850)'; e.currentTarget.style.color = 'var(--surface-300)' }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--surface-500)' }}
+            >
+              Load Demo
+            </button>
+          )}
           {isIdle && (
             <button
               onClick={startSession}
