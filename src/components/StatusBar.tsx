@@ -10,6 +10,7 @@ type Props = {
   onProviderSwitch?: (provider: ProviderType) => void
   onConfigureAnthropic?: () => void
   anthropicKeyConfigured?: boolean
+  loadingMessage?: string | null
 }
 
 function formatElapsed(seconds: number): string {
@@ -36,6 +37,7 @@ export function StatusBar({
   onProviderSwitch,
   onConfigureAnthropic,
   anthropicKeyConfigured = false,
+  loadingMessage = null,
 }: Props) {
   const [switcherOpen, setSwitcherOpen] = useState(false)
   const switcherRef = useRef<HTMLDivElement>(null)
@@ -158,6 +160,21 @@ export function StatusBar({
       </div>
 
       <div className="flex items-center gap-4">
+        {loadingMessage && (
+          <span className="flex items-center gap-1.5" style={{ color: 'var(--amber-400)' }}>
+            <span
+              className="animate-spin inline-block"
+              style={{
+                width: '10px',
+                height: '10px',
+                border: '1.5px solid var(--surface-700)',
+                borderTopColor: 'var(--amber-400)',
+                borderRadius: '50%',
+              }}
+            />
+            {loadingMessage}
+          </span>
+        )}
         <span>{suggestionCount} suggestions</span>
         {sessionState === 'active' && (
           <span style={{ fontFamily: 'var(--font-mono)' }}>
