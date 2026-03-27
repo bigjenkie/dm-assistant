@@ -158,7 +158,11 @@ function App({ provider, anthropicProvider }: Props) {
       })
       if (suggestion) {
         setSuggestions((prev) => [...prev, suggestion])
+      } else {
+        showToast('No suggestion for the current context — try adding more transcript.')
       }
+    } catch {
+      showToast('Could not reach the LLM provider. Check your connection.')
     } finally {
       setSuggestLoading(false)
     }
@@ -200,7 +204,11 @@ function App({ provider, anthropicProvider }: Props) {
       const suggestion = await engineRef.current.runPanic(buttonId, ctx)
       if (suggestion) {
         setSuggestions((prev) => [...prev, suggestion])
+      } else {
+        showToast('No suggestion generated — try a different button or add more context.')
       }
+    } catch {
+      showToast('Could not reach the LLM provider. Check your connection.')
     } finally {
       setPanicLoading(null)
     }
@@ -219,11 +227,15 @@ function App({ provider, anthropicProvider }: Props) {
       })
       if (suggestion) {
         setSuggestions((prev) => [...prev, suggestion])
+      } else {
+        showToast('No answer generated — try rephrasing your question.')
       }
+    } catch {
+      showToast('Could not reach the LLM provider. Check your connection.')
     } finally {
       setQuestionLoading(false)
     }
-  }, [campaignContext, backstories, transcript])
+  }, [campaignContext, backstories, transcript, showToast])
 
   // --- Suggestion Management ---
 
