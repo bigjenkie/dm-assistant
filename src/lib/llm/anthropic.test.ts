@@ -20,6 +20,7 @@ describe('AnthropicProvider', () => {
       apiKey: 'sk-ant-test-key',
       model: 'claude-sonnet-4-6',
       temperature: 0.7,
+      baseUrl: 'https://api.anthropic.com',
     })
 
     await provider.generate('system prompt', 'user prompt', 300)

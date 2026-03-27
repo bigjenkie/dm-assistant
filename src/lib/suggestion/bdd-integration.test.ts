@@ -276,34 +276,30 @@ describe('BDD: Provider Switching Mid-Session (spec-07 section 1)', () => {
 })
 
 describe('BDD: Provider Failure and Recovery (spec-07 section 1)', () => {
-  it('Given Ollama crashes mid-session, When a suggestion is requested, Then the engine returns null without throwing', async () => {
+  it('Given Ollama crashes mid-session, When a suggestion is requested, Then the engine throws so the caller can show feedback', async () => {
     // Given
     const engine = new SuggestionEngine(failingProvider())
 
-    // When
-    const suggestion = await engine.runSuggest({
+    // When / Then
+    await expect(engine.runSuggest({
       campaignContext: CAMPAIGN_CONTEXT,
       characterBackstories: BACKSTORIES,
       recentTranscript: 'Continue exploring',
       fullTranscript: '',
       sessionElapsed: 1800,
-    })
-
-    // Then
-    expect(suggestion).toBeNull()
+    })).rejects.toThrow('connection refused')
   })
 
   it('Given Ollama crashed, When it recovers and the DM pulls again, Then suggestions resume normally', async () => {
     // Given — start with failing provider
     const engine = new SuggestionEngine(failingProvider())
-    const failResult = await engine.runSuggest({
+    await expect(engine.runSuggest({
       campaignContext: CAMPAIGN_CONTEXT,
       characterBackstories: BACKSTORIES,
       recentTranscript: 'Explore',
       fullTranscript: '',
       sessionElapsed: 1800,
-    })
-    expect(failResult).toBeNull()
+    })).rejects.toThrow()
 
     // When — provider recovers (swap to working)
     engine.setProvider(mockProvider(
@@ -325,20 +321,17 @@ describe('BDD: Provider Failure and Recovery (spec-07 section 1)', () => {
 })
 
 describe('BDD: Panic Button Failure (spec-07 section 12)', () => {
-  it('Given the LLM provider is down, When the DM clicks a panic button, Then null is returned without crashing', async () => {
+  it('Given the LLM provider is down, When the DM clicks a panic button, Then the engine throws so the UI can show feedback', async () => {
     // Given
     const engine = new SuggestionEngine(failingProvider())
 
-    // When
-    const suggestion = await engine.runPanic('phones_out', {
+    // When / Then
+    await expect(engine.runPanic('phones_out', {
       campaignContext: CAMPAIGN_CONTEXT,
       characterBackstories: BACKSTORIES,
       recentTranscript: 'Players are distracted',
       fullTranscript: '',
-    })
-
-    // Then
-    expect(suggestion).toBeNull()
+    })).rejects.toThrow('connection refused')
   })
 })
 

@@ -239,8 +239,8 @@ describe('App with Demo Data Loaded', () => {
 
       await user.click(screen.getByRole('button', { name: /Suggest/i }))
 
-      // Engine catches the error and returns null, App shows "no suggestion" toast
-      expect(await screen.findByText(/No suggestion/i)).toBeInTheDocument()
+      // Engine throws, App catches and shows error in toast
+      expect(await screen.findByText(/LLM error.*ECONNREFUSED/i)).toBeInTheDocument()
     })
   })
 

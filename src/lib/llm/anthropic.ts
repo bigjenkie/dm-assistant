@@ -4,16 +4,25 @@ type AnthropicConfig = {
   apiKey: string
   model: string
   temperature: number
+  baseUrl?: string
 }
 
+// In the browser, route through Vite's dev proxy to avoid CORS.
+// In production (Tauri), call the API directly.
+const DEFAULT_BASE_URL = typeof window !== 'undefined' && window.location.hostname === 'localhost'
+  ? '/api/anthropic'
+  : 'https://api.anthropic.com'
+
 export function createAnthropicProvider(config: AnthropicConfig): LLMProvider {
+  const baseUrl = config.baseUrl ?? DEFAULT_BASE_URL
+
   return {
     name: 'anthropic',
 
     async generate(system: string, user: string, maxTokens: number): Promise<LLMResponse> {
       const start = performance.now()
 
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
+      const response = await fetch(`${baseUrl}/v1/messages`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -48,7 +57,7 @@ export function createAnthropicProvider(config: AnthropicConfig): LLMProvider {
 
     async healthCheck(): Promise<boolean> {
       try {
-        const response = await fetch('https://api.anthropic.com/v1/messages', {
+        const response = await fetch(`${baseUrl}/v1/messages`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

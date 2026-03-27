@@ -107,7 +107,7 @@ describe('SuggestionEngine', () => {
     expect(suggestion!.source).toBe('question')
   })
 
-  it('returns null and does not throw when provider fails', async () => {
+  it('throws when provider fails so caller can handle the error', async () => {
     const provider: LLMProvider = {
       name: 'failing',
       generate: vi.fn().mockRejectedValue(new Error('connection refused')),
@@ -115,15 +115,13 @@ describe('SuggestionEngine', () => {
     }
     const engine = new SuggestionEngine(provider)
 
-    const suggestion = await engine.runSuggest({
+    await expect(engine.runSuggest({
       campaignContext: '',
       characterBackstories: '',
       recentTranscript: 'Hello',
       fullTranscript: 'Hello',
       sessionElapsed: 60,
-    })
-
-    expect(suggestion).toBeNull()
+    })).rejects.toThrow('connection refused')
   })
 
   it('setProvider swaps the active provider', async () => {
