@@ -22,8 +22,13 @@ export const DEMO_CONTEXT = `# Curse of the Hollow King
 - Fendrel's Shadow Guild connection (party doesn't know)
 - Hollow King's phylactery rumored in the Tomb of Kael
 
-**Key locations:**
-- Greyhold (capital, Charred Flagon tavern), Bleakwood Forest, Tomb of Kael, Khor-Dral mines
+**Locations:**
+- Greyhold: Capital town. Mayor Hild's seat. Market district. Charred Flagon tavern.
+- Bleakwood Forest: Ancient forest, corrupted. Oldroot's Heartglade. Cult activity. Dangerous wildlife.
+- Tomb of Kael: Sealed ancient tomb. Rumored location of the Hollow King's phylactery. Entry hidden near a dry riverbed.
+- Khor-Dral Mines: Dwarven silver mines. Recent cave-ins. Possible undead incursion. Drogan's homeland.
+- Charred Flagon: Tavern in Greyhold. Party's base of operations. Bartender knows local gossip.
+- Shadow Guild Safehouse: Hidden in Greyhold's sewers. Fendrel's contacts operate here. Party doesn't know location yet.
 
 **Planned encounters:**
 - Shadow Cultist patrol: 4x Cultist (AC 12, HP 9), 1x Cult Fanatic (AC 13, HP 33, hold person)

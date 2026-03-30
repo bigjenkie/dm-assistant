@@ -107,8 +107,8 @@ describe('App with Demo Data Loaded', () => {
 
       await user.click(screen.getByRole('button', { name: /Suggest/i }))
 
-      expect(await screen.findByText('Fendrel the Cartographer')).toBeInTheDocument()
-      expect(screen.getByText(/sold the party a misleading map/i)).toBeInTheDocument()
+      // "doesn't know they survived" is unique to the suggestion body, not the campaign reference
+      expect(await screen.findByText(/doesn't know they survived/i)).toBeInTheDocument()
       expect(screen.getByText('DM ONLY')).toBeInTheDocument()
       expect(provider.generate).toHaveBeenCalledOnce()
     })
@@ -278,13 +278,13 @@ describe('App with Demo Data Loaded', () => {
 
     it('pin and dismiss work on suggestions generated from demo data', async () => {
       const provider = mockProvider(
-        'TYPE: RECALL\nTITLE: Mayor Hild\nBODY: Quest giver with a secret.\nDM_ONLY: true'
+        'TYPE: RECALL\nTITLE: Test Suggestion\nBODY: Unique test body for pin dismiss.\nDM_ONLY: false'
       )
       render(<App provider={provider} />)
       await loadDemoAndWait(user)
 
       await user.click(screen.getByRole('button', { name: /Suggest/i }))
-      await screen.findByText('Mayor Hild')
+      await screen.findByText('Test Suggestion')
 
       // Pin it
       await user.click(screen.getByTitle('Pin'))
@@ -293,7 +293,7 @@ describe('App with Demo Data Loaded', () => {
       // Dismiss it
       await user.click(screen.getByTitle('Unpin'))
       await user.click(screen.getByTitle('Dismiss'))
-      expect(screen.queryByText('Mayor Hild')).not.toBeInTheDocument()
+      expect(screen.queryByText('Test Suggestion')).not.toBeInTheDocument()
     })
   })
 
@@ -309,7 +309,7 @@ describe('App with Demo Data Loaded', () => {
       await user.click(screen.getByRole('button', { name: /^Add$/i }))
 
       // Both demo and new entry visible
-      expect(screen.getByText(/Charred Flagon/)).toBeInTheDocument()
+      expect(screen.getByText(/orders an ale and sits in the corner/)).toBeInTheDocument()
       expect(screen.getByText(/kick down the door/)).toBeInTheDocument()
     })
   })

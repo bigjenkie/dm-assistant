@@ -60,11 +60,12 @@ function parseEntries(context: string, backstories: string): ReferenceEntry[] {
       const trimmed = line.trim()
       const lower = trimmed.toLowerCase()
 
-      // Detect section headers
-      if (lower.match(/^(#+\s*)?(npcs?|characters?|cast)[:\s]/i)) { currentSection = 'npc'; continue }
-      if (lower.match(/^(#+\s*)?(locations?|places?|key locations?)[:\s]/i)) { currentSection = 'location'; continue }
-      if (lower.match(/^(#+\s*)?(plot hooks?|hooks?|active|unresolved)[:\s]/i)) { currentSection = 'hook'; continue }
-      if (lower.match(/^(#+\s*)?(encounters?|planned encounters?|combat)[:\s]/i)) { currentSection = 'encounter'; continue }
+      // Detect section headers — strip markdown bold/heading markers first
+      const stripped = lower.replace(/^[#*\s]+/, '').replace(/\*+$/, '')
+      if (stripped.match(/^(npcs?|characters?|cast)[:\s]/)) { currentSection = 'npc'; continue }
+      if (stripped.match(/^(locations?|places?|key locations?)[:\s]/)) { currentSection = 'location'; continue }
+      if (stripped.match(/^(plot hooks?|hooks?|active|unresolved)[:\s]/)) { currentSection = 'hook'; continue }
+      if (stripped.match(/^(encounters?|planned encounters?|combat)[:\s]/)) { currentSection = 'encounter'; continue }
       if (trimmed.startsWith('##') || trimmed.startsWith('**') && trimmed.endsWith('**')) {
         // New section header — reset if not recognized
         if (!['npc', 'location', 'hook', 'encounter'].includes(currentSection)) {
