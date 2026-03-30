@@ -95,19 +95,6 @@ function App({ provider, anthropicProvider }: Props) {
     return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
   }
 
-  // --- Transcript ---
-
-  const addTranscriptEntry = useCallback((text: string) => {
-    const elapsed = getCurrentElapsed()
-    const entry: TranscriptEntry = {
-      id: `t_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
-      ts: elapsed,
-      text,
-      confidence: 1.0,
-    }
-    setTranscript((prev) => [...prev, entry])
-  }, [])
-
   // --- Provider Switching ---
 
   const handleProviderSwitch = useCallback((providerType: ProviderType) => {
@@ -478,10 +465,7 @@ function App({ provider, anthropicProvider }: Props) {
             minWidth: 200,
             content: (
               <div className="flex flex-col p-3 h-full overflow-hidden">
-                <TranscriptPanel
-                  entries={transcript}
-                  onAddEntry={addTranscriptEntry}
-                />
+                <TranscriptPanel entries={transcript} />
               </div>
             ),
           },

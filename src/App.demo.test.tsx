@@ -297,20 +297,4 @@ describe('App with Demo Data Loaded', () => {
     })
   })
 
-  // --- TRANSCRIPT CONTINUES AFTER DEMO LOAD ---
-
-  describe('Adding transcript after demo load', () => {
-    it('new entries append to the demo transcript', async () => {
-      render(<App provider={mockProvider()} />)
-      await loadDemoAndWait(user)
-
-      const input = screen.getByPlaceholderText(/what's being said/i)
-      await user.type(input, 'We kick down the door to Fendrel shop')
-      await user.click(screen.getByRole('button', { name: /^Add$/i }))
-
-      // Both demo and new entry visible
-      expect(screen.getByText(/orders an ale and sits in the corner/)).toBeInTheDocument()
-      expect(screen.getByText(/kick down the door/)).toBeInTheDocument()
-    })
-  })
 })

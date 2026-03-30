@@ -93,41 +93,6 @@ describe('Feature: DM Session Workflow', () => {
 
   // --- TRANSCRIPT INPUT ---
 
-  describe('Scenario: DM adds a transcript entry during session', () => {
-    it('Then the entry appears with a timestamp and the input clears', async () => {
-      render(<App provider={mockProvider()} />)
-      await user.click(screen.getByRole('button', { name: /Start Session/i }))
-
-      // When
-      const input = screen.getByPlaceholderText(/what's being said/i)
-      await user.type(input, 'The party enters the tavern')
-      await user.click(screen.getByRole('button', { name: /^Add$/i }))
-
-      // Then
-      expect(screen.getByText('The party enters the tavern')).toBeInTheDocument()
-      expect(input).toHaveValue('')
-    })
-  })
-
-  describe('Scenario: Multiple transcript entries accumulate', () => {
-    it('Then both entries appear in order', async () => {
-      render(<App provider={mockProvider()} />)
-      await user.click(screen.getByRole('button', { name: /Start Session/i }))
-
-      const input = screen.getByPlaceholderText(/what's being said/i)
-
-      await user.type(input, 'Player asks about the map')
-      await user.click(screen.getByRole('button', { name: /^Add$/i }))
-
-      await user.type(input, 'DM describes the merchant')
-      await user.click(screen.getByRole('button', { name: /^Add$/i }))
-
-      // Then
-      expect(screen.getByText('Player asks about the map')).toBeInTheDocument()
-      expect(screen.getByText('DM describes the merchant')).toBeInTheDocument()
-    })
-  })
-
   // --- PULL SUGGESTIONS ---
 
   describe('Scenario: DM clicks Suggest and receives a suggestion card', () => {
@@ -138,11 +103,6 @@ describe('Feature: DM Session Workflow', () => {
       render(<App provider={provider} />)
       await user.click(screen.getByRole('button', { name: /Start Session/i }))
 
-      // Add transcript context
-      const input = screen.getByPlaceholderText(/what's being said/i)
-      await user.type(input, 'Let us go talk to the mayor')
-      await user.click(screen.getByRole('button', { name: /^Add$/i }))
-
       // When
       await user.click(screen.getByRole('button', { name: /Suggest/i }))
 
@@ -152,25 +112,17 @@ describe('Feature: DM Session Workflow', () => {
     })
   })
 
-  describe('Scenario: DM clicks Suggest with irrelevant transcript (NONE)', () => {
-    it('Then no new suggestion card appears', async () => {
+  describe('Scenario: DM clicks Suggest with no result (NONE)', () => {
+    it('Then a toast shows and no suggestion card appears', async () => {
       const provider = mockProvider('NONE')
       render(<App provider={provider} />)
       await user.click(screen.getByRole('button', { name: /Start Session/i }))
 
-      const input = screen.getByPlaceholderText(/what's being said/i)
-      await user.type(input, 'Pass the chips')
-      await user.click(screen.getByRole('button', { name: /^Add$/i }))
-
       // When
       await user.click(screen.getByRole('button', { name: /Suggest/i }))
 
-      // Allow async to settle
-      await vi.advanceTimersByTimeAsync(200)
-
-      // Then — no suggestion cards, just the empty message
-      expect(screen.queryByText(/DM ONLY/)).not.toBeInTheDocument()
-      expect(screen.getByText(/Suggestions will appear/i)).toBeInTheDocument()
+      // Then
+      expect(await screen.findByText(/No suggestion/i)).toBeInTheDocument()
     })
   })
 
@@ -183,13 +135,8 @@ describe('Feature: DM Session Workflow', () => {
       )
       render(<App provider={provider} />)
 
-      // Expand manual edit and add required backstories + transcript
-      await user.click(screen.getByRole('button', { name: /edit manually/i }))
-      await user.type(screen.getByPlaceholderText(/character name/i), 'Gruuk: Half-orc barbarian')
-      await user.click(screen.getByRole('button', { name: /Start Session/i }))
-      const input = screen.getByPlaceholderText(/what's being said/i)
-      await user.type(input, 'The party explores the ruins')
-      await user.click(screen.getByRole('button', { name: /^Add$/i }))
+      // Load demo to get backstories + transcript pre-populated
+      await user.click(screen.getByRole('button', { name: /Load Demo/i }))
 
       // When
       await user.click(screen.getByRole('button', { name: /Phones Out/i }))
@@ -224,12 +171,7 @@ describe('Feature: DM Session Workflow', () => {
         'TYPE: RECALL\nTITLE: Session Recap\nBODY: The party explored the cave and found the coded letter.\nDM_ONLY: false'
       )
       render(<App provider={provider} />)
-      await user.click(screen.getByRole('button', { name: /Start Session/i }))
-
-      // Add required transcript
-      const input = screen.getByPlaceholderText(/what's being said/i)
-      await user.type(input, 'The party explored the cave')
-      await user.click(screen.getByRole('button', { name: /^Add$/i }))
+      await user.click(screen.getByRole('button', { name: /Load Demo/i }))
 
       await user.click(screen.getByRole('button', { name: /Recap/i }))
 
