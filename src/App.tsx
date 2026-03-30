@@ -17,6 +17,8 @@ import { createAnthropicProvider } from './lib/llm/anthropic'
 import { DEMO_CONTEXT, DEMO_BACKSTORIES, DEMO_TRANSCRIPT_ENTRIES } from './lib/test-data'
 import { ScenarioPlayer } from './components/ScenarioPlayer'
 import type { Scenario, ScenarioEntry } from './lib/scenarios'
+import { MobileLayout } from './components/MobileLayout'
+import { useIsMobile } from './hooks/useIsMobile'
 
 type Props = {
   provider: LLMProvider
@@ -337,6 +339,7 @@ function App({ provider, anthropicProvider }: Props) {
   const isActive = sessionState === 'active'
   const isIdle = sessionState === 'idle'
   const visibleSuggestions = suggestions.filter((s) => !s.dismissed)
+  const isMobile = useIsMobile()
 
   return (
     <div className="flex flex-col h-screen" style={{ background: 'var(--surface-950)', color: 'var(--surface-200)' }}>
@@ -442,74 +445,148 @@ function App({ provider, anthropicProvider }: Props) {
         </div>
       </div>
 
-      {/* Main Content — Three Column GM Screen (resizable) */}
-      <ResizablePanels
-        panels={[
-          {
-            defaultWidth: 220,
-            minWidth: 160,
-            content: (
-              <div className="flex flex-col p-3 h-full overflow-hidden gap-3">
-                <ScenarioPlayer
-                  onLoad={handleScenarioLoad}
-                  onEntry={handleScenarioEntry}
-                  onComplete={handleScenarioComplete}
-                />
-                {isIdle ? (
-                  <CampaignEditor
-                    context={campaignContext}
-                    backstories={backstories}
-                    onContextChange={setCampaignContext}
-                    onBackstoriesChange={setBackstories}
-                    sessionActive={false}
+      {/* Main Content */}
+      {isMobile ? (
+        <MobileLayout
+          defaultTab="primer"
+          tabs={[
+            {
+              id: 'campaign',
+              label: 'Campaign',
+              icon: '📂',
+              content: (
+                <div className="flex flex-col p-3 h-full overflow-hidden gap-3">
+                  <ScenarioPlayer
+                    onLoad={handleScenarioLoad}
+                    onEntry={handleScenarioEntry}
+                    onComplete={handleScenarioComplete}
                   />
-                ) : (
-                  <CampaignReference
-                    context={campaignContext}
-                    backstories={backstories}
-                    onAskAbout={handleFollowUp}
-                  />
-                )}
-              </div>
-            ),
-          },
-          {
-            flex: true,
-            minWidth: 200,
-            content: (
-              <div className="flex flex-col p-3 h-full overflow-hidden">
-                <TranscriptPanel entries={transcript} />
-              </div>
-            ),
-          },
-          {
-            flex: true,
-            minWidth: 250,
-            content: (
-              <div className="flex flex-col p-3 gap-3 h-full overflow-hidden">
-                <PanicToolbar
-                  onPanic={handlePanic}
-                  disabled={!isActive}
-                  loading={panicLoading}
-                />
-                <QuestionInput
-                  onSubmit={handleQuestion}
-                  disabled={!isActive}
-                  loading={questionLoading}
-                />
-                <div className="flex-1 overflow-hidden">
-                  <SuggestionPanel
-                    suggestions={suggestions}
-                    onPin={handlePin}
-                    onDismiss={handleDismiss}
-                    onFollowUp={handleFollowUp}
-                  />
+                  {isIdle ? (
+                    <CampaignEditor
+                      context={campaignContext}
+                      backstories={backstories}
+                      onContextChange={setCampaignContext}
+                      onBackstoriesChange={setBackstories}
+                      sessionActive={false}
+                    />
+                  ) : (
+                    <CampaignReference
+                      context={campaignContext}
+                      backstories={backstories}
+                      onAskAbout={handleFollowUp}
+                    />
+                  )}
                 </div>
-              </div>
-            ),
-          },
-        ]}
-      />
+              ),
+            },
+            {
+              id: 'transcript',
+              label: 'Transcript',
+              icon: '🎙️',
+              content: (
+                <div className="flex flex-col p-3 h-full overflow-hidden">
+                  <TranscriptPanel entries={transcript} />
+                </div>
+              ),
+            },
+            {
+              id: 'primer',
+              label: 'Primer',
+              icon: '✨',
+              content: (
+                <div className="flex flex-col p-3 gap-3 h-full overflow-hidden">
+                  <PanicToolbar
+                    onPanic={handlePanic}
+                    disabled={!isActive}
+                    loading={panicLoading}
+                  />
+                  <QuestionInput
+                    onSubmit={handleQuestion}
+                    disabled={!isActive}
+                    loading={questionLoading}
+                  />
+                  <div className="flex-1 overflow-hidden">
+                    <SuggestionPanel
+                      suggestions={suggestions}
+                      onPin={handlePin}
+                      onDismiss={handleDismiss}
+                      onFollowUp={handleFollowUp}
+                    />
+                  </div>
+                </div>
+              ),
+            },
+          ]}
+        />
+      ) : (
+        <ResizablePanels
+          panels={[
+            {
+              defaultWidth: 220,
+              minWidth: 160,
+              content: (
+                <div className="flex flex-col p-3 h-full overflow-hidden gap-3">
+                  <ScenarioPlayer
+                    onLoad={handleScenarioLoad}
+                    onEntry={handleScenarioEntry}
+                    onComplete={handleScenarioComplete}
+                  />
+                  {isIdle ? (
+                    <CampaignEditor
+                      context={campaignContext}
+                      backstories={backstories}
+                      onContextChange={setCampaignContext}
+                      onBackstoriesChange={setBackstories}
+                      sessionActive={false}
+                    />
+                  ) : (
+                    <CampaignReference
+                      context={campaignContext}
+                      backstories={backstories}
+                      onAskAbout={handleFollowUp}
+                    />
+                  )}
+                </div>
+              ),
+            },
+            {
+              flex: true,
+              minWidth: 200,
+              content: (
+                <div className="flex flex-col p-3 h-full overflow-hidden">
+                  <TranscriptPanel entries={transcript} />
+                </div>
+              ),
+            },
+            {
+              flex: true,
+              minWidth: 250,
+              content: (
+                <div className="flex flex-col p-3 gap-3 h-full overflow-hidden">
+                  <PanicToolbar
+                    onPanic={handlePanic}
+                    disabled={!isActive}
+                    loading={panicLoading}
+                  />
+                  <QuestionInput
+                    onSubmit={handleQuestion}
+                    disabled={!isActive}
+                    loading={questionLoading}
+                  />
+                  <div className="flex-1 overflow-hidden">
+                    <SuggestionPanel
+                      suggestions={suggestions}
+                      onPin={handlePin}
+                      onDismiss={handleDismiss}
+                      onFollowUp={handleFollowUp}
+                    />
+                  </div>
+                </div>
+              ),
+            },
+          ]}
+        />
+      )}
 
       {/* API Key Setup Panel */}
       {showApiKeySetup && (

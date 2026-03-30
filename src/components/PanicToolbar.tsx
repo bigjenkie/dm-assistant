@@ -9,7 +9,7 @@ type Props = {
 
 export function PanicToolbar({ onPanic, disabled, loading }: Props) {
   return (
-    <div className="flex gap-2">
+    <div className="flex flex-wrap gap-2">
       {PANIC_BUTTONS.map((btn) => {
         const isLoading = loading === btn.id
         const isDisabled = disabled || isLoading
