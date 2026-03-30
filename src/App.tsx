@@ -36,6 +36,7 @@ function App({ provider, anthropicProvider }: Props) {
   const [providerStatus] = useState<ProviderStatus>('connected')
   const [activeProviderName, setActiveProviderName] = useState(anthropicProvider ? anthropicProvider.name : provider.name)
   const [toast, setToast] = useState<string | null>(null)
+  const [lastLatencyMs, setLastLatencyMs] = useState<number | null>(null)
   const [showApiKeySetup, setShowApiKeySetup] = useState(false)
   const [anthropicConfigured, setAnthropicConfigured] = useState(!!anthropicProvider)
   const anthropicRef = useRef<LLMProvider | undefined>(anthropicProvider)
@@ -204,26 +205,23 @@ function App({ provider, anthropicProvider }: Props) {
 
   const handleSuggest = useCallback(async () => {
     setSuggestLoading(true)
-    console.log('[DM] handleSuggest called')
-    console.log('[DM] context length:', getContext().length, 'backstories:', getBackstories().length, 'transcript:', transcriptRef.current.length)
+    const start = performance.now()
     try {
-      const ctx = {
+      const suggestion = await engineRef.current.runSuggest({
         campaignContext: getContext(),
         characterBackstories: getBackstories(),
         recentTranscript: getRecentTranscript(),
         fullTranscript: getFullTranscript(),
         sessionElapsed: getCurrentElapsed(),
-      }
-      console.log('[DM] recentTranscript length:', ctx.recentTranscript.length)
-      const suggestion = await engineRef.current.runSuggest(ctx)
-      console.log('[DM] suggestion result:', suggestion)
+      })
+      setLastLatencyMs(Math.round(performance.now() - start))
       if (suggestion) {
         setSuggestions((prev) => [...prev, suggestion])
       } else {
         showToast('No suggestion for the current context — try adding more transcript.')
       }
     } catch (err) {
-      console.error('[DM] suggest error:', err)
+      setLastLatencyMs(Math.round(performance.now() - start))
       showToast(`LLM error: ${err instanceof Error ? err.message : 'Check your connection.'}`)
     } finally {
       setSuggestLoading(false)
@@ -247,14 +245,17 @@ function App({ provider, anthropicProvider }: Props) {
     }
 
     setPanicLoading(buttonId)
+    const start = performance.now()
     try {
       const suggestion = await engineRef.current.runPanic(buttonId, ctx)
+      setLastLatencyMs(Math.round(performance.now() - start))
       if (suggestion) {
         setSuggestions((prev) => [...prev, suggestion])
       } else {
         showToast('No suggestion generated — try a different button or add more context.')
       }
     } catch (err) {
+      setLastLatencyMs(Math.round(performance.now() - start))
       showToast(`LLM error: ${err instanceof Error ? err.message : 'Check your connection.'}`)
     } finally {
       setPanicLoading(null)
@@ -265,6 +266,7 @@ function App({ provider, anthropicProvider }: Props) {
 
   const handleQuestion = useCallback(async (question: string) => {
     setQuestionLoading(true)
+    const start = performance.now()
     try {
       const suggestion = await engineRef.current.runQuestion(question, {
         campaignContext: getContext(),
@@ -272,12 +274,14 @@ function App({ provider, anthropicProvider }: Props) {
         recentTranscript: getRecentTranscript(),
         fullTranscript: getFullTranscript(),
       })
+      setLastLatencyMs(Math.round(performance.now() - start))
       if (suggestion) {
         setSuggestions((prev) => [...prev, suggestion])
       } else {
         showToast('No answer generated — try rephrasing your question.')
       }
     } catch (err) {
+      setLastLatencyMs(Math.round(performance.now() - start))
       showToast(`LLM error: ${err instanceof Error ? err.message : 'Check your connection.'}`)
     } finally {
       setQuestionLoading(false)
@@ -302,6 +306,7 @@ function App({ provider, anthropicProvider }: Props) {
 
   const handleFollowUp = useCallback(async (question: string) => {
     setQuestionLoading(true)
+    const start = performance.now()
     try {
       const suggestion = await engineRef.current.runQuestion(question, {
         campaignContext: getContext(),
@@ -309,10 +314,12 @@ function App({ provider, anthropicProvider }: Props) {
         recentTranscript: getRecentTranscript(),
         fullTranscript: getFullTranscript(),
       })
+      setLastLatencyMs(Math.round(performance.now() - start))
       if (suggestion) {
         setSuggestions((prev) => [...prev, suggestion])
       }
     } catch (err) {
+      setLastLatencyMs(Math.round(performance.now() - start))
       showToast(`LLM error: ${err instanceof Error ? err.message : 'Check your connection.'}`)
     } finally {
       setQuestionLoading(false)
@@ -536,6 +543,7 @@ function App({ provider, anthropicProvider }: Props) {
           : questionLoading ? 'Asking'
           : null
         }
+        lastLatencyMs={lastLatencyMs}
       />
     </div>
   )

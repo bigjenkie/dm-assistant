@@ -11,6 +11,7 @@ type Props = {
   onConfigureAnthropic?: () => void
   anthropicKeyConfigured?: boolean
   loadingMessage?: string | null
+  lastLatencyMs?: number | null
 }
 
 function formatElapsed(seconds: number): string {
@@ -38,6 +39,7 @@ export function StatusBar({
   onConfigureAnthropic,
   anthropicKeyConfigured = false,
   loadingMessage = null,
+  lastLatencyMs = null,
 }: Props) {
   const [switcherOpen, setSwitcherOpen] = useState(false)
   const switcherRef = useRef<HTMLDivElement>(null)
@@ -160,7 +162,7 @@ export function StatusBar({
       </div>
 
       <div className="flex items-center gap-4">
-        {loadingMessage && (
+        {loadingMessage ? (
           <span className="flex items-center gap-1.5" style={{ color: 'var(--amber-400)' }}>
             <span
               className="animate-spin inline-block"
@@ -173,8 +175,17 @@ export function StatusBar({
               }}
             />
             {loadingMessage}
+            {lastLatencyMs != null && (
+              <span style={{ color: 'var(--surface-600)' }}>
+                (last: {lastLatencyMs < 1000 ? `${lastLatencyMs}ms` : `${(lastLatencyMs / 1000).toFixed(1)}s`})
+              </span>
+            )}
           </span>
-        )}
+        ) : lastLatencyMs != null ? (
+          <span style={{ color: 'var(--surface-600)' }}>
+            {lastLatencyMs < 1000 ? `${lastLatencyMs}ms` : `${(lastLatencyMs / 1000).toFixed(1)}s`}
+          </span>
+        ) : null}
         <span>{suggestionCount} suggestions</span>
         {sessionState === 'active' && (
           <span style={{ fontFamily: 'var(--font-mono)' }}>
