@@ -11,7 +11,9 @@ type Props = {
 
 export function SuggestionCard({ suggestion, onPin, onDismiss, onFollowUp }: Props) {
   const icon = SUGGESTION_ICONS[suggestion.type] ?? '💬'
-  const sourceLabel = suggestion.source === 'question' ? 'Q&A' : suggestion.source === 'panic' ? 'Panic' : suggestion.source === 'notification' ? 'Alert' : ''
+  const triggerLabel = suggestion.trigger ?? (
+    suggestion.source === 'question' ? 'Question' : suggestion.source === 'panic' ? 'Panic' : suggestion.source === 'notification' ? 'Alert' : 'Suggest'
+  )
   const [expanded, setExpanded] = useState(false)
   const [showRaw, setShowRaw] = useState(false)
 
@@ -45,14 +47,12 @@ export function SuggestionCard({ suggestion, onPin, onDismiss, onFollowUp }: Pro
               DM ONLY
             </span>
           )}
-          {sourceLabel && (
-            <span
-              className="text-xs font-medium px-1.5 py-0.5"
-              style={{ background: 'var(--surface-800)', color: 'var(--surface-400)', borderRadius: 'var(--radius-sm)' }}
-            >
-              {sourceLabel}
-            </span>
-          )}
+          <span
+            className="text-xs font-medium px-1.5 py-0.5"
+            style={{ background: 'var(--surface-800)', color: 'var(--surface-400)', borderRadius: 'var(--radius-sm)' }}
+          >
+            {triggerLabel}
+          </span>
         </div>
         <div className="flex gap-1 shrink-0">
           <button

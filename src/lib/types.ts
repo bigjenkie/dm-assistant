@@ -21,6 +21,7 @@ export type Suggestion = {
   pinned: boolean
   dismissed: boolean
   source: 'suggest' | 'notification' | 'panic' | 'question'
+  trigger?: string               // GM action that produced this (e.g. "Phones Out", "Suggest")
   rawResponse?: string           // full LLM response text
   triggerTranscript?: string     // transcript that triggered this suggestion
 }

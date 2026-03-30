@@ -143,7 +143,7 @@ describe('Feature: DM Session Workflow', () => {
 
       // Then
       expect(await screen.findByText('Spotlight: Gruuk')).toBeInTheDocument()
-      expect(screen.getByText('Panic')).toBeInTheDocument()
+      expect(screen.getByText(/📱 Phones Out/)).toBeInTheDocument()
     })
   })
 
@@ -242,7 +242,7 @@ describe('Feature: DM Session Workflow', () => {
 
       // Then
       expect(await screen.findByText('Grapple Rules')).toBeInTheDocument()
-      expect(screen.getByText('Q&A')).toBeInTheDocument()
+      expect(screen.getByText('Question')).toBeInTheDocument()
       expect(questionInput).toHaveValue('')
     })
   })

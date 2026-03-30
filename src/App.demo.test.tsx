@@ -152,7 +152,7 @@ describe('App with Demo Data Loaded', () => {
 
       expect(await screen.findByText('Spotlight: Gruuk')).toBeInTheDocument()
       expect(screen.getByText(/monastery/)).toBeInTheDocument()
-      expect(screen.getByText('Panic')).toBeInTheDocument()
+      expect(screen.getByText(/📱 Phones Out/)).toBeInTheDocument()
     })
 
     it('Need an NPC generates a scene-appropriate character', async () => {
@@ -222,7 +222,7 @@ describe('App with Demo Data Loaded', () => {
       await user.click(screen.getByRole('button', { name: /Ask/i }))
 
       expect(await screen.findByText('Cult Fanatic Stats')).toBeInTheDocument()
-      expect(screen.getByText('Q&A')).toBeInTheDocument()
+      expect(screen.getByText('Question')).toBeInTheDocument()
       expect(questionInput).toHaveValue('')
     })
   })

@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import type { LLMProvider } from './lib/llm/provider'
 import type { Suggestion, TranscriptEntry, PanicButtonId, SessionState, ProviderStatus, ProviderType } from './lib/types'
+import { PANIC_BUTTONS } from './lib/types'
 import { SuggestionEngine } from './lib/suggestion/engine'
 import { validatePanicButton } from './lib/suggestion/panic-validation'
 import { CampaignEditor } from './components/CampaignEditor'
@@ -216,6 +217,7 @@ function App({ provider, anthropicProvider }: Props) {
       })
       setLastLatencyMs(Math.round(performance.now() - start))
       if (suggestion) {
+        suggestion.trigger = 'Suggest'
         setSuggestions((prev) => [...prev, suggestion])
       } else {
         showToast('No suggestion for the current context — try adding more transcript.')
@@ -250,6 +252,8 @@ function App({ provider, anthropicProvider }: Props) {
       const suggestion = await engineRef.current.runPanic(buttonId, ctx)
       setLastLatencyMs(Math.round(performance.now() - start))
       if (suggestion) {
+        const btn = PANIC_BUTTONS.find((b) => b.id === buttonId)
+        suggestion.trigger = btn ? `${btn.icon} ${btn.label}` : buttonId
         setSuggestions((prev) => [...prev, suggestion])
       } else {
         showToast('No suggestion generated — try a different button or add more context.')
@@ -276,6 +280,7 @@ function App({ provider, anthropicProvider }: Props) {
       })
       setLastLatencyMs(Math.round(performance.now() - start))
       if (suggestion) {
+        suggestion.trigger = 'Question'
         setSuggestions((prev) => [...prev, suggestion])
       } else {
         showToast('No answer generated — try rephrasing your question.')
@@ -316,6 +321,7 @@ function App({ provider, anthropicProvider }: Props) {
       })
       setLastLatencyMs(Math.round(performance.now() - start))
       if (suggestion) {
+        suggestion.trigger = 'Follow-up'
         setSuggestions((prev) => [...prev, suggestion])
       }
     } catch (err) {
