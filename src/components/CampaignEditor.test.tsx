@@ -64,7 +64,8 @@ describe('CampaignEditor — Folder-First Design', () => {
       const folderInput = screen.getByTestId('folder-file-input') as HTMLInputElement
       await user.upload(folderInput, [campaignFile, vexFile, npcFile])
 
-      expect(defaultProps.onContextChange).toHaveBeenCalled()
+      // Wait for async FileReader to complete
+      await vi.waitFor(() => expect(defaultProps.onContextChange).toHaveBeenCalled())
       const contextArg = defaultProps.onContextChange.mock.calls[0][0]
       expect(contextArg).toContain('World: Forgotten Realms')
       expect(contextArg).toContain('Mayor Hild: quest giver')

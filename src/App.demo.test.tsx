@@ -66,11 +66,13 @@ describe('App with Demo Data Loaded', () => {
       expect(screen.getByText(/LIVE/)).toBeInTheDocument()
     })
 
-    it('shows campaign loaded summary', async () => {
+    it('shows campaign reference panel with parsed data', async () => {
       render(<App provider={mockProvider()} />)
       await loadDemoAndWait(user)
 
-      expect(screen.getByText(/loaded/i)).toBeInTheDocument()
+      // Campaign reference panel shows parsed entries
+      expect(screen.getByText('Campaign')).toBeInTheDocument()
+      expect(screen.getByPlaceholderText(/Search campaign/i)).toBeInTheDocument()
     })
 
     it('enables all panic buttons', async () => {

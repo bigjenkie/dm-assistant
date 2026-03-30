@@ -4,6 +4,7 @@ import type { Suggestion, TranscriptEntry, PanicButtonId, SessionState, Provider
 import { SuggestionEngine } from './lib/suggestion/engine'
 import { validatePanicButton } from './lib/suggestion/panic-validation'
 import { CampaignEditor } from './components/CampaignEditor'
+import { CampaignReference } from './components/CampaignReference'
 import { TranscriptPanel } from './components/TranscriptPanel'
 import { SuggestionPanel } from './components/SuggestionPanel'
 import { PanicToolbar } from './components/PanicToolbar'
@@ -300,7 +301,7 @@ function App({ provider, anthropicProvider }: Props) {
             className="font-display text-xl tracking-tight"
             style={{ fontFamily: 'var(--font-display)', color: 'var(--amber-400)', fontWeight: 700 }}
           >
-            DM Assistant
+            The Primer
           </h1>
           {isActive && (
             <span
@@ -392,30 +393,43 @@ function App({ provider, anthropicProvider }: Props) {
         </div>
       </div>
 
-      {/* Main Content */}
+      {/* Main Content — Three Column GM Screen */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Left Column: Campaign + Transcript */}
+        {/* Left Column: Campaign Reference */}
         <div
-          className="w-1/2 flex flex-col p-4 gap-4 overflow-hidden"
+          className="flex flex-col p-3 overflow-hidden"
+          style={{ borderRight: '1px solid var(--surface-800)', width: '220px', minWidth: '180px' }}
+        >
+          {isIdle ? (
+            <CampaignEditor
+              context={campaignContext}
+              backstories={backstories}
+              onContextChange={setCampaignContext}
+              onBackstoriesChange={setBackstories}
+              sessionActive={false}
+            />
+          ) : (
+            <CampaignReference
+              context={campaignContext}
+              backstories={backstories}
+              onAskAbout={handleFollowUp}
+            />
+          )}
+        </div>
+
+        {/* Center Column: Transcript */}
+        <div
+          className="flex-1 flex flex-col p-3 overflow-hidden"
           style={{ borderRight: '1px solid var(--surface-800)' }}
         >
-          <CampaignEditor
-            context={campaignContext}
-            backstories={backstories}
-            onContextChange={setCampaignContext}
-            onBackstoriesChange={setBackstories}
-            sessionActive={!isIdle}
+          <TranscriptPanel
+            entries={transcript}
+            onAddEntry={addTranscriptEntry}
           />
-          <div className="flex-1 overflow-hidden">
-            <TranscriptPanel
-              entries={transcript}
-              onAddEntry={addTranscriptEntry}
-            />
-          </div>
         </div>
 
         {/* Right Column: Panic Buttons + Questions + Suggestions */}
-        <div className="w-1/2 flex flex-col p-4 gap-4 overflow-hidden">
+        <div className="flex-1 flex flex-col p-3 gap-3 overflow-hidden">
           <PanicToolbar
             onPanic={handlePanic}
             disabled={!isActive}
