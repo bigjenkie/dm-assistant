@@ -14,6 +14,8 @@ import { StatusBar } from './components/StatusBar'
 import { ApiKeySetup } from './components/ApiKeySetup'
 import { createAnthropicProvider } from './lib/llm/anthropic'
 import { DEMO_CONTEXT, DEMO_BACKSTORIES, DEMO_TRANSCRIPT_ENTRIES } from './lib/test-data'
+import { ScenarioPlayer } from './components/ScenarioPlayer'
+import type { Scenario, ScenarioEntry } from './lib/scenarios'
 
 type Props = {
   provider: LLMProvider
@@ -134,6 +136,37 @@ function App({ provider, anthropicProvider }: Props) {
     }
   }, [])
 
+  const handleScenarioLoad = useCallback((scenario: Scenario) => {
+    setCampaignContext(scenario.context)
+    setBackstories(scenario.backstories)
+    setTranscript([])
+    setSuggestions([])
+
+    setSessionState('active')
+    sessionStartRef.current = Date.now()
+    setSessionElapsed(0)
+    if (timerRef.current) clearInterval(timerRef.current)
+    timerRef.current = setInterval(() => {
+      setSessionElapsed(Math.floor((Date.now() - sessionStartRef.current) / 1000))
+    }, 1000)
+
+    if (!anthropicRef.current) {
+      setShowApiKeySetup(true)
+    }
+  }, [])
+
+  const handleScenarioEntry = useCallback((entry: ScenarioEntry) => {
+    const elapsed = getCurrentElapsed()
+    setTranscript((prev) => [...prev, {
+      id: `sc_${Date.now()}_${Math.random().toString(36).slice(2, 5)}`,
+      ts: elapsed,
+      text: `${entry.speaker}: ${entry.text}`,
+      confidence: 1.0,
+    }])
+  }, [])
+
+  // handleScenarioComplete defined after showToast below
+
   const handleConfigureAnthropic = useCallback(() => {
     setShowApiKeySetup(true)
   }, [])
@@ -164,6 +197,10 @@ function App({ provider, anthropicProvider }: Props) {
       if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
     }
   }, [])
+
+  const handleScenarioComplete = useCallback(() => {
+    showToast('Scenario complete. Try the panic buttons and Suggest!')
+  }, [showToast])
 
   // --- Suggest (Pull) ---
 
@@ -401,7 +438,12 @@ function App({ provider, anthropicProvider }: Props) {
             defaultWidth: 220,
             minWidth: 160,
             content: (
-              <div className="flex flex-col p-3 h-full overflow-hidden">
+              <div className="flex flex-col p-3 h-full overflow-hidden gap-3">
+                <ScenarioPlayer
+                  onLoad={handleScenarioLoad}
+                  onEntry={handleScenarioEntry}
+                  onComplete={handleScenarioComplete}
+                />
                 {isIdle ? (
                   <CampaignEditor
                     context={campaignContext}
