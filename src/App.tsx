@@ -18,6 +18,7 @@ import { DEMO_CONTEXT, DEMO_BACKSTORIES, DEMO_TRANSCRIPT_ENTRIES } from './lib/t
 import { ScenarioPlayer } from './components/ScenarioPlayer'
 import type { Scenario, ScenarioEntry } from './lib/scenarios'
 import { MobileLayout } from './components/MobileLayout'
+import { MiniTranscript } from './components/MiniTranscript'
 import { useIsMobile } from './hooks/useIsMobile'
 
 type Props = {
@@ -499,7 +500,12 @@ function App({ provider, anthropicProvider }: Props) {
               label: 'Primer',
               icon: '✨',
               content: (
-                <div className="flex flex-col p-3 gap-3 h-full overflow-hidden">
+                <div className="flex flex-col p-3 gap-2 h-full overflow-hidden">
+                  <MiniTranscript
+                    entries={transcript}
+                    maxLines={3}
+                    onTap={() => setMobileForceTab('transcript')}
+                  />
                   <PanicToolbar
                     onPanic={handlePanic}
                     disabled={!isActive}
