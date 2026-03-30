@@ -987,6 +987,766 @@ export const IMPORTED_SCENARIOS: Scenario[] = [
     ],
   },
   {
+    id: 'cr3',
+    name: 'The Draw of Destiny | Critical Role | Campaign 3, Episode 1',
+    description: 'Critical Role — D&D 5e',
+    system: 'D&D 5e',
+    context: 'System: D&D 5e. Source: Critical Role. Auto-imported from YouTube captions.',
+    backstories: '',
+    entries: [
+          {
+                "speaker": "Table",
+                "text": "between the Stratos Throne and the Court of the Lambent Path that left both sides exhausted, expended, and without victory.",
+                "delay": 0
+          },
+          {
+                "speaker": "Table",
+                "text": "This truce has continued to this day as both factions continue the slow work to rebuild their societies to their former glory.",
+                "delay": 7
+          },
+          {
+                "speaker": "Table",
+                "text": "Our story, however, begins to the northwest of the Hellcatch Valley within the natural boundaries of the Serpentwind Peaks, where the lush jungle valley of the Oderan Wilds thrums with life and mystery.",
+                "delay": 14
+          },
+          {
+                "speaker": "Table",
+                "text": "Here among the vines and mists that choke the uncarved paths of the rainforest, howling beasts and long, dormant shadows are rumored to hide among the lost relics of ancient days.",
+                "delay": 23
+          },
+          {
+                "speaker": "Table",
+                "text": "Here, the dense jungle canopy is home to numerous towns along the Honored Trails, where travelers and traders trudge through the dangerous wilds to seek their fortunes.",
+                "delay": 31
+          },
+          {
+                "speaker": "Table",
+                "text": "Here, from the central jungle floor, rises five, tower-like mountains that reach for the heavens where upon their rocky exterior, numerous streets and urban districts have been carved into them to form a singular city connected by bridge and cable.",
+                "delay": 39
+          },
+          {
+                "speaker": "Table",
+                "text": "These spires glow with the thousands of lights and lanterns that mark the Oderan Wilds' capital city of Jrusar, home to the Chandei Quorum that oversees and controls the larger populace of the region.",
+                "delay": 50
+          },
+          {
+                "speaker": "Table",
+                "text": "The spiraling streets bustle with life and chatter beneath the cloud-dappled, blue sky, where the innumerable birds fly among the Simurgh Riders that keep watch.",
+                "delay": 59
+          },
+          {
+                "speaker": "Table",
+                "text": "Here, in Jrusar, is where our story begins.",
+                "delay": 67
+          },
+          {
+                "speaker": "Table",
+                "text": "(nervous laughter) I would like Laura and Marisha to remain at the table while the rest of you exit, if you don't mind.",
+                "delay": 71
+          },
+          {
+                "speaker": "Table",
+                "text": "(quiet laughter) TRAVIS: (surprised laugh) LAURA and ASHLEY: Cool, cool, cool, cool, cool.",
+                "delay": 77
+          },
+          {
+                "speaker": "Table",
+                "text": "LIAM: See ya in a bit.",
+                "delay": 83
+          },
+          {
+                "speaker": "Table",
+                "text": "MARISHA: Oh, my skin is instantly clammy.",
+                "delay": 86
+          },
+          {
+                "speaker": "Table",
+                "text": "LAURA: (laughs nervously) Okay.",
+                "delay": 90
+          },
+          {
+                "speaker": "Table",
+                "text": "TRAVIS: Cool.",
+                "delay": 94
+          },
+          {
+                "speaker": "Table",
+                "text": "ASHLEY: Have fun, I love you.",
+                "delay": 97
+          },
+          {
+                "speaker": "Table",
+                "text": "LAURA: I love you, okay, okay.",
+                "delay": 100
+          },
+          {
+                "speaker": "Table",
+                "text": "What if we die before you get here?",
+                "delay": 104
+          },
+          {
+                "speaker": "Table",
+                "text": "Okay, bye.",
+                "delay": 108
+          },
+          {
+                "speaker": "Table",
+                "text": "TRAVIS: Don't die!",
+                "delay": 111
+          },
+          {
+                "speaker": "Table",
+                "text": "LAURA: Ah!",
+                "delay": 114
+          },
+          {
+                "speaker": "Table",
+                "text": "MARISHA: I got to get a page.",
+                "delay": 117
+          },
+          {
+                "speaker": "Table",
+                "text": "MATT: So...",
+                "delay": 120
+          },
+          {
+                "speaker": "Table",
+                "text": "We begin with the rocking sensation of one of the various engineered cable cars making its way, dangling from one of the many cables that connects the five different spires of Jrusar as the two of you now ride up within.",
+                "delay": 123
+          },
+          {
+                "speaker": "Table",
+                "text": "Just the two of you for now, the rest of the interior appears to be empty at the moment.",
+                "delay": 133
+          },
+          {
+                "speaker": "Table",
+                "text": "But as you coast along the way, it's shifting and rocking.",
+                "delay": 138
+          },
+          {
+                "speaker": "Table",
+                "text": "The small windows outside are giving a beautiful view of the jungle mists that are just beginning to slowly return after being burned away by most of the midday sun.",
+                "delay": 142
+          },
+          {
+                "speaker": "Table",
+                "text": "towards the Aerie Spire.",
+                "delay": 146
+          },
+          {
+                "speaker": "Table",
+                "text": "To that point, Laura, if you'd like to describe your character.",
+                "delay": 149
+          },
+          {
+                "speaker": "Table",
+                "text": "LAURA: Oh gosh.",
+                "delay": 154
+          },
+          {
+                "speaker": "Table",
+                "text": "(light southern accent) Well, all right.",
+                "delay": 157
+          },
+          {
+                "speaker": "Table",
+                "text": "A young lady with long, light purple hair, a yellow scarf around my neck.",
+                "delay": 161
+          },
+          {
+                "speaker": "Table",
+                "text": "I look a little bit-- Maybe shy, like I'm trying to hide myself from other people.",
+                "delay": 166
+          },
+          {
+                "speaker": "Table",
+                "text": "A light blue dress, just keeping myself tucked back a little bit and looking mildly uncomfortable as we rattle along.",
+                "delay": 171
+          },
+          {
+                "speaker": "Table",
+                "text": "I'm going to just hold onto your arm, Laudna, if that's all right.",
+                "delay": 177
+          },
+          {
+                "speaker": "Table",
+                "text": "MARISHA: You feeling okay?",
+                "delay": 182
+          },
+          {
+                "speaker": "Table",
+                "text": "A little sick?",
+                "delay": 185
+          },
+          {
+                "speaker": "Table",
+                "text": "LAURA: I just, you know, I never get used to these things.",
+                "delay": 188
+          },
+          {
+                "speaker": "Table",
+                "text": "MATT: Human, correct?",
+                "delay": 192
+          },
+          {
+                "speaker": "Table",
+                "text": "LAURA: I am a human.",
+                "delay": 195
+          },
+          {
+                "speaker": "Table",
+                "text": "MATT: Now, Marisha, if you would like to describe yourself.",
+                "delay": 198
+          },
+          {
+                "speaker": "Table",
+                "text": "MARISHA: All right.",
+                "delay": 202
+          },
+          {
+                "speaker": "Table",
+                "text": "Oh, goodness.",
+                "delay": 205
+          },
+          {
+                "speaker": "Table",
+                "text": "Don't fuck this up.",
+                "delay": 208
+          },
+          {
+                "speaker": "Table",
+                "text": "(Mid-Atlantic accent) You see a also youngish-looking woman, not as young as Imogen over here, long, scraggly, dark hair with a shock of white going through the top of her bangs.",
+                "delay": 211
+          },
+          {
+                "speaker": "Table",
+                "text": "She has it pulled back into a half-up bun with a rock chisel holding it up.",
+                "delay": 219
+          },
+          {
+                "speaker": "Table",
+                "text": "Her skin is pale and her eyes are big, a little bulbous with dilated pupils, almost doll-like.",
+                "delay": 224
+          },
+          {
+                "speaker": "Table",
+                "text": "Her lips are dark, and she's wearing tattered, scraggly clothes, a black skirt and a blood-maroon blouse.",
+                "delay": 230
+          },
+          {
+                "speaker": "Table",
+                "text": "You can see she's very thin, gaunt, and around her belt with some tools and odds and ends, is a dead rat with a bird skull.",
+                "delay": 236
+          },
+          {
+                "speaker": "Table",
+                "text": "I made him myself.",
+                "delay": 243
+          },
+          {
+                "speaker": "Table",
+                "text": "MATT: Gross.",
+                "delay": 246
+          },
+          {
+                "speaker": "Table",
+                "text": "(laughter) Now, you've been here in the city for a short period of time, a handful of weeks.",
+                "delay": 249
+          },
+          {
+                "speaker": "Table",
+                "text": "As part of this journey, you, Imogen, you went to the Ascension's Rise University seeking to see if perhaps there was a way of utilizing their extensive library for research materials.",
+                "delay": 255
+          },
+          {
+                "speaker": "Table",
+                "text": "You have yourself something you're looking into, but the university itself only keeps its grounds for those who are enrolled there or have approval.",
+                "delay": 264
+          },
+          {
+                "speaker": "Table",
+                "text": "So instead, you went over to the Starpoint Conservatory, also on the Aerie.",
+                "delay": 271
+          },
+          {
+                "speaker": "Table",
+                "text": "They gave you pretty much the same answer, but said you may submit a formal request and you left behind and have heard nothing for two weeks.",
+                "delay": 276
+          },
+          {
+                "speaker": "Table",
+                "text": "within the Conservatory, you can watch the edge of the Aerie grow closer and closer as the (clunking) shifting of it begins to clatter with some of the slight imperfections in the metallic cable pulling you forward.",
+                "delay": 280
+          },
+          {
+                "speaker": "Table",
+                "text": "Some of the nearby birds that have roosted on the cliff side as you get towards the spire edge itself, (wings fluttering) scatter off upon approach.",
+                "delay": 290
+          },
+          {
+                "speaker": "Table",
+                "text": "MARISHA: Hmm.",
+                "delay": 297
+          },
+          {
+                "speaker": "Table",
+                "text": "LAURA: You'd think they would get better cables with as often as people use these things.",
+                "delay": 300
+          },
+          {
+                "speaker": "Table",
+                "text": "MARISHA: Hmm, maybe in time.",
+                "delay": 305
+          },
+          {
+                "speaker": "Table",
+                "text": "Are you feeling pretty good about your little essay that you wrote?",
+                "delay": 308
+          },
+          {
+                "speaker": "Table",
+                "text": "LAURA: (laughs) No.",
+                "delay": 313
+          },
+          {
+                "speaker": "Table",
+                "text": "MARISHA: I liked it!",
+                "delay": 316
+          },
+          {
+                "speaker": "Table",
+                "text": "I thought it was pretty good.",
+                "delay": 319
+          },
+          {
+                "speaker": "Table",
+                "text": "LAURA: I hope they will give us the time of day this time.",
+                "delay": 322
+          },
+          {
+                "speaker": "Table",
+                "text": "Just a little nudge maybe.",
+                "delay": 326
+          },
+          {
+                "speaker": "Table",
+                "text": "MARISHA: Well, I guess let's find out.",
+                "delay": 329
+          },
+          {
+                "speaker": "Table",
+                "text": "LAURA: I forget, is the-- MATT: (crashing) MARISHA: Oh.",
+                "delay": 333
+          },
+          {
+                "speaker": "Table",
+                "text": "LAURA: Is the Aerie Spire quite as crowded as the Core Spire is?",
+                "delay": 337
+          },
+          {
+                "speaker": "Table",
+                "text": "MATT: Not by any means.",
+                "delay": 342
+          },
+          {
+                "speaker": "Table",
+                "text": "The Aerie Spire is the tallest and technically smallest of the spires.",
+                "delay": 345
+          },
+          {
+                "speaker": "Table",
+                "text": "It is more of a thin peak amongst the other four, but this is where a handful of upper Mahaan houses, or nobles, live, but it's largely consumed by these two different things.",
+                "delay": 350
+          },
+          {
+                "speaker": "Table",
+                "text": "The university, the Ascension's Rise University and the Starpoint Conservatory, as well as a handful of other guilds that use the space, predominantly for their business.",
+                "delay": 358
+          },
+          {
+                "speaker": "Table",
+                "text": "But as you come to rest at this point, you can see the massive construct that is responsible for winding up the cable that allows the car to descend upon its track and return, finishes its work, (crashing) locks it over and then goes into a stasis mode.",
+                "delay": 366
+          },
+          {
+                "speaker": "Table",
+                "text": "The side of the door comes ajar and you can already see right there, a small, dark-skinned halfling who is wearing one of the general, dark-greenish, and gold-trimmed outfits of those that run the various cable gondolas throughout the city.",
+                "delay": 377
+          },
+          {
+                "speaker": "Table",
+                "text": "Wordlessly just waits for you to exit.",
+                "delay": 388
+          },
+          {
+                "speaker": "Table",
+                "text": "LAURA: Thank you.",
+                "delay": 392
+          },
+          {
+                "speaker": "Table",
+                "text": "MARISHA: Thank you.",
+                "delay": 395
+          },
+          {
+                "speaker": "Table",
+                "text": "MATT: Closes it.",
+                "delay": 398
+          },
+          {
+                "speaker": "Table",
+                "text": "MARISHA: Are you supposed to give tips here?",
+                "delay": 401
+          },
+          {
+                "speaker": "Table",
+                "text": "Is this a tipping culture?",
+                "delay": 405
+          },
+          {
+                "speaker": "Table",
+                "text": "LAURA: I hope not because I've never-- MARISHA: We haven't been doing that.",
+                "delay": 408
+          },
+          {
+                "speaker": "Table",
+                "text": "LAURA: No.",
+                "delay": 413
+          },
+          {
+                "speaker": "Table",
+                "text": "MARISHA: No.",
+                "delay": 416
+          },
+          {
+                "speaker": "Table",
+                "text": "It's fine.",
+                "delay": 419
+          },
+          {
+                "speaker": "Table",
+                "text": "MATT: Continuing the familiar path along this extremely high portion of the city, it is unnerving the moment you step off of this as you're about 15, 20 feet from what would be a drop for hundreds and hundreds of feet into the jungle floor below.",
+                "delay": 422
+          },
+          {
+                "speaker": "Table",
+                "text": "The mist actually obscures a majority of the jungle floor from here and you can see just the faint detail of the canopy below as hundreds of birds occasionally dot aspects of the misty landscape below you.",
+                "delay": 433
+          },
+          {
+                "speaker": "Table",
+                "text": "Following-- MARISHA: Just adjusting to the heights.",
+                "delay": 442
+          },
+          {
+                "speaker": "Table",
+                "text": "LAURA: Oh, I love it once we're off those cables.",
+                "delay": 446
+          },
+          {
+                "speaker": "Table",
+                "text": "MARISHA: Yeah.",
+                "delay": 450
+          },
+          {
+                "speaker": "Table",
+                "text": "LAURA: It's beautiful up here.",
+                "delay": 453
+          },
+          {
+                "speaker": "Table",
+                "text": "you bypass the massive and almost gaudy Ascension's Rise University and make your way instead to the multi-level courtyard that surrounds the exterior of the Conservatory.",
+                "delay": 457
+          },
+          {
+                "speaker": "Table",
+                "text": "Here you can see each large platform step get smaller and smaller as it rises towards the massive, double, gold-plated doors with the handles up front.",
+                "delay": 465
+          },
+          {
+                "speaker": "Table",
+                "text": "They sit mostly-- readily ajar for at least two people to walk in shoulder to shoulder.",
+                "delay": 473
+          },
+          {
+                "speaker": "Table",
+                "text": "The 25-foot wide doors stay that way unless it's closed for the evening.",
+                "delay": 478
+          },
+          {
+                "speaker": "Table",
+                "text": "As you carefully step in, passing by the gardens, beautiful fauna and the torch-topped pillars that guide you into the entryway, you hear this gentle, sourceless music that just apparates in the air around you.",
+                "delay": 483
+          },
+          {
+                "speaker": "Table",
+                "text": "Calming, if a little unnerving that you do not see where it comes from.",
+                "delay": 493
+          },
+          {
+                "speaker": "Table",
+                "text": "MARISHA: Like you just have ambient music?",
+                "delay": 498
+          },
+          {
+                "speaker": "Table",
+                "text": "MATT: Just gentle atmospheric music as you step in.",
+                "delay": 502
+          },
+          {
+                "speaker": "Table",
+                "text": "LAURA: How do they do that?",
+                "delay": 506
+          },
+          {
+                "speaker": "Table",
+                "text": "MARISHA: It's so calming.",
+                "delay": 509
+          },
+          {
+                "speaker": "Table",
+                "text": "MATT: There, at the front desk setup, you see in a massive, circular position as it climbs up to the sides and on each end, you can see statues of previous tutors that took up residence here within the Conservatory.",
+                "delay": 512
+          },
+          {
+                "speaker": "Table",
+                "text": "You see a female halfling looking towards you with darker hair, an olive complexion, these shaded glasses that sit at the edge of her nose, these green eyes that peek from above the lenses.",
+                "delay": 522
+          },
+          {
+                "speaker": "Table",
+                "text": "You've spoken with this individual once before, and you recall her name to be the Escritorae Kunthea.",
+                "delay": 531
+          },
+          {
+                "speaker": "Table",
+                "text": "Escritorae being her title.",
+                "delay": 537
+          },
+          {
+                "speaker": "Table",
+                "text": "LAURA: Escritorae-- MATT: Kunthea.",
+                "delay": 540
+          },
+          {
+                "speaker": "Table",
+                "text": "MARISHA: Kun-- Kunfia.",
+                "delay": 544
+          },
+          {
+                "speaker": "Table",
+                "text": "MATT: Kunthea.",
+                "delay": 547
+          },
+          {
+                "speaker": "Table",
+                "text": "MARISHA: Kunthea.",
+                "delay": 550
+          },
+          {
+                "speaker": "Table",
+                "text": "LAURA: Okay.",
+                "delay": 553
+          },
+          {
+                "speaker": "Table",
+                "text": "MARISHA: Geska something.",
+                "delay": 556
+          },
+          {
+                "speaker": "Table",
+                "text": "LAURA: Escritorae.",
+                "delay": 559
+          },
+          {
+                "speaker": "Table",
+                "text": "MARISHA: Eskay-- LAURA: Escritorae Kunthea.",
+                "delay": 562
+          },
+          {
+                "speaker": "Table",
+                "text": "MATT: And immediately looks up and makes eye contact.",
+                "delay": 566
+          },
+          {
+                "speaker": "Table",
+                "text": "Might I help you?",
+                "delay": 570
+          },
+          {
+                "speaker": "Table",
+                "text": "\" LAURA: Do you remember me?",
+                "delay": 573
+          },
+          {
+                "speaker": "Table",
+                "text": "We came here a couple of weeks ago.",
+                "delay": 576
+          },
+          {
+                "speaker": "Table",
+                "text": "MATT: \"Right.",
+                "delay": 580
+          },
+          {
+                "speaker": "Table",
+                "text": "Have you not been contacted?",
+                "delay": 583
+          },
+          {
+                "speaker": "Table",
+                "text": "\" LAURA: No.",
+                "delay": 586
+          },
+          {
+                "speaker": "Table",
+                "text": "And I just figured, you know, the Windowed Wall is such a packed-in sort of area that maybe you got our address wrong and you have been trying to contact us, and I just wanted to make sure you knew that we were available for an appointment whenever you need it.",
+                "delay": 589
+          },
+          {
+                "speaker": "Table",
+                "text": "MATT: \"Allow me to inquire beyond the doors \"and see if there has been any sort of adjustment or change \"in your request process.",
+                "delay": 600
+          },
+          {
+                "speaker": "Table",
+                "text": "\" LAURA: Thank you so much.",
+                "delay": 607
+          },
+          {
+                "speaker": "Table",
+                "text": "MATT: \"Excuse me.",
+                "delay": 610
+          },
+          {
+                "speaker": "Table",
+                "text": "\" MARISHA: Thank you.",
+                "delay": 613
+          },
+          {
+                "speaker": "Table",
+                "text": "MATT: Steps down and begins to make her way out to a side chamber and you hear the door.",
+                "delay": 616
+          },
+          {
+                "speaker": "Table",
+                "text": "(slamming) MARISHA: Oh, she hates us.",
+                "delay": 621
+          },
+          {
+                "speaker": "Table",
+                "text": "LAURA: I can tell.",
+                "delay": 625
+          },
+          {
+                "speaker": "Table",
+                "text": "She just can't stand us.",
+                "delay": 628
+          },
+          {
+                "speaker": "Table",
+                "text": "MATT: There's nobody within the room, but these marble halls are spacious.",
+                "delay": 631
+          },
+          {
+                "speaker": "Table",
+                "text": "amongst the long, marble flooring.",
+                "delay": 635
+          },
+          {
+                "speaker": "Table",
+                "text": "At first, you think you're being-- You feel like you're not being watched or attended to anybody, but-- Laudna, you do glance up and can see what looks to be these two stone hawks that sit at the top of these pillars.",
+                "delay": 639
+          },
+          {
+                "speaker": "Table",
+                "text": "And as you look up and glance, one of them (stone grinding) shifts its head and glances in your direction.",
+                "delay": 649
+          },
+          {
+                "speaker": "Table",
+                "text": "MARISHA: Hello!",
+                "delay": 655
+          },
+          {
+                "speaker": "Table",
+                "text": "LAURA: Hi.",
+                "delay": 658
+          },
+          {
+                "speaker": "Table",
+                "text": "MARISHA: Look at the bird.",
+                "delay": 661
+          },
+          {
+                "speaker": "Table",
+                "text": "LAURA: Oh!",
+                "delay": 664
+          },
+          {
+                "speaker": "Table",
+                "text": "MARISHA: Oh.",
+                "delay": 667
+          },
+          {
+                "speaker": "Table",
+                "text": "LAURA: Is that where the music's coming from, too?",
+                "delay": 670
+          },
+          {
+                "speaker": "Table",
+                "text": "MARISHA: Oh, it's also a speaker.",
+                "delay": 674
+          },
+          {
+                "speaker": "Table",
+                "text": "MATT: (creaking) The door shifts open, and you watch as Kunthea steps out, carrying a small piece of paper, or an envelope, or some sort of folded thing, goes, \"Ah, this was intended to be delivered, \"but could not find your abode, but--\" LAURA: See, I knew it.",
+                "delay": 678
+          },
+          {
+                "speaker": "Table",
+                "text": "I knew it, it's going to say-- MARISHA: It's so complicated.",
+                "delay": 689
+          },
+          {
+                "speaker": "Table",
+                "text": "LAURA: \"Miss Imogen Temult--\" That's me.",
+                "delay": 694
+          },
+          {
+                "speaker": "Table",
+                "text": "I'm just going to open it up right now.",
+                "delay": 698
+          },
+          {
+                "speaker": "Table",
+                "text": "I hope you don't mind, because I would love to find out when we finally get to come, because, you know, we came really far to be able to do this.",
+                "delay": 702
+          },
+          {
+                "speaker": "Table",
+                "text": "\"Miss Imogen Tamolt--\" You spelled my name wrong, but that's all right.",
+                "delay": 709
+          },
+          {
+                "speaker": "Table",
+                "text": "\"We are appreciative for your inquiry \"regarding our internal collection \"of tomes and historical records.",
+                "delay": 714
+          },
+          {
+                "speaker": "Table",
+                "text": "\"Unfortunately, much effort has gone \"into the acquisition of our library for studious purposes, \"and at this time, the Conservatory \"cannot allow individuals \"not enrolled within the Conservatory, \"nor granted approval by either the Guro Cotier--\" Coterie?",
+                "delay": 720
+          },
+          {
+                "speaker": "Table",
+                "text": "MATT: \"Coterie.",
+                "delay": 731
+          }
+    ],
+  },
+  {
     id: 'd20_fh_ep1',
     name: 'The Beginning Begins (Ep. 1) | Fantasy High',
     description: 'Dimension 20 — D&D 5e',
@@ -1747,6 +2507,991 @@ export const IMPORTED_SCENARIOS: Scenario[] = [
     ],
   },
   {
+    id: 'drakkenheim',
+    name: 'Dungeons of Drakkenheim Episode 1: The Rat\'s Nest',
+    description: 'Dungeon Dudes — TTRPG',
+    system: 'TTRPG',
+    context: 'System: TTRPG. Source: Dungeon Dudes. Auto-imported from YouTube captions.',
+    backstories: '',
+    entries: [
+          {
+                "speaker": "Table",
+                "text": "and that is where River will be introducing you to a new companion or an introducing you to a new companion or an old friend hi so I am playing veo Sonia",
+                "delay": 0
+          },
+          {
+                "speaker": "Table",
+                "text": "old friend hi so I am playing veo Sonia I'm a Tabac sea Ranger specifically I'm a Tabac sea Ranger specifically gloom stalker Ranger and I grew up in gloom stalker Ranger and I grew up in the city so you guys mentioned they're the city so you guys mentioned they're gonna be leading this crew no I'm gonna gonna be leading this crew no I'm gonna be leaving this crew because the only be leaving this crew because the only way you're gonna survive in this city is way you're gonna survive in this city is with my help in order to collect the with my help in order to collect the shards so you know I've been on my own shards so you know I've been on my own for a long time in this city ever since for a long time in this city ever since that you know meteor came in and I got that you know meteor came in and I got separated from my family and the only separated from my family and the only way I could survive is to do it I can to way I could survive is to do it I can to survive on the streets you know I made survive on the streets you know I made friends with some Rangers they taught me friends with some Rangers they taught me some skills but ultimately it's has to some skills but ultimately it's has to do with my own survival instincts that do with my own survival instincts that I've made it through and you know I I've made it through and you know I don't want to think back to my dark days don't want to think back to my dark days but I've had to eat some pretty but I've had to eat some pretty interesting things while I've been on interesting things while I've been on the streets of Dragon hime so you know the streets of Dragon hime so you know anytime I can get a good meal around anytime I can get a good meal around here I'm pretty happy about it but here I'm pretty happy about it but that's where River comes in she's that's where River comes in she's actually giving me a couple of good jobs actually giving me a couple of good jobs to collect some of this shiny stuff I to collect some of this shiny stuff I don't know what people are all about don't know what people are all about with the shiny stuff but you don't think with the shiny stuff but you don't think it's me a good sandwich like I'll give it's me a good sandwich like I'll give her as much of that Chinese seven she her as much of that Chinese seven she wants great yes so two of you are wants great yes so two of you are surprised to find River has not appeared surprised to find River has not appeared yet but as you take your places in the yet but as you take your places in the Eckerman mill veio is there and the Eckerman mill veio is there and the rafters above waiting for you to rafters above waiting for you to approach do we notice her that's up to approach do we notice her that's up to her do we know this not yet her do we know this not yet I'm particularly sneaking I've been I'm particularly sneaking I've been around here before around here before so you'll notice me when I want you to so you'll notice me when I want you to notice me Pluto yeah we're supposed to notice me Pluto yeah we're supposed to be here on a pretty big mission but the be here on a pretty big mission but the issue is we lost our navigator it's just issue is we lost our navigator it's just the two of us there used to be five I'm the two of us there used to be five I'm walking over to its it's in like a walking over to its it's in like a corner of the mill where I've carved corner of the mill where I've carved some names from the past and I just some names from the past and I just start to scratch out what names are you start to scratch out what names are you scratching it well there's rat food yeah scratching it well there's rat food yeah our navigator our navigator our navigator around food gimbal and our navigator around food gimbal and chums Kimberlin chubs I read up the chums Kimberlin chubs I read up the whole Jackson five I think that was the whole Jackson five I think that was",
+                "delay": 4
+          },
+          {
+                "speaker": "Table",
+                "text": "the we were we were the five crows no we we were we were the five crows no we were I did not wear the teacher so we were I did not wear the teacher so we were Jackson five and I wrote that above were Jackson five and I wrote that above it I it's boy there's actually several it I it's boy there's actually several titles it says Jackson 5 which is titles it says Jackson 5 which is crossed out and then it says five crows crossed out and then it says five crows which is crossed out and it just repeats which is crossed out and it just repeats that over I I've crossed out rap food that over I I've crossed out rap food and and and chub chubs and gimble yeah and and and chub chubs and gimble yeah we ran into some some sewers filled with we ran into some some sewers filled with rats and they killed rat food it was rats and they killed rat food it was just so unexplained and unexpected they just so unexplained and unexpected they ate him alive we did not see that coming kind of like I I know we've got a little overwhelmed and I mean we've done a overwhelmed and I mean we've done a couple of jobs for River and that was couple of jobs for River and that was probably the only one that really went probably the only one that really went sideways I mean I thought casting",
+                "delay": 8
+          },
+          {
+                "speaker": "Table",
+                "text": "sideways I mean I thought casting darkness would be a good idea until I darkness would be a good idea until I realized I was the only one who could realized I was the only one who could see and none of you could and that see and none of you could and that caused some major issues for the for the caused some major issues for the for the five crows Jackson 5 we're gonna move on five crows Jackson 5 we're gonna move on from that I mean now we're the Jackson - from that I mean now we're the Jackson - I already asked the Royal persuasion I already asked the Royal persuasion it's ok you you can serve but whoever it's ok you you can serve but whoever our new Navigator is I'm sure we won't our new Navigator is I'm sure we won't get them killed get them killed no I jumped down on top of Sebastian no I jumped down on top of Sebastian carrot top oh my gosh smelly cat really carrot top oh my gosh smelly cat really you're here okay I'm a little bit smelly you're here okay I'm a little bit smelly I mean when was last time you you bathe I mean when was last time you you bathe bathing what is bathing point I'm good I bathing what is bathing point I'm good I did not expect to see you here we're did not expect to see you here we're waiting for for a contact actually on a waiting for for a contact actually on a job do you still live around here yeah job do you still live around here yeah yeah I'm supposed to be here for a job yeah I'm supposed to be here for a job to River why haha did she not tell you to River why haha did she not tell you that I was gonna be the one helping you that I was gonna be the one helping you she told me she found us a new navigator she told me she found us a new navigator I'm Dee navigator I mean that makes I'm Dee navigator I mean that makes sense we used to sneak all around the sense we used to sneak all around the city when we were kids you should know I city when we were kids you should know I know this place better than anyone okay know this place better than anyone okay fair enough fair enough yeah who's this guy he's uh don't don't yeah who's this guy he's uh don't don't worry about he's very nice worry about he's very nice he's the meatshield last few seconds of he's the meatshield last few seconds of your meat shield I I hope you last your meat shield I I hope you last longer than our hold navigator hey longer than our hold navigator hey glasses what how many 25 years I've been glasses what how many 25 years I've been I think so something like that yeah I think so something like that yeah count I don't have five fingers so it's count I don't have five fingers so it's kind of like yep kind of like yep counting how do you know her oh yeah counting how do you know her oh yeah we're world child you know this cat i we're world child you know this cat i 100% know Maxie I haven't seen her since 100% know Maxie I haven't seen her since since I left track and I'm but like we since I left track and I'm but like we were we were good buds back in the day were we were good buds back in the day we were we'd like to sneak around we we were we'd like to sneak around we were the only two kind of rebellious were the only two kind of rebellious kids that nobody really liked cuz she kids that nobody really liked cuz she was a tabacky and there weren't many to was a tabacky and there weren't many to Maxie's so some people were like weird Maxie's so some people were like weird cat person and you were like NAT even cat person and you were like NAT even less of them now yeah what did you say less of them now yeah what did you say the Apple I'm just curving cat beside the Apple I'm just curving cat beside our names yeah the three crows do you our names yeah the three crows do you want to be a pro they oh and the want to be a pro they oh and the Pussycats guys oh okay I can [Laughter] as you finish carving the names in the in",
+                "delay": 12
+          },
+          {
+                "speaker": "Table",
+                "text": "the wall you can see the rough maps in the wall you can see the rough maps of Drakon hein that have all been of Drakon hein that have all been scrawled about all the various warnings scrawled about all the various warnings of the various doom various forms of of the various doom various forms of doom which have befallen prior groups to",
+                "delay": 16
+          },
+          {
+                "speaker": "Table",
+                "text": "doom which have befallen prior groups to come into the city all sorts of warnings come into the city all sorts of warnings like saying has anyone ever made it to like saying has anyone ever made it to the crater or whatever happened to that the crater or whatever happened to that old black/ivory in or does anyone found old black/ivory in or does anyone found the treasure at the old vaults by the the treasure at the old vaults by the guild guild hall and others that say guild guild hall and others that say don't go to slaughter stone square and don't go to slaughter stone square and has anyone ever been inside the castle has anyone ever been inside the castle all scroll across the walls questions all scroll across the walls questions almost like a communal message board of almost like a communal message board of adventurers over the past few years that adventurers over the past few years that have dared to venture into Drakon Heim have dared to venture into Drakon Heim trying to leave what scraps of trying to leave what scraps of information they can for each other or information they can for each other or perhaps to mislead potential rivals to perhaps to mislead potential rivals to their doom I'm gonna add rats eat people their doom I'm gonna add rats eat people because I'm a conscious observer just because I'm a conscious observer just before that vo eats rats eats people before that vo eats rats eats people the light scattered rain over the the the light scattered rain over the the building as you look out waiting for building as you look out waiting for your contact river who hasn't quite your contact river who hasn't quite emerged yet but you can see here the emerged yet but you can see here the Eckerman mill is on a low hill Eckerman mill is on a low hill overlooking the city of Drakon Heim from overlooking the city of Drakon Heim from here you can see the rolling Charon here you can see the rolling Charon Hills or the many graveyards burial Hills or the many graveyards burial sites and the people and the nobles that sites and the people and the nobles that once lived in the city are and from once lived in the city are and from there you can see the outskirts of there you can see the outskirts of Drakon Heim and the city walls looming Drakon Heim and the city walls looming in the distance in the distance Drakken Heim itself was built on this Drakken Heim itself was built on this rising rocky hill that kind of borders rising rocky hill that kind of borders the elbow in the dran River the major the elbow in the dran River the major river that is the great way for trade river that is the great way for trade that that was the real the lifeblood of that that was the real the lifeblood of the kingdom when it was still alive but the kingdom when it was still alive but now you look out at a dusky night sky as now you look out at a dusky night sky as dusk begins to fall over the city over dusk begins to fall over the city over billowing purplish clouds the cast the billowing purplish clouds the cast the city kind of in this iridescent light city kind of in this iridescent light there's very rare moments when the there's very rare moments when the clouds part in Drakon Heim these days clouds part in Drakon Heim these days and when there is daylight the sunbeams and when there is daylight the sunbeams almost scorn upon the city like they almost scorn upon the city like they don't want to shine on it directly there don't want to shine on it directly there really hasn't been a clear day in Drakon really hasn't been a clear day in Drakon Heim for 15 years since the meteor fell Heim for 15 years since the meteor fell as night is beginning to fall you can as night is beginning to fall you can see in the distance there's an see in the distance there's an oscillating corona of octarine light oscillating corona of octarine light octarine the color of magic which octarine the color of magic which blossoms around blossoms around Drakken Heim and erupts from various Drakken Heim and erupts from various points in the city the most prominent points in the city the most prominent which of which is where the crater is which of which is where the crater is the spot where the meteor that were the spot where the meteor that",
+                "delay": 20
+          },
+          {
+                "speaker": "Table",
+                "text": "were landed in the city and in the city's landed in the city and in the city's southward 15 years ago and wiped out southward 15 years ago and wiped out most of the people in the city leaving most of the people in the city leaving behind a twisted and ruined landscape behind a twisted and ruined landscape but much of the city still remains in",
+                "delay": 24
+          },
+          {
+                "speaker": "Table",
+                "text": "but much of the city still remains in fact the towering buildings of the fact the towering buildings of the cathedral of the castle still loom over cathedral of the castle still loom over the city and the city walls for their the city and the city walls for their most part are still intact their most part are still intact their cobblestone streets that we threw cobblestone streets that we threw crumbling stone buildings and slate crumbling stone buildings and slate shingle roof tops the city walls now are shingle roof tops the city walls now are covered with ash and soot because most covered with ash and soot because most of the city was on fire for a quite a of the city was on fire for a quite a while afterwards and in time since while afterwards and in time since places become overgrown as more places become overgrown as more buildings have collapsed and fallen over buildings have collapsed and fallen over but of course like nothing else there but of course like nothing else there are the three great buildings of the are the three great buildings of the city that loom out over Drakon Heim a city that loom out over Drakon Heim a great castle perches on a cliff at the great castle perches on a cliff at the heart of the city the castle has heart of the city the castle has imposing stained black towers topped by imposing stained black towers topped by high steeples and spear points and the high steeples and spear points and the massive central spire of the castle you massive central spire of the castle you can see even though it's a few miles can see even though it's a few miles away it's decorated with intricate stone away it's decorated with intricate stone gargoyles that gargoyles that we're said to watch over the city Vail we're said to watch over the city Vail you've seen them every day that you've you've seen them every day that you've lived in the city but you've never seen lived in the city but you've never seen the resting in the same place twice the resting in the same place twice they're pretty great be so creepy yeah they're pretty great be so creepy yeah looming almost as high actually higher looming almost as high actually higher still than the castle itself is the still than the castle itself is the shattered Tower of the amethyst Academy shattered Tower of the amethyst Academy the tallest building in Drakon Heim the tallest building in Drakon Heim which has a massive hole in the side of which has a massive hole in the side of the tower yet the top side of the tower the tower yet the top side of the tower floats still in the air in defiance of floats still in the air in defiance of gravity even after the it said a piece gravity even after the it said a piece of the meteor crashed right through the of the meteor crashed right through the building and yet it did not fall finally building and yet it did not fall finally there are the great spires of the old there are the great spires of the old Cathedral of the sacred flame which even Cathedral of the sacred flame which even now the bells still chime at midnight as now the bells still chime at midnight as you look out over on to the the city you you look out over on to the the city you hear a rough set of footsteps hear a rough set of footsteps approaching over the hill there are two approaching over the hill there are two pairs one very light that only veio can pairs one very light that only veio can barely pick up and one quite heavy like barely pick up and one quite heavy like a pair of armored boots a short while a pair of armored boots a short while later you can see in the flickering later you can see in the flickering torch light that you have running around torch light that you have running around your campfire your campfire the person approaching she's a woman at the person approaching she's a woman at a fling with her hood drawn up over but a fling with her hood drawn up over but you can still see out of her hood this you can still see out of her hood this long kind of wavy blue hair hanging down long kind of wavy blue hair hanging down and you just see at first her mottled and you just see at first her mottled brown skin as she pulls back her hood brown skin as she",
+                "delay": 28
+          },
+          {
+                "speaker": "Table",
+                "text": "pulls back her hood and you can see the familiar spectacles and you can see the familiar spectacles of River your old friend she smiles of River your old friend she smiles warmly as you approach and following up warmly as you approach and following up behind her is a looming figure clad in behind her is a looming figure clad in plate mail its face shrouded in darkness plate mail its face shrouded in darkness holding holding in its hands its shield holding holding in its hands its shield and a flaming longsword River smiles",
+                "delay": 32
+          },
+          {
+                "speaker": "Table",
+                "text": "and a flaming longsword River smiles warmly and says Sebastian Baio and Pluto warmly and says Sebastian Baio and Pluto it's good to see you all thank you for it's good to see you all thank you for meeting me so late meeting me so late it's good to it's good to River yet do you River yet do you veo do you have the last order I asked veo do you have the last order I asked for yeah there you go because shiny I've for yeah there you go because shiny I've seen her a long time seen her a long time she pulls out her hand and reaches into she pulls out her hand and reaches into her purple cloak pulling out a very her purple cloak pulling out a very thick pair of leather gloves and she thick pair of leather gloves and she pulls them over herself and reaches out pulls them over herself and reaches out for the shard and I don't know I should for the shard and I don't know I should be touching this with my bare hand but I be touching this with my bare hand but I mean it's it's a curious fact everyone mean it's it's a curious fact everyone else handles them with gloves but you're else handles them with gloves but you're the only one that's actually picked one the only one that's actually picked one up she looks at the shard which is a up she looks at the shard which is a small crystal no larger than a gold coin small crystal no larger than a gold coin but even as the night begins to fall the but even as the night begins to fall the purple crystal starts to glow and purple crystal starts to glow and Sebastian you can actually feel the Sebastian you can actually feel the magic radiating off of it it's it's magic radiating off of it it's it's almost like someone is holding a almost like someone is holding a delightful treat in their hands in front delightful treat in their hands in front of you and even river kind of looks down of you and even river kind of looks down upon it with hungry eyes as she very upon it with hungry eyes as she very carefully puts it into a pouch and carefully puts it into a pouch and produces another very wet sopping and produces another very wet sopping and smelly bag and hands it to you eh oh smelly bag and hands it to you eh oh yeah and inside are several fish this is yeah and inside are several fish this is why we do good business indeed indeed why we do good business indeed indeed thank you very much for your patronage thank you very much for your patronage as as always around yeah dangerous gem as as always around yeah dangerous gem yeah yeah delirium that's what I do strange I delirium that's what I do strange I didn't sense it on you anyway it's my didn't sense it on you anyway it's my feline aura maybe maybe you just feline aura maybe maybe you just overpowered it with your smell it overpowered it with your smell it happens sure that is I couldn't but yeah happens sure that is I couldn't but yeah yeah that's not the building that was yeah that's not the building that was just dragging her no that's that's her unfortunate love to catch up but as usual I have to be on my way to the next usual I have to be on my way to the next meeting shortly but though it's been meeting shortly but though it's been lovely that you've been able to collect lovely that you've been able to collect these little shards of delirium for us these little shards of delirium for us it's uh it's been rather enlightening it's uh it's been rather enlightening and it's good that we have one contact and it's good that we have one contact and now three good contacts in the city and now three good contacts in the city I'd like you to go after something a I'd like you to go after something a little bit larger this time we talking little bit larger this time we talking like baseball-sized or we don't know like baseball-sized or we don't know what baseball is that's a weird actually what baseball is that's a weird actually baseball was the national pastime of baseball was the national pastime of Drakon Haim there's a very famous Drakon Haim there's a very famous baseball diamond on the outskirts of the baseball diamond on the outskirts of the city are we talking baseball sized um",
+                "delay": 36
+          },
+          {
+                "speaker": "Table",
+                "text": "city are we talking baseball sized um well a small diamond size are you well a small diamond size are you talking like finger sandwiches or like talking like finger sandwiches or like submarines we're talking submarines submarines we're talking submarines yeah we're talking some big sandwiches yeah we're talking some big sandwiches here there so the word on the street is here there so the word on the street is that there are several smaller craters that there are several smaller craters throughout the city a few of them were throughout the city a few of them were plundered a very very long time ago plundered a very very long time ago they kept for larger shards of the they kept for larger shards of the Delirium but I heard about a group of Delirium but I heard about a group of bandits that wipe themselves out by an bandits that wipe themselves out by an old tavern and I think there might be a old tavern and I think there might be a crater in the ruins itself hmm what's crater in the ruins itself hmm what's the witch tavern the witch tavern it's an old place on the outskirts of it's an old place on the outskirts of town called the rat's nest town called the rat's nest it's actually really shocking that it's it's actually really shocking that it's lasted this long no it's just called the lasted this long no it's just called the rat's nest don't worry we dealt with rat's nest don't worry we dealt with rats last time it didn't go well rats last time it didn't go well I'm sure there's no rats in the rats I'm sure there's no rats in the rats nest I have a question yeah is there nest I have a question yeah is there rats I mean the city's swarming with rat rats I mean the city's swarming with rat folk now but usually they're in the in folk now but usually they're in the in the older parts of the city where the the older parts of the city where the sewers are the rats nest is off one of sewers are the rats nest is off one of the main roads heading into Drakon Haim the main roads heading into Drakon Haim proper it's on the outskirts on the west proper it's on the outskirts on the west side of the city so hopefully there's no side of the city so hopefully there's no sewer systems out there and that means sewer systems out there and that means the rat folk are probably going to be the rat folk are probably going to be pretty sparse pretty sparse but who's to say I mean it would be but who's to say I mean it would be pretty ironic if the rat's nest was pretty ironic if the rat's nest was inhabited by actual rat links almost as inhabited by actual rat links almost as ironic as rat foods death IIIi don't ironic as rat foods death IIIi don't mind rats like I'll kill him cuz I love mind rats like I'll kill him cuz I love killing but I just I like to you know killing but I just I like to you know set my sights higher you know I like to set my sights higher you know I like to have I look for the the trophy hunt it's have I look for the the trophy hunt it's very curious like our to Baxi friend very curious like our to Baxi friend here it seems like the rats and the cats here it seems like the rats and the cats of the city aren't as affected by the of the city aren't as affected by the delirium as anyone else might be as you delirium as anyone else might be as you know deeper in the city the delirium know deeper in the city the delirium actually is so thick that it emits a actually is so thick that it emits a haze that is intoxicating and can kill haze that is intoxicating and can kill you in a few hours if you go deep into you in a few hours if you go deep into the city and gods preserve you if you the city and gods preserve you if you try to go close to the crater but we try to go close to the crater but we think that these deposit this crater think that these deposit this crater further out from the city might be a further out from the city might be a large shard that we might be able to large shard that we might be able to investigate or perhaps build into a investigate",
+                "delay": 40
+          },
+          {
+                "speaker": "Table",
+                "text": "or perhaps build into a magic item most importantly here magic item most importantly here normally I would just do this on my own normally I would just do this on my own really be honest do I have to share the really be honest do I have to share the cookie dough with these guys um I don't cookie dough with these guys um I don't know if they like cookies yeah can we know if they like cookies yeah can we not get cookie dough can we get money not get cookie dough can we get money yes yes the amethyst Academy can pay you yes yes the amethyst Academy can pay you for your troubles will pay you for your troubles will pay you commercially with the weight of whatever",
+                "delay": 44
+          },
+          {
+                "speaker": "Table",
+                "text": "commercially with the weight of whatever delirium that you recover and of course delirium that you recover and of course normally you bring us shards but if you normally you bring us shards but if you bring us a larger piece it'll be worth bring us a larger piece it'll be worth double what if it's more than twice as double what if it's more than twice as large large well then we'll talk we'd prefer that well then we'll talk we'd prefer that you handle this with discretion and you handle this with discretion and speed right now a few of the other speed right now a few of the other groups that are coming into the city groups that are coming into the city don't yet know that we've returned at don't yet know that we've returned at the amethyst Academy and we have a few the amethyst Academy and we have a few other goals but we'd rather other groups other goals but we'd rather other groups like the old city watch like the old city watch and some of the others from the church and some of the others from the church don't know that we're working in the don't know that we're working in the city quite yet of course if we're gonna city quite yet of course if we're gonna have a little discretion than this how have a little discretion than this how do I say retrieval maybe you could give do I say retrieval maybe you could give us offer us a favor us offer us a favor when we return your continued discretion when we return your continued discretion will ensure your continued employment will ensure your continued employment caspia likes didn't dig that yes we know caspia likes didn't dig that yes we know about your connections mr.",
+                "delay": 48
+          },
+          {
+                "speaker": "Table",
+                "text": "Pulido about your connections mr.",
+                "delay": 105
+          },
+          {
+                "speaker": "Table",
+                "text": "ever hold we've never succeeded in cutting it into smaller pieces and we've cutting it into smaller pieces and we've never succeeded in forging it together never succeeded in forging it together into one larger piece that's why it's so into one larger piece that's why it's so important that we get an intact large important that we get an intact large piece of delirium that way we'll piece of delirium that way we'll actually be able to make some headway actually be able to make some headway and figuring out what it's actually made and figuring out what it's actually made of and where it comes from of and where it comes from you just keep serving the sushi and I you just keep serving the sushi and I will serve you up that big shiny we'll will serve you up that big shiny we'll have some salmon and haddock next time I have some salmon and haddock next time I know you've been getting sick of tuna know you've been getting sick of tuna but the addition doesn't hurt fantastic but the addition doesn't hurt fantastic well Sebastian it was good to see you well Sebastian it was good to see you vapor you as well vapor you as well Pluto was nice meeting you again I'm Pluto was nice meeting you again I'm going to be on my way and she turns and going to be on my way and she turns and heads into the night I wave bye to the heads into the night I wave bye to the mysterious stranger to the big armour mysterious stranger to the big armour see ya it turned slowly and it kind of see ya it turned slowly and it kind of like tips its helmet I call him Georgie like tips its helmet I call him Georgie ah no I've never asked ya ah no I've never asked ya the the amethyst Academy is a strange the the amethyst Academy is a strange bunch of people bunch of people Sebastian you'd never been in any of Sebastian you'd never been in any of their larger towers but the actual their larger towers but the actual members of the amethyst Academy usually members of the amethyst Academy usually always have some sort of strange body always have some sort of strange body guard like that did I when I was with guard like that did I when I was with them no because you were just an them no because you were just an apprentice I didn't do very well with apprentice I didn't do very well with with that whole thing but anyway we got with that whole thing but anyway we got some names on a wall some names on a wall you've been added welcome to the three you've been added welcome to the three crows Jackson and are going to be on our crows Jackson and are going to be on our way I guess to the rat's nest way I guess to the rat's nest it's an old tavern right it is it's an it's an old tavern right it is it's an old Tavern on the outskirts of the west old Tavern on the outskirts of the west side of the city of course being outside side of the city of course being outside of the city wall of the city wall proper in an area of the city known proper in an area of the city known during the city's life as the sprawl during the city's life as the sprawl it's a bit of a rundown ramshackle part it's a bit of a rundown ramshackle part of the city especially as soon as you of the city especially as soon as you get off the shepherds Road which it get off the shepherds Road which it leads to the main gate it's not far from leads to the main gate it's not far from where the hooded lanterns the remnants where the hooded lanterns the remnants of the city watch still keep their of the city watch still keep their barracks at Shepherds gate which is one barracks at Shepherds gate which is one of the five main gates leading into of the five main gates leading into Drakon Heim but still it's a violent Drakon Heim but still it's a violent area of the city and the mostly because area of the city and the mostly because it's crawling with scavengers because it's crawling with scavengers because the hooded lanterns won't let anyone use the hooded lanterns won't let anyone use the Shepherd's gate now they owe this the Shepherd's gate now they owe this has been part of your increasing problem has been part of your increasing problem",
+                "delay": 109
+          },
+          {
+                "speaker": "Table",
+                "text": "is that it's very difficult to get into is that it's very difficult to get into the inner part of Drakon Heim nowadays the inner part of Drakon Heim nowadays don't try to go over the city walls go don't try to go over the city walls go over the city walls over the city walls Pluto Jackson I bet you cannot make it Pluto Jackson I bet you cannot make it over those walls I can probably make it over those walls I can probably make it over the city walls I think you could",
+                "delay": 113
+          },
+          {
+                "speaker": "Table",
+                "text": "over the city walls I think you could make it over when we get there make it over when we get there oh oh scope it out there's no way you oh oh scope it out there's no way you could do it I shudder to think of what could do it I shudder to think of what I've seen with people that try to get I've seen with people that try to get over those walls all I'm telling you is over those walls all I'm telling you is you see the fun thing is don't do it you see the fun thing is don't do it just tell Pluto that he can't do just tell Pluto that he can't do something and then watch him try they something and then watch him try they still people and of course it's no still people and of course it's no easier to get into the in through the easier to get into the in through the other city gates for in recent times other city gates for in recent times many pilgrim pilgrim have come to Drakon many pilgrim pilgrim have come to Drakon Heim following a faith that has been an Heim following a faith that has been an offshoot of the sacred fire called the offshoot of the sacred fire called the falling fire coming believing that the falling fire coming believing that the crater and the meteor are a sign of crater and the meteor are a sign of changing times this group the cult of changing times this group the cult of the falling fire as people have started the falling fire as people have started calling them now control the gates calling them now control the gates leading into the southward and the other leading into the southward and the other gates are filled with monsters making it gates are filled with monsters making it very difficult to get into the inner very difficult to get into the inner parts of Drakon Heim nowadays and of parts of Drakon Heim nowadays and of course going through the sewers and the course going through the sewers and the under tunnels all the dungeons beneath under tunnels all the dungeons beneath the city is possible but the city is possible but what's down there is even worse than what's down there is even worse than what stalks the city streets sounds like what stalks the city streets sounds like a great place other rats yummy if you a great place other rats yummy if you can barbecue them just the right way I can barbecue them just the right way I mean like the one benefit that we have mean like the one benefit that we have our previous navigator the last thing he our previous navigator the last thing he said was I hope there's not rats down said was I hope there's not rats down here and then he was eaten by rats at here and then he was eaten by rats at least veo has eaten many rats so we have least veo has eaten many rats so we have that on our side yeah God do what you that on our side yeah God do what you got to do the odds are better on this got to do the odds are better on this one I think they're pretty good with me one I think they're pretty good with me just saying like alright abilities just saying like alright abilities onward companion it is late into the onward companion it is late into the evening and yet you still venture out evening and yet you still venture out into the city but not with a good reason into the city but not with a good reason for even though the city is dark at for even though the city is dark at night it seems like the clouds only night it seems like the clouds only disperse at night and this is when you disperse at night and this is when you can see the moon and stars hovering over can see the moon and stars hovering over the city almost like they're mourning the city almost like they're mourning over the corpse of dragon hime but at over the corpse of dragon hime but at this time the ghost lights the the soul this time the ghost lights the the soul lights for appear for the delirium glows lights for appear for the delirium glows by night making it much easier to locate by night making it much easier to locate where you're headed I love that do where you're headed I love that do chakra as we call it the soul of the chakra as we call it the soul",
+                "delay": 117
+          },
+          {
+                "speaker": "Table",
+                "text": "of the city is beautiful definitely is the only city is beautiful definitely is the only beautiful thing you will probably see in beautiful thing you will probably see in the city so be prepared for that is the city so be prepared for that is there like a a big glow coming from a there like a a big glow coming from a particular part of by nighttime the glow particular part of by nighttime the glow coming from the great crater can be seen coming from the great crater can be seen all throughout the city and it's kind of all throughout the city and it's kind of like the the way that you can orient like the the way that you can orient where you are in Drakon hime is just",
+                "delay": 121
+          },
+          {
+                "speaker": "Table",
+                "text": "where you are in Drakon hime is just look up and look for the bright light look up and look for the bright light that's coming from that direction but by that's coming from that direction but by wheeling around the crater and facing wheeling around the crater and facing away from it you can see other bits of away from it you can see other bits of light sometimes indicating spirits light sometimes indicating spirits campfires other adventurers but in other campfires other adventurers but in other cases you can see that distinct purple cases you can see that distinct purple glow the octene back light of the glow the octene back light of the of the Delirium and that is the easiest of the Delirium and that is the easiest way to find it because during the day way to find it because during the day it is a it's more of a dull purple until it is a it's more of a dull purple until someone until it's either exposed to someone until it's either exposed to magic or by the light of the moon itself cool beautiful it's alright how far is yeah it's gonna it's alright how far is yeah it's gonna be a long walk won't Drakon hime itself be a long walk won't Drakon hime itself is is about a city 4 square miles in is is about a city 4 square miles in size with the core of the city being the size with the core of the city being the inner square mile and you're only maybe inner square mile and you're only maybe about 2 miles out from Drakken Heim about 2 miles out from Drakken Heim right now from the mill you can see the right now from the mill you can see the city and you can take either the the city and you can take either the the North Road or the Shepherd's road North Road or the Shepherd's road leading you into the city proper with leading you into the city proper with the rat's nest being kind of in the area the rat's nest being kind of in the area between the North Road and the between the North Road and the Shepherd's road on the on the northwest Shepherd's road on the on the northwest side okay I say that we just had side okay I say that we just had straight there I mean do we want to take straight there I mean do we want to take one of the main roads or do you guys one of the main roads or do you guys think I mean you're the Navigator here think I mean you're the Navigator here necessarily take one of the main roads necessarily take one of the main roads but luckily I can get you there twice as but luckily I can get you there twice as fast as anybody else all right yeah what fast as anybody else all right yeah what ways best let's take there's a couple off sheets of streets that are good just can you of streets that are good just can you see in the dark with this giant glow let see in the dark with this giant glow let the computer on but with magic by the by the computer on but with magic by the by the light of the moon and with the the light of the moon and with the background glow of the Delirium and the background glow of the Delirium and the haze it's almost like erie street lights haze it's almost like erie street lights illuminating the city at night it's not illuminating the city at night it's not bright by any means but it's enough to bright by any means but it's enough to see your way and with a torture a hooded see your way and with a torture a hooded Lantern as befits the name of the hooded Lantern as befits the name of the hooded lanterns who carry them now you can make lanterns who carry them now you can make your way quite fine your way quite fine for the two of you with your shadowy for the two of you with your shadowy abilities it's of no concern so you abilities it's of no concern so you probably will still want to carry a probably will still want to carry a lantern of some kind as you travel if lantern of some kind as you travel if you can't see in Java I'll have a torch you can't see in Java I'll have a torch going okay long as you can keep up going okay long as you can keep up so I'm guessing veo will aid the way",
+                "delay": 125
+          },
+          {
+                "speaker": "Table",
+                "text": "what about the what about the two of you how will you follow her into the city I how will you follow her into the city I I say we put Pluto in the middle since I say we put Pluto in the middle since he's the most likely to get lost okay okay no I want to go the back you're gonna get solos you should just you're gonna get solos you should just tie a rope around his wrists and you tie a rope around his wrists and you know like one of those like hey hey I'm know like one of those like hey hey I'm a prince okay I like a baby leash I have a prince okay I like a baby leash I have a sense of nobility and honor and a sense of nobility and honor and direction and you know what at least direction and you know what at least actually might not be a bad idea no III actually might not be a bad idea no III have too much pride for a leash have too much pride for a leash I'd rather get lost and die then all I'd rather get lost and die then all right walk in the back okay before we right walk in the back okay before we travel into these deep dark streets is travel into these deep dark streets is that if you see something that isn't that if you see something that isn't shouldn't be there mmm you probably shouldn't be there mmm you probably shouldn't go near it shouldn't go near it that's probably one be fair I've never that's probably one be fair I've never been here before so everything I don't been here before so everything I don't know what's supposed to be so don't go know what's supposed to be so don't go near any of it what if somebody needs near any of it what if somebody needs help help I mean people gotta learn to survive on I mean people gotta learn to survive on their own out here why do you think I've their own out here why do you think I've survived so long yeah but what if they survived so long yeah but what if they need help and what if I needed to learn need help and what if I needed to learn how to survive on my own and that's why how to survive on my own and that's why I need to go look at things I mean let's I need to go look at things I mean let's just play it by ear if there's a just play it by ear if there's a situation that arises situation that arises we'll probably maybe try to avoid it we'll probably maybe try to avoid it unless we decide to get involved which unless we decide to get involved which we will I'm trying to impart my good old we will I'm trying to impart my good old survival instincts on you you guys don't survival instincts on you you guys don't have those instincts naturally I'm sorry have those instincts naturally I'm sorry to say that I may not be able to do much to say that I may not be able to do much for you realize we've survived this for you realize we've survived this whole time we've only lost 17 crews whole time we've only lost 17 crews statistically speaking our guides are statistically speaking our guides are more likely gonna die than access more likely gonna die than access numbers they know that this is probably numbers they know that this is probably the exception to the rule the exception to the rule yeah well little warning to you and I'm yeah well little warning to you and I'm this isn't a threat I really hope that this isn't a threat I really hope that you survive but nobody that's ever you survive but nobody that's ever traveled with us has survived I will say traveled with us has survived I will say that sometimes it's Pluto's fault moving that sometimes it's Pluto's fault moving things in the dark things in the dark Klunk Klunk whatever can we sing I think Klunk Klunk whatever can we sing I think I would like to hear a good Pulido I would like to hear a good Pulido Jackson song anything anyway onwards we Jackson song anything anyway onwards we go killed okay with that you be make go killed okay with that you be make your way across the fields of the Karen your way across the fields of the Karen Hills following along the Shepherds road Hills following along the Shepherds road to the outskirts of the city what",
+                "delay": 129
+          },
+          {
+                "speaker": "Table",
+                "text": "were to the outskirts of the city what were farmhouses isolated monuments Karen's farmhouses isolated monuments Karen's and small family graveyard plots be and small family graveyard plots be break for the first outer buildings the",
+                "delay": 133
+          }
+    ],
+  },
+  {
+    id: 'glass_cannon',
+    name: 'Probably the Moon | The Glass Cannon Podcast Shadowdark E1 | Shadowdark RPG',
+    description: 'The Glass Cannon Network — TTRPG',
+    system: 'TTRPG',
+    context: 'System: TTRPG. Source: The Glass Cannon Network. Auto-imported from YouTube captions.',
+    backstories: '',
+    entries: [
+          {
+                "speaker": "Table",
+                "text": "on the spot.",
+                "delay": 0
+          },
+          {
+                "speaker": "Table",
+                "text": "But it all came together.",
+                "delay": 3
+          },
+          {
+                "speaker": "Table",
+                "text": "We the spot.",
+                "delay": 6
+          },
+          {
+                "speaker": "Table",
+                "text": "But it all came together.",
+                "delay": 9
+          },
+          {
+                "speaker": "Table",
+                "text": "We rolled the name of what it was and it rolled the name of what it was and it was like ruins of a citadel named the was like ruins of a citadel named the citadel of the holy flame and there WAS citadel of the holy flame and there WAS LIKE LIKE &gt;&gt; OH MY GOD JUST GOT CHILLS.",
+                "delay": 12
+          },
+          {
+                "speaker": "Table",
+                "text": "&gt;&gt; OH MY GOD JUST GOT CHILLS.",
+                "delay": 24
+          },
+          {
+                "speaker": "Table",
+                "text": "&gt;&gt; THE [laughter] group my group was &gt;&gt; THE [laughter] group my group was fantastic.",
+                "delay": 28
+          },
+          {
+                "speaker": "Table",
+                "text": "I love you guys.",
+                "delay": 34
+          },
+          {
+                "speaker": "Table",
+                "text": "They came up fantastic.",
+                "delay": 37
+          },
+          {
+                "speaker": "Table",
+                "text": "I love you guys.",
+                "delay": 40
+          },
+          {
+                "speaker": "Table",
+                "text": "They came up with this idea cuz they were first level with this idea cuz they were first level and they were like how about the a team and they were like how about the a team already went in and they like the already went in and they like the citadel's destroyed the battle is fought citadel's destroyed the battle is fought and we're like the cleanup crew who are and we're like the cleanup crew who are supposed to just get this idea.",
+                "delay": 43
+          },
+          {
+                "speaker": "Table",
+                "text": "They're supposed to just get this idea.",
+                "delay": 60
+          },
+          {
+                "speaker": "Table",
+                "text": "They're supposed to get like a hostage like one supposed to get like a hostage like one guy.",
+                "delay": 64
+          },
+          {
+                "speaker": "Table",
+                "text": "So they're like, \"We're just guy.",
+                "delay": 70
+          },
+          {
+                "speaker": "Table",
+                "text": "So they're like, \"We're just supposed to get this one guy.",
+                "delay": 74
+          },
+          {
+                "speaker": "Table",
+                "text": "That's our supposed to get this one guy.",
+                "delay": 78
+          },
+          {
+                "speaker": "Table",
+                "text": "That's our whole mission is to get one guy.",
+                "delay": 82
+          },
+          {
+                "speaker": "Table",
+                "text": "\" And it whole mission is to get one guy.",
+                "delay": 86
+          },
+          {
+                "speaker": "Table",
+                "text": "\" And it just everything flowed.",
+                "delay": 90
+          },
+          {
+                "speaker": "Table",
+                "text": "It came just everything flowed.",
+                "delay": 94
+          },
+          {
+                "speaker": "Table",
+                "text": "It came together.",
+                "delay": 98
+          },
+          {
+                "speaker": "Table",
+                "text": "I My nerves went away and like together.",
+                "delay": 101
+          },
+          {
+                "speaker": "Table",
+                "text": "I My nerves went away and like the improv was so fun.",
+                "delay": 105
+          },
+          {
+                "speaker": "Table",
+                "text": "No character the improv was so fun.",
+                "delay": 109
+          },
+          {
+                "speaker": "Table",
+                "text": "No character deaths.",
+                "delay": 113
+          },
+          {
+                "speaker": "Table",
+                "text": "Almost one.",
+                "delay": 116
+          },
+          {
+                "speaker": "Table",
+                "text": "Almost one.",
+                "delay": 119
+          },
+          {
+                "speaker": "Table",
+                "text": "&gt;&gt; Yeah.",
+                "delay": 122
+          },
+          {
+                "speaker": "Table",
+                "text": "I didn't get anybody either.",
+                "delay": 125
+          },
+          {
+                "speaker": "Table",
+                "text": "&gt;&gt; Yeah.",
+                "delay": 128
+          },
+          {
+                "speaker": "Table",
+                "text": "I didn't get anybody either.",
+                "delay": 131
+          },
+          {
+                "speaker": "Table",
+                "text": "&gt;&gt; Almost one.",
+                "delay": 134
+          },
+          {
+                "speaker": "Table",
+                "text": "One went down and was &gt;&gt; Almost one.",
+                "delay": 137
+          },
+          {
+                "speaker": "Table",
+                "text": "One went down and was unconscious.",
+                "delay": 141
+          },
+          {
+                "speaker": "Table",
+                "text": "unconscious.",
+                "delay": 145
+          },
+          {
+                "speaker": "Table",
+                "text": "&gt;&gt; Nice.",
+                "delay": 148
+          },
+          {
+                "speaker": "Table",
+                "text": "&gt;&gt; Nice.",
+                "delay": 151
+          },
+          {
+                "speaker": "Table",
+                "text": "&gt;&gt; Was nice.",
+                "delay": 154
+          },
+          {
+                "speaker": "Table",
+                "text": "&gt;&gt; Was nice.",
+                "delay": 157
+          },
+          {
+                "speaker": "Table",
+                "text": "&gt;&gt; I took I took two people down and they &gt;&gt; I took I took two people down and they both rolled natural 20s to not only both rolled natural 20s to not only stabilize, but regain that's incredible.",
+                "delay": 160
+          },
+          {
+                "speaker": "Table",
+                "text": "stabilize, but regain that's incredible.",
+                "delay": 169
+          },
+          {
+                "speaker": "Table",
+                "text": "They had to roll a really high uh uh They had to roll a really high uh uh healing check and they they rolled it.",
+                "delay": 173
+          },
+          {
+                "speaker": "Table",
+                "text": "healing check and they they rolled it.",
+                "delay": 179
+          },
+          {
+                "speaker": "Table",
+                "text": "But yeah, it was it was touch and go.",
+                "delay": 183
+          },
+          {
+                "speaker": "Table",
+                "text": "It But yeah, it was it was touch and go.",
+                "delay": 187
+          },
+          {
+                "speaker": "Table",
+                "text": "It was it was awesome.",
+                "delay": 191
+          },
+          {
+                "speaker": "Table",
+                "text": "was it was awesome.",
+                "delay": 194
+          },
+          {
+                "speaker": "Table",
+                "text": "I was like, who knew players could add so much to a game?",
+                "delay": 198
+          },
+          {
+                "speaker": "Table",
+                "text": "so much to a game?",
+                "delay": 202
+          },
+          {
+                "speaker": "Table",
+                "text": "&gt;&gt; Do you do you guys do that?",
+                "delay": 205
+          },
+          {
+                "speaker": "Table",
+                "text": "&gt;&gt; Do you do you guys do that?",
+                "delay": 209
+          },
+          {
+                "speaker": "Table",
+                "text": "&gt;&gt; Yeah, that's Well, that's why I'm &gt;&gt; Yeah, that's Well, that's why I'm nervous today [laughter] cuz I'm like, nervous today [laughter] cuz I'm like, man, I got a lot of work to do.",
+                "delay": 213
+          },
+          {
+                "speaker": "Table",
+                "text": "In these man, I got a lot of work to do.",
+                "delay": 222
+          },
+          {
+                "speaker": "Table",
+                "text": "In these OSR games, you got to bring a lot.",
+                "delay": 226
+          },
+          {
+                "speaker": "Table",
+                "text": "You OSR games, you got to bring a lot.",
+                "delay": 230
+          },
+          {
+                "speaker": "Table",
+                "text": "You don't reference your character sheet to don't reference your character sheet to figure out what you can do.",
+                "delay": 234
+          },
+          {
+                "speaker": "Table",
+                "text": "figure out what you can do.",
+                "delay": 240
+          },
+          {
+                "speaker": "Table",
+                "text": "&gt;&gt; That's the thing that struck me too is &gt;&gt; That's the thing that struck me too is listening to some kind of philosophy listening to some kind of philosophy like OSR kind of philosophy is that it like OSR kind of philosophy is that it really is there's so much more weight really is there's so much more weight and responsibility placed on the and responsibility placed on the players.",
+                "delay": 243
+          },
+          {
+                "speaker": "Table",
+                "text": "One of the things that again players.",
+                "delay": 259
+          },
+          {
+                "speaker": "Table",
+                "text": "One of the things that again Sly Flourish mentioned was that it's a Sly Flourish mentioned was that it's a the sort of GM advice was like don't the sort of GM advice was like don't answer any question that isn't asked.",
+                "delay": 263
+          },
+          {
+                "speaker": "Table",
+                "text": "answer any question that isn't asked.",
+                "delay": 273
+          },
+          {
+                "speaker": "Table",
+                "text": "&gt;&gt; Oo.",
+                "delay": 277
+          },
+          {
+                "speaker": "Table",
+                "text": "So like don't volunteer anything, &gt;&gt; Oo.",
+                "delay": 280
+          },
+          {
+                "speaker": "Table",
+                "text": "So like don't volunteer anything, but it's up to us to kind of say like I but it's up to us to kind of say like I look behind that pillar look behind that pillar &gt;&gt; like oh okay well there's a goblin back &gt;&gt; like oh okay well there's a goblin back there whatever it is.",
+                "delay": 284
+          },
+          {
+                "speaker": "Table",
+                "text": "It's just like there whatever it is.",
+                "delay": 296
+          },
+          {
+                "speaker": "Table",
+                "text": "It's just like it's on us to kind of it's on us to kind of &gt;&gt; force you know to to drive the story &gt;&gt; force you know to to drive the story that agency is there that sort of isn't that agency is there that sort of isn't in a lot of the other games that we've in a lot of the other games that we've played.",
+                "delay": 300
+          },
+          {
+                "speaker": "Table",
+                "text": "&gt;&gt; Yeah.",
+                "delay": 313
+          },
+          {
+                "speaker": "Table",
+                "text": "Is there a mirror on the &gt;&gt; Yeah.",
+                "delay": 316
+          },
+          {
+                "speaker": "Table",
+                "text": "Is there a mirror on the wall or anything in here?",
+                "delay": 320
+          },
+          {
+                "speaker": "Table",
+                "text": "wall or anything in here?",
+                "delay": 324
+          },
+          {
+                "speaker": "Table",
+                "text": "&gt;&gt; Sure.",
+                "delay": 327
+          },
+          {
+                "speaker": "Table",
+                "text": "You know what I mean?",
+                "delay": 330
+          },
+          {
+                "speaker": "Table",
+                "text": "&gt;&gt; Sure.",
+                "delay": 333
+          },
+          {
+                "speaker": "Table",
+                "text": "You know what I mean?",
+                "delay": 336
+          },
+          {
+                "speaker": "Table",
+                "text": "Obviously you have a good idea of what Obviously you have a good idea of what to do with a mirror.",
+                "delay": 339
+          },
+          {
+                "speaker": "Table",
+                "text": "I'm like, nah, to do with a mirror.",
+                "delay": 345
+          },
+          {
+                "speaker": "Table",
+                "text": "I'm like, nah, [laughter] [laughter] &gt;&gt; this was not a vain owner of this room.",
+                "delay": 349
+          },
+          {
+                "speaker": "Table",
+                "text": "&gt;&gt; this was not a vain owner of this room.",
+                "delay": 354
+          },
+          {
+                "speaker": "Table",
+                "text": "&gt;&gt; Mirrors are incredible.",
+                "delay": 358
+          },
+          {
+                "speaker": "Table",
+                "text": "They're &gt;&gt; Mirrors are incredible.",
+                "delay": 362
+          },
+          {
+                "speaker": "Table",
+                "text": "They're incredibly expensive objects.",
+                "delay": 366
+          },
+          {
+                "speaker": "Table",
+                "text": "incredibly expensive objects.",
+                "delay": 370
+          },
+          {
+                "speaker": "Table",
+                "text": "&gt;&gt; That's true.",
+                "delay": 373
+          },
+          {
+                "speaker": "Table",
+                "text": "&gt;&gt; That's true.",
+                "delay": 376
+          },
+          {
+                "speaker": "Table",
+                "text": "&gt;&gt; Oh, yeah.",
+                "delay": 379
+          },
+          {
+                "speaker": "Table",
+                "text": "&gt;&gt; Oh, yeah.",
+                "delay": 382
+          },
+          {
+                "speaker": "Table",
+                "text": "&gt;&gt; Uh, there is a mirror, but it's cracked.",
+                "delay": 385
+          },
+          {
+                "speaker": "Table",
+                "text": "&gt;&gt; Uh, there is a mirror, but it's cracked.",
+                "delay": 389
+          },
+          {
+                "speaker": "Table",
+                "text": "[laughter] [laughter] &gt;&gt; I don't know any of your treasure.",
+                "delay": 393
+          },
+          {
+                "speaker": "Table",
+                "text": "&gt;&gt; I don't know any of your treasure.",
+                "delay": 398
+          },
+          {
+                "speaker": "Table",
+                "text": "Agatha Christie's been in here.",
+                "delay": 402
+          },
+          {
+                "speaker": "Table",
+                "text": "Agatha Christie's been in here.",
+                "delay": 406
+          },
+          {
+                "speaker": "Table",
+                "text": "&gt;&gt; Well, you have a lot of work to do.",
+                "delay": 410
+          },
+          {
+                "speaker": "Table",
+                "text": "So, &gt;&gt; Well, you have a lot of work to do.",
+                "delay": 414
+          },
+          {
+                "speaker": "Table",
+                "text": "So, I'm going to give you 59 seconds to I'm going to give you 59 seconds to think about it.",
+                "delay": 418
+          },
+          {
+                "speaker": "Table",
+                "text": "And, uh, we'll be right think about it.",
+                "delay": 424
+          },
+          {
+                "speaker": "Table",
+                "text": "And, uh, we'll be right back and we'll start.",
+                "delay": 428
+          },
+          {
+                "speaker": "Table",
+                "text": "[laughter] &gt;&gt; Hey, what's up, guys?",
+                "delay": 432
+          },
+          {
+                "speaker": "Table",
+                "text": "Pardon the interruption.",
+                "delay": 436
+          },
+          {
+                "speaker": "Table",
+                "text": "I just wanted to thank one interruption.",
+                "delay": 439
+          },
+          {
+                "speaker": "Table",
+                "text": "I just wanted to thank one of our sponsors on today's amp of the of our sponsors on today's amp of the GCP.",
+                "delay": 443
+          },
+          {
+                "speaker": "Table",
+                "text": "Hims him hair loss solutions.",
+                "delay": 449
+          },
+          {
+                "speaker": "Table",
+                "text": "Hims him hair loss solutions.",
+                "delay": 452
+          },
+          {
+                "speaker": "Table",
+                "text": "Uh a product that I've been using for a product that I've been using for a little while now and have been very little while now and have been very happy with if I'm honest.",
+                "delay": 455
+          },
+          {
+                "speaker": "Table",
+                "text": "I started to happy with if I'm honest.",
+                "delay": 463
+          },
+          {
+                "speaker": "Table",
+                "text": "I started to lose my hair a little bit and uh it lose my hair a little bit and uh it wasn't bothering me.",
+                "delay": 467
+          },
+          {
+                "speaker": "Table",
+                "text": "I was like, \"Hey, wasn't bothering me.",
+                "delay": 473
+          },
+          {
+                "speaker": "Table",
+                "text": "I was like, \"Hey, it happens.",
+                "delay": 477
+          },
+          {
+                "speaker": "Table",
+                "text": "We get older.",
+                "delay": 480
+          },
+          {
+                "speaker": "Table",
+                "text": "What are you it happens.",
+                "delay": 483
+          },
+          {
+                "speaker": "Table",
+                "text": "We get older.",
+                "delay": 486
+          },
+          {
+                "speaker": "Table",
+                "text": "What are you going to do?",
+                "delay": 489
+          },
+          {
+                "speaker": "Table",
+                "text": "I'm not going to get all going to do?",
+                "delay": 492
+          },
+          {
+                "speaker": "Table",
+                "text": "something so vain as the hair on my head.",
+                "delay": 496
+          },
+          {
+                "speaker": "Table",
+                "text": "\" But then something the hair on my head.",
+                "delay": 500
+          },
+          {
+                "speaker": "Table",
+                "text": "\" But then something changed and I I think the thing that changed and I I think the thing that changed is I lo kept losing hair.",
+                "delay": 504
+          },
+          {
+                "speaker": "Table",
+                "text": "I lost changed is I lo kept losing hair.",
+                "delay": 511
+          },
+          {
+                "speaker": "Table",
+                "text": "I lost more and more hair and I was like, \"Wait more and more hair and I was like, \"Wait a minute.",
+                "delay": 515
+          },
+          {
+                "speaker": "Table",
+                "text": "This is starting to bother a minute.",
+                "delay": 521
+          },
+          {
+                "speaker": "Table",
+                "text": "This is starting to bother me.",
+                "delay": 525
+          },
+          {
+                "speaker": "Table",
+                "text": "\" And if it's even bothering me like me.",
+                "delay": 529
+          },
+          {
+                "speaker": "Table",
+                "text": "\" And if it's even bothering me like a little bit, maybe I should look into a little bit, maybe I should look into something that can address this.",
+                "delay": 533
+          },
+          {
+                "speaker": "Table",
+                "text": "And something that can address this.",
+                "delay": 540
+          },
+          {
+                "speaker": "Table",
+                "text": "And along comes Hims.",
+                "delay": 544
+          },
+          {
+                "speaker": "Table",
+                "text": "Hims offers convenient along comes Hims.",
+                "delay": 547
+          },
+          {
+                "speaker": "Table",
+                "text": "Hims offers convenient access to a range of prescription uh access to a range of prescription uh hair loss treatments with ingredients hair loss treatments with ingredients that work.",
+                "delay": 551
+          },
+          {
+                "speaker": "Table",
+                "text": "doctor trusted, clinically that work.",
+                "delay": 560
+          },
+          {
+                "speaker": "Table",
+                "text": "doctor trusted, clinically proven ingredients like finasteride and proven ingredients like finasteride and minoxidil that can stop further hair minoxidil that can stop further hair loss and can regrow hair in as little as loss and can regrow hair in as little as 3 to 6 months.",
+                "delay": 564
+          },
+          {
+                "speaker": "Table",
+                "text": "I've been using it daily 3 to 6 months.",
+                "delay": 576
+          },
+          {
+                "speaker": "Table",
+                "text": "I've been using it daily now for quite a while.",
+                "delay": 580
+          },
+          {
+                "speaker": "Table",
+                "text": "In fact, I just now for quite a while.",
+                "delay": 584
+          },
+          {
+                "speaker": "Table",
+                "text": "In fact, I just got my next supplement uh uh updated got my next supplement uh uh updated from him and it's something I'm going to from him and it's something I'm going to continue to use because so far I've been continue to use because so far I've been happy with the results.",
+                "delay": 588
+          },
+          {
+                "speaker": "Table",
+                "text": "If it's happy with the results.",
+                "delay": 600
+          },
+          {
+                "speaker": "Table",
+                "text": "If it's something that's bothering you and you something that's bothering you and you want to check it out, I urge you to just want to check it out, I urge you to just give it a try.",
+                "delay": 604
+          },
+          {
+                "speaker": "Table",
+                "text": "For simple online access give it a try.",
+                "delay": 613
+          },
+          {
+                "speaker": "Table",
+                "text": "For simple online access to personalized and affordable care for to personalized and affordable care for hair loss, visit hymns.",
+                "delay": 617
+          },
+          {
+                "speaker": "Table",
+                "text": "hair loss, visit hymns.",
+                "delay": 624
+          },
+          {
+                "speaker": "Table",
+                "text": "That's hymns.",
+                "delay": 627
+          },
+          {
+                "speaker": "Table",
+                "text": "com/gcn That's hymns.",
+                "delay": 630
+          },
+          {
+                "speaker": "Table",
+                "text": "com/gcn for your free online visit.",
+                "delay": 633
+          },
+          {
+                "speaker": "Table",
+                "text": "for your free online visit.",
+                "delay": 637
+          },
+          {
+                "speaker": "Table",
+                "text": "Individual results may vary based on Individual results may vary based on studies of topical and oral minoxidil studies of topical and oral minoxidil and finasteride.",
+                "delay": 641
+          },
+          {
+                "speaker": "Table",
+                "text": "Featured products and finasteride.",
+                "delay": 649
+          },
+          {
+                "speaker": "Table",
+                "text": "Featured products include compounded drug products with include compounded drug products with which the FDA does not approve or verify which the FDA does not approve or verify for safety, effectiveness or quality.",
+                "delay": 653
+          },
+          {
+                "speaker": "Table",
+                "text": "for safety, effectiveness or quality.",
+                "delay": 663
+          },
+          {
+                "speaker": "Table",
+                "text": "Prescription required.",
+                "delay": 667
+          },
+          {
+                "speaker": "Table",
+                "text": "See website for Prescription required.",
+                "delay": 670
+          },
+          {
+                "speaker": "Table",
+                "text": "See website for full details.",
+                "delay": 674
+          },
+          {
+                "speaker": "Table",
+                "text": "restrictions and important full details.",
+                "delay": 677
+          },
+          {
+                "speaker": "Table",
+                "text": "restrictions and important safety information.",
+                "delay": 681
+          }
+    ],
+  },
+  {
+    id: 'motw',
+    name: 'Monster of the Week Actual Play: The Devil You Know | Part 1: Getting Schooled',
+    description: 'Spellbook Gaming — Monster of the Week',
+    system: 'Monster of the Week',
+    context: 'System: Monster of the Week. Source: Spellbook Gaming. Auto-imported from YouTube captions.',
+    backstories: '',
+    entries: [
+          {
+                "speaker": "Table",
+                "text": "a grew up in a pretty normal home like a human like a human like a human no no uh human like a human like a human no no uh introd introductory to the myths or",
+                "delay": 0
+          },
+          {
+                "speaker": "Table",
+                "text": "introd introductory to the myths or mythological things in my life it's just mythological things in my life it's just kind of been what it is with my life uh kind of been what it is with my life uh I was a Varity swimmer I was in the I was a Varity swimmer I was in the choir at school I'm close to my family I choir at school I'm close to my family I made Eagle Scout you know just pretty made Eagle Scout you know just pretty boring mundane things um so I'm just boring mundane things um so I'm just here to see what there is in life here to see what there is in life because I needed a history class and the because I needed a history class and the topic seemed interesting wanted to see topic seemed interesting wanted to see what I could learn all right two of your what I could learn all right two of your left doing odds and evens on the left doing odds and evens on the dice oh me hello I'm Katie also known on dice oh me hello I'm Katie also known on the internet as gifted Faker which I'm the internet as gifted Faker which I'm pretty sure is how I'm being credited on pretty sure is how I'm being credited on this Katie gifted Faker that's me hi this Katie gifted Faker that's me hi that's what you told me to put that's that's what you told me to put that's I'm pretty sure that's what I told you I'm pretty sure that's what I told you to put great uh I'm playing the spooky to put great uh I'm playing the spooky which is you know fitting for me which is you know fitting for me yeah it really is um my character is a yeah it really is um my character is a tera Whitaker of the montigue New Jersey tera Whitaker of the montigue New Jersey Whitakers uh she grew up on a on a large Whitakers uh she grew up on a on a large plot of land with her family they kind plot of land with her family they kind of did a lot of of work on the house and of did a lot of of work on the house and uh her father was a Oh what's the word uh her father was a Oh what's the word uh lumberjack that's the word I'm uh lumberjack that's the word I'm looking for Lumberjack um and they kind looking for Lumberjack um and they kind of wood cuty down man wood cuty down of wood cuty down man wood cuty down contractor no Lumberjack he's just a contractor no Lumberjack he's just a wood cuty down man um so she was wood cuty down man um so she was homeschooled so that she could do a lot homeschooled so that she could do a lot of chores around the house up until high of chores around the house up until high school she went to a regular high school school she went to a regular high school and now is off in college yay she's an and now is off in college yay she's an art student she likes to paint things art student she likes to paint things which I do too um a part of her family which I do too um a part of her family is also her grandmother who is still is also her grandmother who is still alive and a grandfather grandfather who alive and a grandfather grandfather who has passed um both of them would tell has passed um both of them would tell her stories uh constantly about the her stories uh constantly about the things that you do and do not do in the things that you do and do not do in the appalachin mountains uh as she was appalachin mountains uh as she was raised deep in the woods so she's very raised deep in the woods so she's very knowledgeable in some ways about Creepy knowledgeable in some ways about Creepy Things That Go Bump in the night that Things That Go Bump in the night that you do not hear you definitely do not you do not hear you definitely do not hear things in the woods which is why hear things in the woods which is why she took this class because well it said she took this class because well it said foler in the name and she figured that foler in the name and she figured that was an easy a I think that's about was an easy a I think that's about that's about it I can't think of that's",
+                "delay": 4
+          },
+          {
+                "speaker": "Table",
+                "text": "about it I can't think of anything else that is super important anything else that is super important right now unless you can tell me right now unless you can tell me something that I forgot that you say no something that I forgot that you say no I think you're good beautiful that's it I think you're good beautiful that's it that's that's me and Jordan uh well they just said my me and Jordan uh well they just said my actual name so my character's name is actual name so my character's name is Hask that's right everybody that's right Hask that's right everybody that's right audio listeners his name is Jor on audio listeners his name is Jor on yep my name is Oliver Hask the wrong yep my name is Oliver Hask the wrong no big summer blow up uh yeah I'm John no big summer blow up uh yeah I'm John character named Oliver Hask class the character named Oliver Hask class the wrong that I've said that three times uh wrong that I've said that three times uh my major is Premed with a history minor my major is Premed with a history minor uh I'm local to the area um my backstory uh I'm local to the area um my backstory is that when I was three my best friend is that when I was three my best friend Sam was taken by something I ran away Sam was taken by something I ran away cuz I didn't didn't know what to do and cuz I didn't didn't know what to do and I was terrified I told the adults they I was terrified I told the adults they thought she was just kidnapped and thought she was just kidnapped and didn't believe me when I said it was a didn't believe me when I said it was a monster it's haunted me for my whole monster it's haunted me for my whole life and no amount of therapy has helped life and no amount of therapy has helped to deal with this uh I wanted to preed",
+                "delay": 8
+          },
+          {
+                "speaker": "Table",
+                "text": "to deal with this uh I wanted to preed because that's what my friend Sam wanted because that's what my friend Sam wanted to do she wanted to help people so to to do she wanted to help people so to honor her memory I do that but I hold honor her memory I do that but I hold out hope that she can be found and saved out hope that she can be found and saved so I've spent my whole life training in so I've spent my whole life training in weapons and martial arts and studying weapons and martial arts and studying the occult yeah all right great I chose the occult yeah all right great I chose this class cuz uh well more ult to study this class cuz uh well more ult to study all right very good so you guys show up all right very good so you guys show up to class this Tuesday morning it's just to class this Tuesday morning it's just you guys in this class at at this point you guys in this class at at this point in the semester there were a few people in the semester there were a few people early on but it was a small class to early on but it was a small class to begin with and some people dropped out begin with and some people dropped out and it's a super Niche class so and and it's a super Niche class so and surprisingly they still let this class surprisingly they still let this class run yeah five is the minimum so nobody run yeah five is the minimum so nobody die um oh no and then they they canceled die um oh no and then they they canceled the class room one death is a tpk a total class kill um so yeah you guys show up um the professor isn't guys show up um the professor isn't isn't there yet so if you guys if isn't there yet so if you guys if anybody wants to have any banter you may anybody wants to have any banter you may banter that's just you guys chilling in banter that's just you guys chilling in this classroom like you know 5 minutes this classroom like you know 5 minutes early for class banter banter ban uh early for class banter banter ban uh Izzy's not really one talk to people so Izzy's not really one talk to people so she's just going to kind of pull her she's just going to kind of pull her hair in front of her glasses and just hair in front of her glasses and just start making notes for her next podcast start making notes for her next podcast episode in her notebook I suppose if episode in her notebook I suppose if you're not bantering what are you doing you're not bantering what are you doing how do you pass the time yeah Jasper how do you pass the time yeah Jasper just kind of sitting in the corner just kind of sitting in the corner looking around hectically twiddling his looking around hectically twiddling his thumbs I'll say that I'm also kind of thumbs I'll say that I'm also kind of just looking around the room not like as just looking around the room not like as manically as Jasper but after I see him manically as Jasper but after I see him in the corner freaking the hell out I'm in the corner freaking the hell out I'm like you you like you you good you okay yeah I'm good good you okay yeah I'm good why do I not look okay you look like why do I not look okay you look like you're coming down from a really bad you're coming down from a really bad trip no no no no that's just my natural trip no no no no that's just my natural facial facial expression I get that a lot for the expression I get that a lot for the record is it's it's early October or mid record is it's it's early October or mid October really you guys you guys know October really you guys you guys know each other you're you're at least a each other you're you're at least a loose group of friends at this point oh loose group of friends at this point oh okay cool oh yeah D okay wouldn't have okay cool oh yeah D okay wouldn't have asked that because he just always looks asked that because he just always looks like this okay I mean if if he's like this okay I mean if if he's particularly jumpy today then you know particularly jumpy today then you",
+                "delay": 12
+          },
+          {
+                "speaker": "Table",
+                "text": "know but I forgot this isn't like the first but I forgot this isn't like the first day of class I apologize no we're we're day of class I apologize no we're we're middle semester here or like first third middle semester here or like first third of it or so so where do you think the of it or so so where do you think the professor is I mean he's always at least professor is I mean he's always at least he's always at least 10 minutes late he's always at least 10 minutes late he's got 10 more minutes and then we get he's got 10 more minutes and then we get to leave legally yeah you know yeah I'm to leave legally yeah you know yeah I'm pretty lat you get to leave I'm pretty pretty lat you get to leave I'm pretty sure that's a myth it's only 15 it is sure that's a myth it's only 15 it is not it is not a myth it is not a myth I not it is not a myth it is not a myth I pulled that card in college good luck pulled that card in college good luck with you H good for you guys I did not I with you H good for you guys I did not I did not get to pull that if it if it was did not get to pull that if it if it was like a half an hour yeah like a half an hour yeah oh but at that point they weren't oh but at that point they weren't showing up does anybody else think the showing up does anybody else think the professor looks like uh the guy from The professor looks like uh the guy from The Princess Bride no let's keep that going Princess Bride no let's keep that going which guy I don't see Princess Bride my",
+                "delay": 16
+          },
+          {
+                "speaker": "Table",
+                "text": "which guy I don't see Princess Bride my name name isya isya guy no the other guy the other other guy guy no the other guy the other other guy can he be on the like foot tall can he be on the like foot tall Professor yes he looks like Ty Roberts Professor yes he looks like Ty Roberts right is it just me well then who Toya right is it just me well then who Toya in our group here you you can be the in our group here you you can be the lunch man the guy a different Professor lunch man the guy a different Professor the dean of the history the dean of the history Department cafeteria guy cafer caer Department cafeteria guy cafer caer there's a Dean for the cafeteria no I there's a Dean for the cafeteria no I just said the guy in the that job I want just said the guy in the that job I want that job I'm the dean of that job I'm the dean of lunch the lunch Dean you know what lunch the lunch Dean you know what that's who we can blame for the shitty that's who we can blame for the shitty food in this cafeteria at this school food in this cafeteria at this school speak of the professor and he shall speak of the professor and he shall arrive uh sure enough about 7 and 1/2 arrive uh sure enough about 7 and 1/2 minutes late uh Professor Gordon walks minutes late uh Professor Gordon walks in looking suspiciously dread pirate in looking suspiciously dread pirate Robert z um Robert z um apparently what's this guy's name what apparently what's this guy's name what the the character we're comparing him to the the character we're comparing him to I need a visual guy I'll I'll put it in I need a visual guy I'll I'll put it in the guy from The Princess Bride I the the guy from The Princess Bride I the actor's name is Carrie elways well I'm actor's name is Carrie elways well I'm uncultured and haven't seen it so what a uncultured and haven't seen it so what a it's wonder I haven't seen most movies it's wonder I haven't seen most movies all right anyway anyway uh Professor all right anyway anyway uh Professor walks in um says morning everyone Sor walks in um says morning everyone Sor sorry sorry I'm late um how are we doing sorry sorry I'm late um how are we doing today everybody you doing good yeah good today everybody you doing good yeah good how are you I'm doing the same I'm how are you I'm doing the same I'm always always doing what are we learn about today you doing what are we learn about today you a lively bunch um so we're going to take a lively bunch um so we're going to take a little sarcasm in your voice take a a little sarcasm in your voice take a little deviation from uh our previous little deviation from uh our previous lessons uh do something I like to do uh lessons uh do something I like to do uh in this class in October in this class in October um just it's it's not really the point um just it's it's not really the point of the class it's a little too out there of the class it's a little too out there for what we like to talk about but it's for what we like to talk about but it's a local Legend and and Halloween is a local Legend and and Halloween is coming up so I like to do this lesson uh coming up so I like to do this lesson uh who who's going to give me a guess of who who's going to give me a guess of what we're talking about today are we what we're talking about today are we talking about the Jersey Devil very good talking about the Jersey Devil very good Bingo yes our favorite hockey team go Bingo yes our favorite hockey team go Devils oh my God I'm not comfortable with this I'm a church church boy you entered the wrong class my boy you entered the wrong class my guy it's it's been a it's been a couple guy it's it's been a it's been a couple weeks now um anyway uh so uh yes in all weeks now um anyway uh so uh yes in all seriousness uh the the team name is is a seriousness uh the the team name is is a a riff on what we in the business call a a riff on what we in the business call",
+                "delay": 20
+          },
+          {
+                "speaker": "Table",
+                "text": "a crypted uh sort of mythological crypted uh sort of mythological typically animall like being that some typically animall like being that some people do today believe is real is he's people do today believe is real is he's just sitting in the front row with eyes just sitting in the front row with eyes wide like a cat just it's right there wide like a cat just it's right there with Bigfoot The Lochness Monster or L with Bigfoot The Lochness Monster or L trupa Cabra uh the Jersey Devil is trupa Cabra uh the Jersey Devil is described as the this weird sort of mish described as the this weird sort of mish mashed together Chimera creature it has mashed together Chimera creature it has a goat's head and horns it has bat or a goat's head and horns it has bat or Dragon like leathery wings uh short Dragon like leathery wings uh short front claws in almost a T-Rex sort of front claws in almost a T-Rex sort of way it's got this thin tail and and like",
+                "delay": 24
+          },
+          {
+                "speaker": "Table",
+                "text": "way it's got this thin tail and and like a goat goat uh legs it's it's a weird a goat goat uh legs it's it's a weird one even as cry go it's a freaky one one even as cry go it's a freaky one it's just ugly doesn't it donut eyes it's just ugly doesn't it donut eyes glow yeah yeah that is that is a glow yeah yeah that is that is a frequent uh think in the descriptions frequent uh think in the descriptions it's supposed to evoke images of the it's supposed to evoke images of the Christian devil right but like real Christian devil right but like real weird yeah so uh now the part where I I weird yeah so uh now the part where I I read my my long paraphrased Wikipedia read my my long paraphrased Wikipedia article uh so it may surprise you to article uh so it may surprise you to learn that uh this this wacky tale learn that uh this this wacky tale actually begins with a real confirmed actually begins with a real confirmed historical man uh Daniel Leeds in the historical man uh Daniel Leeds in the early 1700s Leeds was a Quaker who lived early 1700s Leeds was a Quaker who lived in what is today Leeds Point New Jersey in what is today Leeds Point New Jersey which is not too far from here it's down which is not too far from here it's down by Atlantic City uh Daniel leads and by Atlantic City uh Daniel leads and later his son who had a much cooler name later his son who had a much cooler name Titan leads wow uh published almanacs Titan leads wow uh published almanacs which is a word you probably remember which is a word you probably remember from your mainstream history classes from your mainstream history classes it's basically an annual pamphlet it's basically an annual pamphlet containing weather predictions and such containing weather predictions and such about the coming year it was a guide about the coming year it was a guide book for farm farm Almanac is a very book for farm farm Almanac is a very important thing say does not everyone important thing say does not everyone have one of those my grandfather gets have one of those my grandfather gets one every year I don't think I've ever one every year I don't think I've ever had had Almanac what's wrong with you guys we Almanac what's wrong with you guys we have I don't know man I live in the have I don't know man I live in the future what can I tell you future what can I tell you uh for now um yeah for now you know uh for now um yeah for now you know until until the event until until the event um the event how vague and cryptic um the event how vague and cryptic moving moving on so uh holy [&nbsp;__&nbsp;] does anyone remember on so uh holy [&nbsp;__&nbsp;] does anyone remember again from your mainstream history again from your mainstream history classes who else was big in the almanac classes who else was big in the almanac business bu in the 1700s Mr Benjamin business bu in the 1700s Mr Benjamin Franklin Bingo I'd give you $100 but Franklin Bingo I'd give you $100 but they don't pay me that well as a they don't pay me that well as a professor professor well shots well shots fired so you see uh the leads the leads fired so you see uh the leads the leads gentlemen were way into astrology and gentlemen were way into astrology and that didn't sit well with uh leeds's that didn't sit well with uh leeds's fellow uh very Christian Quakers uh they fellow uh very Christian Quakers uh they viewed it similarly to Witchcraft and viewed it similarly to Witchcraft and and the like uh they had him eventually and the like uh they had him eventually uh publicly censored and and accused him uh publicly censored and and accused him of working with the devil he was sort of of working with the devil he was sort of ostracized from his community by by the ostracized from his community by by the devil I mean you know the devil not the devil I mean you know the devil not the Jersey Devil uh so this scent Jersey Devil uh so this scent leads yeah we're not there yet uh this leads yeah we're not there yet uh this scent leads off the deep end he got way scent leads off the deep end he got way sorts into all sorts of more occultism sorts into all sorts",
+                "delay": 28
+          },
+          {
+                "speaker": "Table",
+                "text": "of more occultism and he eventually officially converted and he eventually officially converted out of the Quaker Faith alt together out of the Quaker Faith alt together somehow still managed to join the uh somehow still managed to join the uh mainstream Church of England at the time mainstream Church of England at the time and and with the leed's family living a and and with the leed's family living a bit isolated from their their peers um bit isolated from their their peers um Titan leads took over the family Titan leads took over the family business and kept printing these these business and kept printing these these almanacs which were now viewed sort of almanacs which were now viewed sort of as sacriligious uh in the community uh as sacriligious uh in the community uh so back to Ben Franklin Franklin loved",
+                "delay": 32
+          },
+          {
+                "speaker": "Table",
+                "text": "so back to Ben Franklin Franklin loved science as we all know and he had a a science as we all know and he had a a deep personal beef with the leads family deep personal beef with the leads family almanacs and also the leadses were almanacs and also the leadses were British loyalists so you know not not British loyalists so you know not not bues um bues um uh so the name the leads devil was first uh so the name the leads devil was first actually used by Benjamin Franklin to actually used by Benjamin Franklin to refer to Daniel Leeds it was just an refer to Daniel Leeds it was just an insult um like all witch hunts this insult um like all witch hunts this started as a political smear campaign or started as a political smear campaign or a way to se someone's land not not an a way to se someone's land not not an uncommon common thing in in those in uncommon common thing in in those in those days um Ben Franklin bit of a those days um Ben Franklin bit of a comedian wrote an uh ironic astrological comedian wrote an uh ironic astrological quote unquote prediction of titans's quote unquote prediction of titans's death in 1733 which of course didn't death in 1733 which of course didn't turn out to be true but this this pissed turn out to be true but this this pissed Titan off uh to say the least um predict Titan off uh to say the least um predict my death will you so may so uh Franklin my death will you so may so uh Franklin uh would often pretend that this uh would often pretend that this prediction had come true and then would prediction had come true and then would refer to Titan's future writings as refer to Titan's future writings as having been written by his ghost um wow having been written by his ghost um wow and Franklin did then go on to outlive and Franklin did then go on to outlive Titan by several decades so he gets the Titan by several decades so he gets the last laugh there um now this ghost story last laugh there um now this ghost story might have contributed to the modern might have contributed to the modern Legend uh but the the lead's devil Legend uh but the the lead's devil nickname is probably more relevant uh nickname is probably more relevant uh there's evidence to suggest an oral there's evidence to suggest an oral tradition of a monster lurking in the tradition of a monster lurking in the pine Barons that goes back to the pine Barons that goes back to the 1700s but this is where we get off the 1700s but this is where we get off the train of of confirmable history and we train of of confirmable history and we just have ourselves a fun little just have ourselves a fun little Halloween lesson SI of water is that Halloween lesson SI of water is that written in the script also good good written in the script also good good good acting yeah good character stage Direct you get an you get an inspiration the teacher is always come inspiration the teacher is always come back to kill me somewhere along the line back to kill me somewhere along the line while the story was being preserved very while the story was being preserved very unreliably only orally uh the tale unreliably only orally uh the tale became that and this is where it it it became that and this is where it it it gets very disconnected from the original gets very disconnected from the original leades but one of Titan's brother one of leades but one of Titan's brother one of Titan's Brothers uh whose name I don't Titan's Brothers uh whose name I don't have written down but not important his have written down but not important his wife Jane Leeds so Titan sister-in-law wife Jane Leeds so Titan sister-in-law gave birth to a child that would become gave birth to a child that would become the Jersey Devil her 13th child uh the Jersey Devil her 13th child uh historical records show that the family historical records show that the family wrote a will with 12 children that is wrote a will with 12 children that is confirmable and The Story Goes that the confirmable and The Story Goes that the Jersey tell was their 13th child uh Jersey tell was their 13th child uh supposedly Jane was pretty upset about supposedly Jane was pretty upset about being pregnant for a 13th time you know being pregnant for a 13th time",
+                "delay": 36
+          },
+          {
+                "speaker": "Table",
+                "text": "you know what fair fair that is fair fair enough what fair fair that is fair fair enough right from the two ladies in the class right from the two ladies in the class Fair be upset at Fair be upset at 5 uh and while pregnant she uh there's 5 uh and while pregnant she uh there's claims that she shouted and and cursed claims that she shouted and and cursed that the child was of the devil quote that the child was of the devil quote unquote um then The Story Goes that the unquote um then The Story Goes that the baby was born normally but very quickly baby was born normally but very quickly mutated into this weird Chimera thing mutated into this weird Chimera thing that we know from the modern Legends um that we know from the modern Legends um injured some PE some of the people in injured some PE some of the people in the house and then ran up the chimney",
+                "delay": 40
+          },
+          {
+                "speaker": "Table",
+                "text": "the house and then ran up the chimney and off into the woods like a freaky and off into the woods like a freaky reverse reverse Santa um like Kus yeah but like it Santa um like Kus yeah but like it leaves anyway some versions of the story leaves anyway some versions of the story also claim that Jane was into witchcraft also claim that Jane was into witchcraft but that sort of thing probably comes but that sort of thing probably comes from you know the old beef with Ben from you know the old beef with Ben Franklin and then the Quakers or you Franklin and then the Quakers or you know cooking just really doing anything know cooking just really doing anything they thought you were a witch yeah they thought you were a witch yeah breathing they thought you were a witch breathing they thought you were a witch making beer soup oh God making beer soup oh God witchcraft being able to read oh God witchcraft being able to read oh God [Laughter] [Laughter] witchcraft uh now supposedly uh from witchcraft uh now supposedly uh from here the creature goes on to stalk the here the creature goes on to stalk the pine Barons uh the entire forested pine Barons uh the entire forested region of Southern New Jersey as a region of Southern New Jersey as a pretty obscure local myth for around 200 pretty obscure local myth for around 200 years almost a little less uh every now years almost a little less uh every now and then there was a story of it and then there was a story of it screeching at some Campers or hikers or screeching at some Campers or hikers or it would be blamed for the death of some it would be blamed for the death of some livestock that you know may very well livestock that you know may very well have been wolves or Bears or whatever um have been wolves or Bears or whatever um before entering again the popular before entering again the popular Zeitgeist in Zeitgeist in 1909 in the space of one week from 1909 in the space of one week from January 16th to the 23rd 1909 the Jersey January 16th to the 23rd 1909 the Jersey Devil was allegedly cited dozens of Devil was allegedly cited dozens of times across South Jersey and even a times across South Jersey and even a little bit over into Pennsylvania uh it little bit over into Pennsylvania uh it was all over the newspapers at the time was all over the newspapers at the time and the Philadelphia Zoo actually put and the Philadelphia Zoo actually put out a $10,000 Bounty for the creature in out a $10,000 Bounty for the creature in $1 $1 1909 dang [&nbsp;__&nbsp;] of money I'm not an 1909 dang [&nbsp;__&nbsp;] of money I'm not an economic oh my God that's a economic oh my God that's a lot let me look that let me let me do lot let me look that let me let me do some quick math uh a quick conversion on some quick math uh a quick conversion on that 199 $10,000 to to to to 2015 we that 199 $10,000 to to to to 2015 we don't need to go all the way just to the don't need to go all the way just to the year that is in the game uh that would year that is in the game uh that would be be $338,800 I mean the philadel is pretty pretty legit yeah I mean the Philadelphia Zoo legit yeah I mean the Philadelphia Zoo is actually it's pretty big but anyway is actually it's pretty big but anyway um and also they probably didn't believe um and also they probably didn't believe it was real they may have just put it it was real they may have just put it out as like a publicity thing but anywh out as like a publicity thing but anywh who so after this week of what may have who so after this week of what may have just been Mass hysteria and a lot of H just been Mass hysteria and a lot of H is the sightings calmed down quite a bit is the sightings calmed down quite a bit uh but the Jersey Devil since then has uh but the Jersey Devil since then has been a household name in the tri-state been a household name in the tri-state area everyone knows the story or at area everyone knows the story or at least of the creature uh there were a least of the creature uh there were a handful of supposed sightings throughout handful of supposed",
+                "delay": 44
+          },
+          {
+                "speaker": "Table",
+                "text": "sightings throughout the first half of the 20th century but the first half of the 20th century but it's been a bit quieter since then uh it's been a bit quieter since then uh with most other sightings being provable with most other sightings being provable hoaxes or having no evidence to go on hoaxes or having no evidence to go on then in 1982 it became the name of our then in 1982 it became the name of our local hockey team though funnily enough local hockey team though funnily enough the mascot looks more like traditional the mascot looks more like traditional depictions of your red humanoid Devil depictions of your red humanoid Devil with the Pitchfork and such than the with the Pitchfork and such than the freaky bat monster put that up against freaky bat monster put that up against any any questions what US be on the uh test I questions what US be on the uh test I thought this was just for the funsies of",
+                "delay": 48
+          },
+          {
+                "speaker": "Table",
+                "text": "thought this was just for the funsies of Halloween is this going to be on a test Halloween is this going to be on a test I thought this wasn't actually the stuff I thought this wasn't actually the stuff we were learning I mean this is we were learning I mean this is folklore I might put like a little extra folklore I might put like a little extra quit extra quit extra quit quit exra question for you guys me lighting exra question for you guys me lighting up the professor after he makes the FL up the professor after he makes the FL just get him just a little bit of extra just get him just a little bit of extra quit there's only five of us we can do quit there's only five of us we can do this this [&nbsp;__&nbsp;] College profess are usually [&nbsp;__&nbsp;] College profess are usually questions no what did you just say questions no what did you just say college professors are usually cooler college professors are usually cooler being sometimes yeah they're either being sometimes yeah they're either really cool or really really cool or really uncool yeah there's no in between uncool yeah there's no in between any who um so any questions for the any who um so any questions for the professor about the Jersey Devil lesson professor about the Jersey Devil lesson or just for the professor in general uh or just for the professor in general uh is the Jersey Devil known to kidnap is the Jersey Devil known to kidnap children that's not typically how it's children that's not typically how it's characterized I'm sure if you go into characterized I'm sure if you go into the oral Traditions you can find a story the oral Traditions you can find a story like that somewhere I'm not kidding like that somewhere I'm not kidding that's exact like I was taught that that's exact like I was taught that growing up that it just snatches kidnaps growing up that it just snatches kidnaps people people yeah most of the things that I I read yeah most of the things that I I read about was that it's it's just kind of a about was that it's it's just kind of a vicious killer like it's just yeah no vicious killer like it's just yeah no prisoners that kind of a no prison it's prisoners that kind of a no prison it's it's very animalistic it's like a it's very animalistic it's like a mountain that could that's it that's mountain that could that's it that's right be that could fly what do you want right be that could fly what do you want like in grade school I actually did have like in grade school I actually did have a lesson on the Jersey Devil that's a lesson on the Jersey Devil that's pretty dop wow I didn't remember the pretty dop wow I didn't remember the almanac part I did remember the the Jane almanac part I did remember the the Jane leads yes so other than his uh so I leads yes so other than his uh so I don't I oh Colin's typing uh Colin's don't I oh Colin's typing uh Colin's making a cameo appearance in our Discord making a cameo appearance in our Discord chat he goes oh I know this one uh shush you're off the show says the GM yeah get out of here col behind the GM yeah get out of here col behind the scenes for you oh my God anyway uh and scenes for you oh my God anyway uh and this is in character uh if you guys this is in character uh if you guys wouldn't mind I actually I'm pretty sure wouldn't mind I actually I'm pretty sure I saw the Jersey Devil when I was in I saw the Jersey Devil when I was in e8th grade I don't think I've ever told e8th grade I don't think I've ever told you guys that you guys that before I turn around profess kind of RA before I turn around profess kind of RA raises his his eyebrow at that at that raises his his eyebrow at that at that and he's and he's like well if you want to share go ahead like well if you want to share go ahead yeah um we were out on a camping trip in yeah um we were out on a camping trip in the pine Barons and they were saying it the pine Barons and they were saying it was supposed to be like some weird was supposed to be like some weird bonding thing bonding thing but none of us really cared",
+                "delay": 52
+          },
+          {
+                "speaker": "Table",
+                "text": "but it was but none of us really cared but it was like 2:00 in the morning and I heard like 2:00 in the morning and I heard something outside to be honest I was something outside to be honest I was kind of hoping that's what it was and kind of hoping that's what it was and could anything in the woods why would could anything in the woods why would that be a hope of yours like I hope it's that be a hope of yours like I hope it's like a like a deer that's not and I was I was also deer that's not and I was I was also safe in a cabin so it couldn't come get safe in a cabin so it couldn't come get me you you think that doors are enough me you you think that doors are enough yeah continue continue but uh the",
+                "delay": 56
+          },
+          {
+                "speaker": "Table",
+                "text": "yeah continue continue but uh the professor says In fairness actually most professor says In fairness actually most of the stories you know it's stuff of the stories you know it's stuff that's outside or it's going for that's outside or it's going for livestock that's outside so being livestock that's outside so being indoors probably okay Carry On um but indoors probably okay Carry On um but there was enough light like off the there was enough light like off the cabins that I could see something in the cabins that I could see something in the trees and it was upright and it sounded trees and it was upright and it sounded like it was walking and it sounded like like it was walking and it sounded like it only had two legs and it definitely it only had two legs and it definitely was not a person and I could hear like was not a person and I could hear like wings flapping and it was gone but I did wings flapping and it was gone but I did see it move I did hear it and I'm pretty see it move I did hear it and I'm pretty sure that's what it was and that's why I sure that's what it was and that's why I like Cryptids because I want to learn like Cryptids because I want to learn more about them oh sorry that was me more about them oh sorry that was me during my Halloween costume no during my Halloween costume no right I was going to say barn owl anyway right I was going to say barn owl anyway um uh yeah P slightly personal um uh yeah P slightly personal experience with Mr Jersey Devil Himself experience with Mr Jersey Devil Himself Mr devil yes Mr devil is my Mr devil yes Mr devil is my father my real name is father my real name is anthc the Destroyer um destroy Brian you had a question before I I cut you off so they call it before I I cut you off so they call it the Jersey Devil What similarities does the Jersey Devil What similarities does it have to Christianity in that I know it have to Christianity in that I know you talked about it a little bit but you talked about it a little bit but like anything to do with hell or um so like anything to do with hell or um so the as I said the general reason for the the as I said the general reason for the name comes from the fact that uh Jane name comes from the fact that uh Jane The Story Goes that when Jane leads was The Story Goes that when Jane leads was pregnant with that 13th child that she pregnant with that 13th child that she claimed that the child was of the devil claimed that the child was of the devil um because she was upset about her um because she was upset about her situation um and then of course it has situation um and then of course it has it has horns it has horns and some goat it has horns it has horns and some goat like she it on her husband with the like she it on her husband with the devil I can't believe you know so maybe devil I can't believe you know so maybe um but the the term devil is used is um but the the term devil is used is used broadly here it's more like the used broadly here it's more like the Jersey demon it's not like the top guy Jersey demon it's not like the top guy you know it would be like if Lucifer had you know it would be like if Lucifer had a son with a horse and a bat and a a son with a horse and a bat and a chicken where the [&nbsp;__&nbsp;] did the chicken chicken where the [&nbsp;__&nbsp;] did the chicken things for Lucifer to [&nbsp;__&nbsp;] I don't know things for Lucifer to [&nbsp;__&nbsp;] I don't know the Fe where did the chicken come from the Fe where did the chicken come from no the feet are goat feet yeah they I no the feet are goat feet yeah they I can't tell it it has short little front can't tell it it has short little front hands that are kind of too Vexy I was hands that are kind of too Vexy I was looking at the tail the tail with the looking at the tail the tail with the three I was I thought that was a foot no three I was I thought that was a foot no that's just",
+                "delay": 60
+          },
+          {
+                "speaker": "Table",
+                "text": "like a like a thin little that's just like a like a thin little wispy sort of devil tail you know gotcha wispy sort of devil tail you know gotcha pronged tail have you ever seen it pronged tail have you ever seen it Professor no um not much of a camper Professor no um not much of a camper myself myself do you want to Professor I have a do you want to Professor I have a question what do you want to a question what do you want to a yerard how good at fiddle is this creature well considering the length of its arms probably not very good he's its arms probably not very good he's more of a keyboard player no that would more of a keyboard player no that would also be really hard with short also be really hard with short arms what what instrument could it play",
+                "delay": 64
+          },
+          {
+                "speaker": "Table",
+                "text": "arms what what instrument could it play with it short arms the with it short arms the trumpet could it play the trumpet cuz trumpet could it play the trumpet cuz it's neck looks really far it's neck looks really far triang it's triang it's math math triang triang the triangle right yeah triang triang the triangle right yeah like can you just imagine that little like can you just imagine that little thing in the woods just going tingting or riing it on an accordion just that one of those small accordion just that one of those small accordion a accordion a concertina it's a wind a wind whistle I concertina it's a wind a wind whistle I only know that cuz it was a clue on only know that cuz it was a clue on Jeopardy the other day I I remember that Jeopardy the other day I I remember that cuz I know someone who can play a cuz I know someone who can play a concertina poorly they're learning oh I concertina poorly they're learning oh I call them out like that so so unless call them out like that so so unless anybody has any more pressing questions anybody has any more pressing questions uh we I think we can move on from the uh we I think we can move on from the scene yeah I got it he can play the scene yeah I got it he can play the kazoo no he can't reach his face he kazoo no he can't reach his face he can't hold it he can't well I guess if can't hold it he can't well I guess if you just put it in pick it up with his you just put it in pick it up with his mouth I don't know if his lips can move mouth I don't know if his lips can move into a whistle around the kazoo that's into a whistle around the kazoo that's enough for the find out enough for the find out are all important question I don't think are all important question I don't think so I don't think a goat can so I don't think a goat can whistle you just see you just see Jasper whistle you just see you just see Jasper you just see Jasper frantically writing you just see Jasper frantically writing in his notebook goats can wh instruments in his notebook goats can wh instruments can can playd playd too question mark question mark question too question mark question mark question mark trone definitely mark trone definitely not if that's that uh the end of class not if that's that uh the end of class rolls around it's about rolls around it's about 11:30 um your guys is guys's typical 11:30 um your guys is guys's typical routine on on these days is to uh cuz routine on on these days is to uh cuz none of you have class immediately but none of you have class immediately but you all have at least one class in the you all have at least one class in the afternoon therea uh you tend to hang out afternoon therea uh you tend to hang out in the student center and then have your in the student center and then have your lunch lunch together um I have a side job where I uh together um I have a side job where I uh lifeguard it's oober well good for you lifeguard it's oober well good for you do uh I I I need you around for this do uh I I I need you around for this scene you say say you have off on scene you say say you have off on Tuesdays CU you have classes gotcha um Tuesdays CU you have classes gotcha um yeah the school has a pool in the gym um yeah the school has a pool in the gym um anyway you go over to the Student Center anyway you go over to the Student Center um find yourself table and it's a little um find yourself table and it's a little early some of you grab lunch right away early some of you grab lunch right away some of you maybe don't um what's some of you maybe don't um what's everybody get for lunch this is an everybody get for lunch this is an important question I guess tacos and ice important question I guess tacos and ice cream okay um grilled cheese with ham cream okay um grilled cheese with ham since I don't live on campus I packed my since I don't live on campus I packed my lunch cuz I don't have a meal plan so I lunch cuz I don't have",
+                "delay": 68
+          },
+          {
+                "speaker": "Table",
+                "text": "a meal plan so I have have a turkey and cheese sandwich have have a turkey and cheese sandwich with uh some Cheetos and a Baja Blast okay a lot of rice broccoli steamed chicken and other mixed steamed chicken and other mixed vegetables vegetables ger so Ro beef a chicken a",
+                "delay": 72
+          },
+          {
+                "speaker": "Table",
+                "text": "pizza you act like your guy wouldn't eat two red bulls and a cigarette for lunch that's an option they sell that here here it's 2015 it's it's 2015 it's fine it's the student special oh fine it's the student special oh God yeah you didn't see it on the menu God yeah you didn't see it on the menu you it's on the secret menu you got to you it's on the secret menu you got to ask for you got to knock three times on ask for you got to knock three times on the counter yeah only KN he do talk to the counter yeah only KN he do talk to the Lunch Ladies he goes and talks to the Lunch Ladies he goes and talks to like the short order the the line cook like the short order the the line cook in the back he talks to the dean of in the back he talks to the dean of lunch yeah there you go oh boy um so uh anyway as you're having your lunch uh perhaps working on having your lunch uh perhaps working on other homework assignments or some such other homework assignments or some such you're sitting there you know conversing you're sitting there you know conversing um perhaps you want to find you guys um perhaps you want to find you guys want to find out from each other who if want to find out from each other who if anyone actually thinks the Jersey Devil anyone actually thinks the Jersey Devil is real besides uh Izzy I haven't seen is real besides uh Izzy I haven't seen the devil but I've the devil but I've seen another entity so I have no reason seen another entity so I have no reason to believe it's not fair believe in one to believe it's not fair believe in one you got to believe in them all right you got to believe in them all right well not necessarily but well not necessarily but just what did you see what's your story just what did you see what's your story I guess I have I guess I've known all of I guess I have I guess I've known all of you long enough I don't tell a lot of you long enough I don't tell a lot of people this um oh my God are we becoming people this um oh my God are we becoming best best friends did we just become best friends friends did we just become best friends no do you want to do karate in the no do you want to do karate in the garage yep my best friend when I was a garage yep my best friend when I was a child was kidnapped by not kidnapped was child was kidnapped by not kidnapped was taken by something I I don't know how to taken by something I I don't know how to process it I don't really remember what process it I don't really remember what it looked like I just know something it looked like I just know something that wasn't human took her and no one that wasn't human took her and no one one believed me it wasn't playing the one believed me it wasn't playing the kazoo was it no there was no kazoo damn kazoo was it no there was no kazoo damn and should you be like it was the and should you be like it was the government government like I won't cry if you don't want to like I won't cry if you don't want to talk about it but what do you think it talk about it but what do you think it was what did it kind of looked like if was what did it kind of looked like if it wasn't human I don't really know it wasn't human I don't really know remember what it looked like I'm sure at remember what it looked like I'm sure at some point later in the season a little some point later in the season a little bit of therapy will unlock that when we bit of therapy will unlock that when we know what our final monster is perhaps know what our final monster is perhaps or a creature we have to deal with is or a creature we have to deal with is goodbye everyone I remember you all in goodbye everyone I remember you all in therapy not to like take away from any therapy not to like take away from any of you guys' experience and like if you of you guys' experience and like if you see what you saw I I totally respect see what you saw I I totally",
+                "delay": 76
+          }
+    ],
+  },
+  {
     id: 'pf2e_ep1',
     name: 'I Forced My Friends to Learn PATHFINDER 2E | Dungeon Delve',
     description: 'XP to Level 3 — Pathfinder 2e',
@@ -1868,6 +3613,766 @@ export const IMPORTED_SCENARIOS: Scenario[] = [
                 "speaker": "Table",
                 "text": "damage that's how the rule Works Pathfinder what are you doing Pathfinder what are you doing Pathfinder God forbid we have to go down Pathfinder God forbid we have to go down like a 50 foot cliff or something we like a 50 foot cliff or something we will be rolling for like 30 minutes to will be rolling for like 30 minutes to see if we can make it down you might as see if we can make it down you might as well try try check well try try check atics use the big one the big atics use the big one the big one oh that was bad 18 you make it down one oh that was bad 18 you make it down and you're fine well I use my grappling and you're fine well I use my grappling hook for nothing it's not that hard you hook for nothing it's not that hard you can use your rope and grappling hook if can use your rope and grappling hook if you like the DC this roll in athletics check ah does that count as a roll okay you make it down 5T uh roll again I do you make it down 5T uh roll again I do it again good yeah good Lord go five it again good yeah good Lord go five more feet you make it down okay I go more feet you make it down okay I go down go I think I found the bottom I down go I think I found the bottom I fall I think I got a six a fall I think I got a six a six catch them you make no progress so six catch them you make no progress so what EZ does is he just you're just what EZ does is he just you're just holding the Rope roll again guys I'm a holding the Rope roll again guys I'm a little I'm a little bit little I'm a little bit scared okay you go down five feet I go scared okay you go down five feet I go five feet and then I go five more feet five feet and then I go five more feet and then I go five more feet what's that and then I go five more feet what's that four four thought that was you fall if four four thought that was you fall if you were halfway you take two damage can you were halfway you take two damage can I try and catch no oh I I try and catch no oh I just damn that just damn that sucks here let me help you up I busted sucks here let me help you up I busted my ass no I I'll go down the grappling my ass no I I'll go down the grappling hook as well I roll out of the way oh hook as well I roll out of the way oh yeah catch me stay prone you go down 5T yeah catch me stay prone you go down 5T and there I Take God forbid there's like and there I Take God forbid there's like a 20 a 20 foot five you fall and take two damage foot five you fall and take two damage there's a there's like a loose Rock in there's a there's like a loose Rock in there something that everyone keeps there something that everyone keeps stepping on breaking news Jack is on his way is this thing on okay hello it is I jack I am very on okay hello it is I jack I am very excited to play uh Pathfinder 2E with my excited to play uh Pathfinder 2E with my friends here on dungeon delve uh I've friends here on dungeon delve uh I've never actually played Pathfinder before never actually played Pathfinder before I've only ever GMD it first edition and I've only ever GMD it first edition and second edition so this will literally be second edition so this will literally be my first time ever playing Pathfinder if my first time ever playing Pathfinder if you want to see more of me gming you want to see more of me gming Pathfinder second edition you can head Pathfinder second edition you can head over to Arcane arcade and watch Eon city over to Arcane arcade and watch Eon city of towers where I am definitely not of towers where I am definitely not winging it the entire time and this one winging it the entire time and this one goes out to all the people that goes out to all the people that definitely started watching uh city of definitely started watching uh city of towers with the intent that",
                 "delay": 189
+          }
+    ],
+  },
+  {
+    id: 'vtm_labynight',
+    name: 'Mortal Stakes | Vampire: The Masquerade - L.A. By Night | Chapter 1',
+    description: 'Geek & Sundry — Vampire: The Masquerade',
+    system: 'Vampire: The Masquerade',
+    context: 'System: Vampire: The Masquerade. Source: Geek & Sundry. Auto-imported from YouTube captions.',
+    backstories: '',
+    entries: [
+          {
+                "speaker": "Table",
+                "text": "The hunger dice was blank.",
+                "delay": 0
+          },
+          {
+                "speaker": "Table",
+                "text": "The hunger dice was a failure, okay.",
+                "delay": 3
+          },
+          {
+                "speaker": "Table",
+                "text": "So your hunger stays neutral.",
+                "delay": 7
+          },
+          {
+                "speaker": "Table",
+                "text": "Three successes total?",
+                "delay": 10
+          },
+          {
+                "speaker": "Table",
+                "text": "Okay, right away, right away.",
+                "delay": 13
+          },
+          {
+                "speaker": "Table",
+                "text": "If you'll just make yourself comfortable, I'll get someone to talk to you, just, he covers his hands with his mouth and backs away really quickly.",
+                "delay": 16
+          },
+          {
+                "speaker": "Table",
+                "text": "I understand, yes.",
+                "delay": 23
+          },
+          {
+                "speaker": "Table",
+                "text": "You're gonna be alright, we're gonna get this fixed.",
+                "delay": 26
+          },
+          {
+                "speaker": "Table",
+                "text": "One success?",
+                "delay": 30
+          },
+          {
+                "speaker": "Table",
+                "text": "Mm-hmm, one success.",
+                "delay": 33
+          },
+          {
+                "speaker": "Table",
+                "text": "So you've accumulated a total of two.",
+                "delay": 36
+          },
+          {
+                "speaker": "Table",
+                "text": "I told you I was the one, that I should do the...",
+                "delay": 40
+          },
+          {
+                "speaker": "Table",
+                "text": "From your vantage point on the rooftop, you can see that there's an impromptu performance going on down at the quad, a couple of students have got some instruments, a saxophone and a guitar and they're starting to play out in the night air.",
+                "delay": 44
+          },
+          {
+                "speaker": "Table",
+                "text": "It's terrible, it's absolutely awful.",
+                "delay": 55
+          },
+          {
+                "speaker": "Table",
+                "text": "It's some sort of weird mashup between Simon and Garfunkel and Chelsea Wolfe?",
+                "delay": 59
+          },
+          {
+                "speaker": "Table",
+                "text": "It's really, it's just grating on the ears, it's bad.",
+                "delay": 64
+          },
+          {
+                "speaker": "Table",
+                "text": "Alright, great.",
+                "delay": 68
+          },
+          {
+                "speaker": "Table",
+                "text": "It's very distracting, too.",
+                "delay": 71
+          },
+          {
+                "speaker": "Table",
+                "text": "So they are beginning to attract a crowd outside the infirmary.",
+                "delay": 74
+          },
+          {
+                "speaker": "Table",
+                "text": "Meanwhile, back inside the infirmary, the orderly, the clerk has vanished and has now returned instead a young woman in hospital scrubs comes out carrying a clipboard and walks up to you.",
+                "delay": 79
+          },
+          {
+                "speaker": "Table",
+                "text": "Who's got the symptoms?",
+                "delay": 88
+          },
+          {
+                "speaker": "Table",
+                "text": "(coughing) You um, come on into the exam room.",
+                "delay": 91
+          },
+          {
+                "speaker": "Table",
+                "text": "You'll have to excuse me, but you don't look like students.",
+                "delay": 95
+          },
+          {
+                "speaker": "Table",
+                "text": "No, and in fact we're not necessarily seeking treatment, we're really just trying to figure out where she might have picked this up, we're just more curious.",
+                "delay": 99
+          },
+          {
+                "speaker": "Table",
+                "text": "Is it the athletes that are getting sick, is it a dorm, is it some food poisoning?",
+                "delay": 107
+          },
+          {
+                "speaker": "Table",
+                "text": "Is it the fashion students?",
+                "delay": 112
+          },
+          {
+                "speaker": "Table",
+                "text": "Who are you people and why are you asking these questions.",
+                "delay": 115
+          },
+          {
+                "speaker": "Table",
+                "text": "I mean, golly, we might as well just actually tell them who we are.",
+                "delay": 119
+          },
+          {
+                "speaker": "Table",
+                "text": "(sighs) I didn't want to, but.",
+                "delay": 124
+          },
+          {
+                "speaker": "Table",
+                "text": "She looks very skeptical and she isn't moving towards the exam room.",
+                "delay": 128
+          },
+          {
+                "speaker": "Table",
+                "text": "Do you look at Instagram at all, or YouTube?",
+                "delay": 133
+          },
+          {
+                "speaker": "Table",
+                "text": "Miss, I don't have time.",
+                "delay": 137
+          },
+          {
+                "speaker": "Table",
+                "text": "Do you listen to the radio?",
+                "delay": 140
+          },
+          {
+                "speaker": "Table",
+                "text": "We've got sick students here, I've got problems of my own.",
+                "delay": 143
+          },
+          {
+                "speaker": "Table",
+                "text": "Oh no, he's a famous music producer, you probably have seen his work.",
+                "delay": 147
+          },
+          {
+                "speaker": "Table",
+                "text": "Well that's wonderful for you, sir, but we're vary busy here.",
+                "delay": 152
+          },
+          {
+                "speaker": "Table",
+                "text": "He donates a lot of money to the school.",
+                "delay": 157
+          },
+          {
+                "speaker": "Table",
+                "text": "My name's on one of the buildings.",
+                "delay": 161
+          },
+          {
+                "speaker": "Table",
+                "text": "I didn't wanna be that guy, but please, ma'am.",
+                "delay": 165
+          },
+          {
+                "speaker": "Table",
+                "text": "I have a vested interest in the wellbeing of the student body here.",
+                "delay": 169
+          },
+          {
+                "speaker": "Table",
+                "text": "Charisma plus persuasion again, add your presence to it, include your hunger die, please.",
+                "delay": 174
+          },
+          {
+                "speaker": "Table",
+                "text": "Jasper, it's just gone from bad to worse.",
+                "delay": 179
+          },
+          {
+                "speaker": "Table",
+                "text": "The band, they've kept the Simon and Garfunkel, abandoned the Chelsea Wolfe, and they've added REM to it.",
+                "delay": 183
+          },
+          {
+                "speaker": "Table",
+                "text": "(groaning) Yeah.",
+                "delay": 189
+          },
+          {
+                "speaker": "Table",
+                "text": "But the students love it.",
+                "delay": 192
+          },
+          {
+                "speaker": "Table",
+                "text": "There must be at least a dozen students outside the infirmary now, digging the impromptu concert.",
+                "delay": 195
+          },
+          {
+                "speaker": "Table",
+                "text": "So disappointed.",
+                "delay": 199
+          },
+          {
+                "speaker": "Table",
+                "text": "So one success and one of the skulls on my blood die.",
+                "delay": 202
+          },
+          {
+                "speaker": "Table",
+                "text": "One success, one skull, ohh okay.",
+                "delay": 206
+          },
+          {
+                "speaker": "Table",
+                "text": "Well your roll didn't fail, so you don't get a beastial failure, so that's merely a failure but you do get a success, okay so.",
+                "delay": 210
+          },
+          {
+                "speaker": "Table",
+                "text": "All good there.",
+                "delay": 217
+          },
+          {
+                "speaker": "Table",
+                "text": "You look familiar, you both look a little familiar.",
+                "delay": 220
+          },
+          {
+                "speaker": "Table",
+                "text": "Alright, so you're a member of the board maybe and you don't want it to get out, I mean?",
+                "delay": 224
+          },
+          {
+                "speaker": "Table",
+                "text": "I'm not trying to waste your time, but I'm also not trying to have you waste ours.",
+                "delay": 229
+          },
+          {
+                "speaker": "Table",
+                "text": "So if you could just let us know so we could have some idea so that we can kind of help the kids.",
+                "delay": 234
+          },
+          {
+                "speaker": "Table",
+                "text": "Step inside the exam room.",
+                "delay": 240
+          },
+          {
+                "speaker": "Table",
+                "text": "After you.",
+                "delay": 243
+          },
+          {
+                "speaker": "Table",
+                "text": "Sure, sure.",
+                "delay": 246
+          },
+          {
+                "speaker": "Table",
+                "text": "So she steps in after you and shuts the door.",
+                "delay": 249
+          },
+          {
+                "speaker": "Table",
+                "text": "Okay, sir, I understand that you're somebody very important, but I need some sort of authorization to release these records, what's your name?",
+                "delay": 253
+          },
+          {
+                "speaker": "Table",
+                "text": "I don't need records, just even roughly, roughly.",
+                "delay": 260
+          },
+          {
+                "speaker": "Table",
+                "text": "Roughly on the east side of campus, roughly on the west side of campus, that's all we're asking.",
+                "delay": 264
+          },
+          {
+                "speaker": "Table",
+                "text": "Well I shouldn't do this, but if you're a member of the board, then maybe it's okay.",
+                "delay": 270
+          },
+          {
+                "speaker": "Table",
+                "text": "(sighs) It started about a week ago and all the students share the same symptoms, it's like the flu but it's not responding to the normal drugs.",
+                "delay": 275
+          },
+          {
+                "speaker": "Table",
+                "text": "And they all exhibit extreme tiredness and lethargy almost as if they were anemic, but that kind of illness really isn't indicative of anything that is usual.",
+                "delay": 282
+          },
+          {
+                "speaker": "Table",
+                "text": "I suppose that the long shot dark side is some sort of pernicious encephalitis, but they don't respond positively to those tests, so maybe it's a kind of flu that we don't understand.",
+                "delay": 290
+          },
+          {
+                "speaker": "Table",
+                "text": "That we haven't seen before.",
+                "delay": 299
+          },
+          {
+                "speaker": "Table",
+                "text": "We've sent blood samples to a larger hospital and maybe they can tell us something in a day or two.",
+                "delay": 302
+          },
+          {
+                "speaker": "Table",
+                "text": "All we can do really now, is just wait and see.",
+                "delay": 308
+          },
+          {
+                "speaker": "Table",
+                "text": "Do we know if it's more male population or more female population?",
+                "delay": 312
+          },
+          {
+                "speaker": "Table",
+                "text": "Well it's male and female students.",
+                "delay": 317
+          },
+          {
+                "speaker": "Table",
+                "text": "They are all enrolled in classes here, some are freshmen, juniors, sophomores.",
+                "delay": 321
+          },
+          {
+                "speaker": "Table",
+                "text": "No seniors.",
+                "delay": 326
+          },
+          {
+                "speaker": "Table",
+                "text": "They all have jobs on campus through the work study program.",
+                "delay": 329
+          },
+          {
+                "speaker": "Table",
+                "text": "All of them work in the evenings, they've got evening jobs.",
+                "delay": 334
+          },
+          {
+                "speaker": "Table",
+                "text": "I suppose, if you could show me some sort of credentials or some way that I won't get in trouble, I could give you their names, maybe let you have a look at the records.",
+                "delay": 338
+          },
+          {
+                "speaker": "Table",
+                "text": "Can I take a look to see if there's anyone who's watching the student body more intently than they're watching the band?",
+                "delay": 346
+          },
+          {
+                "speaker": "Table",
+                "text": "Super good question, okay.",
+                "delay": 353
+          },
+          {
+                "speaker": "Table",
+                "text": "So please make a wits plus investigation roll.",
+                "delay": 356
+          },
+          {
+                "speaker": "Table",
+                "text": "Okay, including my hunger die?",
+                "delay": 360
+          },
+          {
+                "speaker": "Table",
+                "text": "Including the hunger die.",
+                "delay": 364
+          },
+          {
+                "speaker": "Table",
+                "text": "(quiet crosstalk) (clatters) That is one success.",
+                "delay": 367
+          },
+          {
+                "speaker": "Table",
+                "text": "The only individual watching the gathering intently is a security guard.",
+                "delay": 371
+          },
+          {
+                "speaker": "Table",
+                "text": "He looks a little bored, maybe amused, doesn't seem like he's upset or inclined to interfere though.",
+                "delay": 376
+          },
+          {
+                "speaker": "Table",
+                "text": "Right, alright.",
+                "delay": 382
+          },
+          {
+                "speaker": "Table",
+                "text": "If you wanna try again, you'll need to move to a better angle on the roof, maybe get a little closer, maybe hang over the edge a little bit, like some disgusting gargoyle.",
+                "delay": 385
+          },
+          {
+                "speaker": "Table",
+                "text": "(laughs) I will do that.",
+                "delay": 393
+          },
+          {
+                "speaker": "Table",
+                "text": "Okay, you wanna try again?",
+                "delay": 396
+          },
+          {
+                "speaker": "Table",
+                "text": "Alright, I'm gonna give you an advantage here, I'm gonna lower the difficulty to only two.",
+                "delay": 399
+          },
+          {
+                "speaker": "Table",
+                "text": "So two successes is all you need.",
+                "delay": 405
+          },
+          {
+                "speaker": "Table",
+                "text": "Two successes.",
+                "delay": 409
+          },
+          {
+                "speaker": "Table",
+                "text": "Fantasic, that's perfect.",
+                "delay": 412
+          },
+          {
+                "speaker": "Table",
+                "text": "In addition to the security guard, on the other side of the crowd, you do notice somebody who's looking at the students really intently.",
+                "delay": 415
+          },
+          {
+                "speaker": "Table",
+                "text": "It's a young man with short black hair and a Griffith College hoodie, he looks pissed off, angry, like this is some kind of affront to musical propriety.",
+                "delay": 422
+          },
+          {
+                "speaker": "Table",
+                "text": "I'm gonna keep my eye on him.",
+                "delay": 430
+          },
+          {
+                "speaker": "Table",
+                "text": "You're gonna keep your eye on him.",
+                "delay": 433
+          },
+          {
+                "speaker": "Table",
+                "text": "What's going on inside?",
+                "delay": 437
+          },
+          {
+                "speaker": "Table",
+                "text": "Darling, I don't have time for this anymore, my name is Nelli G, or Nelli Griffith, I am the founder of the fashion department here.",
+                "delay": 440
+          },
+          {
+                "speaker": "Table",
+                "text": "Oh, Miss Griffith, yes.",
+                "delay": 447
+          },
+          {
+                "speaker": "Table",
+                "text": "Thank you.",
+                "delay": 450
+          },
+          {
+                "speaker": "Table",
+                "text": "I should have recognized you.",
+                "delay": 453
+          },
+          {
+                "speaker": "Table",
+                "text": "Yes, yes you should have.",
+                "delay": 456
+          },
+          {
+                "speaker": "Table",
+                "text": "I'm sorry, I apologize.",
+                "delay": 459
+          },
+          {
+                "speaker": "Table",
+                "text": "I understand, you probably didn't want anybody to know you were here.",
+                "delay": 462
+          },
+          {
+                "speaker": "Table",
+                "text": "No, that's why I wear very big sunglasses.",
+                "delay": 467
+          },
+          {
+                "speaker": "Table",
+                "text": "It's all clear to me now.",
+                "delay": 471
+          },
+          {
+                "speaker": "Table",
+                "text": "Excellent.",
+                "delay": 474
+          },
+          {
+                "speaker": "Table",
+                "text": "Here, I'll call up the records on the monitor for you.",
+                "delay": 477
+          },
+          {
+                "speaker": "Table",
+                "text": "Perfect, thank you so much.",
+                "delay": 481
+          },
+          {
+                "speaker": "Table",
+                "text": "She sits down at the monitor and makes a few hurried keystrokes on the keyboard and she begins calling up student records from the infirmary database.",
+                "delay": 484
+          },
+          {
+                "speaker": "Table",
+                "text": "I just take pictures basically.",
+                "delay": 492
+          },
+          {
+                "speaker": "Table",
+                "text": "On your phone?",
+                "delay": 496
+          },
+          {
+                "speaker": "Table",
+                "text": "(laughing) So the three students with the worst symptoms are a student named Louann, who works on the campus coffee shop.",
+                "delay": 499
+          },
+          {
+                "speaker": "Table",
+                "text": "And two students who work in the library.",
+                "delay": 506
+          },
+          {
+                "speaker": "Table",
+                "text": "I text Jasper these pictures.",
+                "delay": 510
+          },
+          {
+                "speaker": "Table",
+                "text": "Right in the middle of your intent observations, your cellphone buzzes.",
+                "delay": 513
+          },
+          {
+                "speaker": "Table",
+                "text": "Do you have a special tone for Victor?",
+                "delay": 518
+          },
+          {
+                "speaker": "Table",
+                "text": "(imitates a sad trombone) (laughing) Appropriate.",
+                "delay": 522
+          },
+          {
+                "speaker": "Table",
+                "text": "I've got my phone on vibrate.",
+                "delay": 526
+          },
+          {
+                "speaker": "Table",
+                "text": "(laughing) But if there were sound, it would be sad trombone.",
+                "delay": 529
+          },
+          {
+                "speaker": "Table",
+                "text": "How do you really feel about Victor?",
+                "delay": 534
+          },
+          {
+                "speaker": "Table",
+                "text": "How I really feel, alright.",
+                "delay": 538
+          },
+          {
+                "speaker": "Table",
+                "text": "I get back over the edge and I flip open my flip phone.",
+                "delay": 541
+          },
+          {
+                "speaker": "Table",
+                "text": "(laughing) I have a flip phone.",
+                "delay": 545
+          },
+          {
+                "speaker": "Table",
+                "text": "You have a Nokia.",
+                "delay": 549
+          },
+          {
+                "speaker": "Table",
+                "text": "It's canon now.",
+                "delay": 552
+          },
+          {
+                "speaker": "Table",
+                "text": "I open my phone and I look and I go oh.",
+                "delay": 555
+          },
+          {
+                "speaker": "Table",
+                "text": "So you see three pictures flash across the screen, one is a young redheaded woman wearing a green leather jacket, are you including the hospital record information in the picture or just the photos of the students?",
+                "delay": 559
+          },
+          {
+                "speaker": "Table",
+                "text": "Whatever's on the screen.",
+                "delay": 569
+          },
+          {
+                "speaker": "Table",
+                "text": "Whatever's on the screen.",
+                "delay": 572
+          },
+          {
+                "speaker": "Table",
+                "text": "The student works at the campus cafe, Grounds for Coffee.",
+                "delay": 575
+          },
+          {
+                "speaker": "Table",
+                "text": "The next one is a student named Juan, who has short black hair and he's wearing a hoodie.",
+                "delay": 579
+          },
+          {
+                "speaker": "Table",
+                "text": "In fact, you have seen him just a few moments ago.",
+                "delay": 584
+          },
+          {
+                "speaker": "Table",
+                "text": "And the third photograph is a freshman named Chen, who works at the library media center.",
+                "delay": 588
+          },
+          {
+                "speaker": "Table",
+                "text": "I text back that I have eyes on Juan.",
+                "delay": 593
+          },
+          {
+                "speaker": "Table",
+                "text": "Well you did have eyes on Juan, but somewhere between the buzzing of your phone and texting back, he is no longer in the quad.",
+                "delay": 597
+          },
+          {
+                "speaker": "Table",
+                "text": "(growls) Ouch Fuck.",
+                "delay": 604
+          },
+          {
+                "speaker": "Table",
+                "text": "Meanwhile, back in the infirmary, the doctor is apologetic, she hopes that you've got what you need and she can be of any further help, you just have to call her, she gives you a card.",
+                "delay": 607
+          },
+          {
+                "speaker": "Table",
+                "text": "I take her card and then I put my hand on her shoulder and say don't worry, we're going to forget all about this.",
+                "delay": 616
+          },
+          {
+                "speaker": "Table",
+                "text": "Are you using cloud memory?",
+                "delay": 622
+          },
+          {
+                "speaker": "Table",
+                "text": "I am going to cloud her memory of talking to us.",
+                "delay": 625
+          },
+          {
+                "speaker": "Table",
+                "text": "Okay, cloud memory is free, it does not require a rouse check, but you do need to make a charisma and dominate roll.",
+                "delay": 629
+          },
+          {
+                "speaker": "Table",
+                "text": "Okay, is it just those two things together?",
+                "delay": 635
+          },
+          {
+                "speaker": "Table",
+                "text": "(clatter) Two successes but one of the successes was on my blood die.",
+                "delay": 639
+          },
+          {
+                "speaker": "Table",
+                "text": "That's fine, it's still a success.",
+                "delay": 644
+          },
+          {
+                "speaker": "Table",
+                "text": "So she blinks, her eyelids flutter, she's about to say something and then forgets what she said.",
+                "delay": 648
+          },
+          {
+                "speaker": "Table",
+                "text": "I hope you both have a very good night, I've gotta get back to work.",
+                "delay": 654
+          },
+          {
+                "speaker": "Table",
+                "text": "Ta-ta darling.",
+                "delay": 659
+          },
+          {
+                "speaker": "Table",
+                "text": "Call me if you need anything?",
+                "delay": 662
+          },
+          {
+                "speaker": "Table",
+                "text": "She seems confused and puzzled, she shrugs and maybe chocks it up to lack of sleep, long day.",
+                "delay": 665
           }
     ],
   }
