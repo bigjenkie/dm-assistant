@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react'
+import { useState, useEffect, type ReactNode } from 'react'
 
 type Tab = {
   id: string
@@ -10,10 +10,18 @@ type Tab = {
 type Props = {
   tabs: Tab[]
   defaultTab?: string
+  forceTab?: string | null  // external control — switches tab when set
 }
 
-export function MobileLayout({ tabs, defaultTab }: Props) {
+export function MobileLayout({ tabs, defaultTab, forceTab }: Props) {
   const [activeTab, setActiveTab] = useState(defaultTab ?? tabs[0]?.id ?? '')
+
+  // Allow parent to force-switch tabs (e.g. on scenario load)
+  useEffect(() => {
+    if (forceTab && forceTab !== activeTab) {
+      setActiveTab(forceTab)
+    }
+  }, [forceTab])
 
   const activeContent = tabs.find((t) => t.id === activeTab)?.content
 

@@ -155,6 +155,9 @@ function App({ provider, anthropicProvider }: Props) {
     if (!anthropicRef.current) {
       setShowApiKeySetup(true)
     }
+
+    // On mobile, switch to Primer tab where the action is
+    setMobileForceTab('primer')
   }, [])
 
   const handleScenarioEntry = useCallback((entry: ScenarioEntry) => {
@@ -340,6 +343,7 @@ function App({ provider, anthropicProvider }: Props) {
   const isIdle = sessionState === 'idle'
   const visibleSuggestions = suggestions.filter((s) => !s.dismissed)
   const isMobile = useIsMobile()
+  const [mobileForceTab, setMobileForceTab] = useState<string | null>(null)
 
   return (
     <div className="flex flex-col h-screen" style={{ background: 'var(--surface-950)', color: 'var(--surface-200)' }}>
@@ -449,6 +453,7 @@ function App({ provider, anthropicProvider }: Props) {
       {isMobile ? (
         <MobileLayout
           defaultTab="primer"
+          forceTab={mobileForceTab}
           tabs={[
             {
               id: 'campaign',
