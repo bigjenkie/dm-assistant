@@ -9,7 +9,12 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:eval": "tsx scripts/eval-harness.ts --samples 2",
+    "test:eval:full": "tsx scripts/eval-harness.ts --samples 5",
+    "test:feasibility": "tsx scripts/feasibility-test.ts",
+    "test:all": "vitest run && echo '--- Unit tests passed ---' && tsx scripts/feasibility-test.ts",
+    "import:scenarios": "tsx scripts/import-transcripts.ts"
   },
   "dependencies": {
     "@capacitor/cli": "^8.3.0",
