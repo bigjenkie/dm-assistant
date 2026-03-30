@@ -20,7 +20,10 @@ export type Scenario = {
   entries: ScenarioEntry[]
 }
 
+import { IMPORTED_SCENARIOS } from './imported-scenarios'
+
 export const SCENARIOS: Scenario[] = [
+  ...IMPORTED_SCENARIOS,
   {
     id: 'hollow-king',
     name: 'Curse of the Hollow King',
