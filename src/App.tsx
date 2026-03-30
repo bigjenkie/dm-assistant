@@ -16,6 +16,8 @@ import { ApiKeySetup } from './components/ApiKeySetup'
 import { createAnthropicProvider } from './lib/llm/anthropic'
 import { DEMO_CONTEXT, DEMO_BACKSTORIES, DEMO_TRANSCRIPT_ENTRIES } from './lib/test-data'
 import { ScenarioPlayer } from './components/ScenarioPlayer'
+import { ScenarioPicker } from './components/ScenarioPicker'
+import { PlaybackControls } from './components/PlaybackControls'
 import type { Scenario, ScenarioEntry } from './lib/scenarios'
 import { MobileLayout } from './components/MobileLayout'
 import { MiniTranscript } from './components/MiniTranscript'
@@ -45,6 +47,11 @@ function App({ provider, anthropicProvider }: Props) {
   const [anthropicConfigured, setAnthropicConfigured] = useState(!!anthropicProvider)
   const anthropicRef = useRef<LLMProvider | undefined>(anthropicProvider)
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const [activeScenario, setActiveScenario] = useState<Scenario | null>(null)
+  const [scenarioPlaying, setScenarioPlaying] = useState(false)
+  const [scenarioSpeed, setScenarioSpeed] = useState(1)
+  const [scenarioIndex, setScenarioIndex] = useState(0)
+  const scenarioTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const engineRef = useRef(new SuggestionEngine(anthropicProvider ?? provider))
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -202,6 +209,91 @@ function App({ provider, anthropicProvider }: Props) {
     return () => {
       if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
     }
+  }, [])
+
+  // --- Direct scenario control (used by ScenarioPicker on mobile) ---
+
+  const scheduleScenarioEntry = useCallback((index: number, sc: Scenario, spd: number) => {
+    if (scenarioTimerRef.current) clearTimeout(scenarioTimerRef.current)
+    if (index >= sc.entries.length) {
+      setScenarioPlaying(false)
+      showToast('Scenario complete. Try the panic buttons and Suggest!')
+      return
+    }
+    const entry = sc.entries[index]
+    const prevDelay = index > 0 ? sc.entries[index - 1].delay : 0
+    const gap = Math.max((entry.delay - prevDelay) * 1000 / spd, 200)
+
+    scenarioTimerRef.current = setTimeout(() => {
+      const elapsed = getCurrentElapsed()
+      setTranscript((prev) => [...prev, {
+        id: `sc_${Date.now()}_${Math.random().toString(36).slice(2, 5)}`,
+        ts: elapsed,
+        text: `${entry.speaker}: ${entry.text}`,
+        confidence: 1.0,
+      }])
+      setScenarioIndex(index + 1)
+      scheduleScenarioEntry(index + 1, sc, spd)
+    }, gap)
+  }, [showToast])
+
+  const startScenarioDirect = useCallback((sc: Scenario) => {
+    // Load campaign data
+    setCampaignContext(sc.context)
+    setBackstories(sc.backstories)
+    setTranscript([])
+    setSuggestions([])
+    setActiveScenario(sc)
+    setScenarioIndex(0)
+    setScenarioPlaying(true)
+
+    // Start session
+    setSessionState('active')
+    sessionStartRef.current = Date.now()
+    setSessionElapsed(0)
+    if (timerRef.current) clearInterval(timerRef.current)
+    timerRef.current = setInterval(() => {
+      setSessionElapsed(Math.floor((Date.now() - sessionStartRef.current) / 1000))
+    }, 1000)
+
+    if (!anthropicRef.current) {
+      setShowApiKeySetup(true)
+    }
+
+    // Switch to Primer tab on mobile
+    setMobileForceTab('primer')
+
+    // Start playback
+    scheduleScenarioEntry(0, sc, scenarioSpeed)
+  }, [scheduleScenarioEntry, scenarioSpeed])
+
+  const toggleScenarioPlayback = useCallback(() => {
+    if (!activeScenario) return
+    if (scenarioPlaying) {
+      if (scenarioTimerRef.current) clearTimeout(scenarioTimerRef.current)
+      setScenarioPlaying(false)
+    } else {
+      setScenarioPlaying(true)
+      scheduleScenarioEntry(scenarioIndex, activeScenario, scenarioSpeed)
+    }
+  }, [activeScenario, scenarioPlaying, scenarioIndex, scenarioSpeed, scheduleScenarioEntry])
+
+  const changeScenarioSpeed = useCallback((spd: number) => {
+    setScenarioSpeed(spd)
+    if (scenarioPlaying && activeScenario) {
+      if (scenarioTimerRef.current) clearTimeout(scenarioTimerRef.current)
+      scheduleScenarioEntry(scenarioIndex, activeScenario, spd)
+    }
+  }, [scenarioPlaying, activeScenario, scenarioIndex, scheduleScenarioEntry])
+
+  const resetScenario = useCallback(() => {
+    if (scenarioTimerRef.current) clearTimeout(scenarioTimerRef.current)
+    setActiveScenario(null)
+    setScenarioPlaying(false)
+    setScenarioIndex(0)
+    setSessionState('idle')
+    if (timerRef.current) clearInterval(timerRef.current)
+    setMobileForceTab(null)
   }, [])
 
   const handleScenarioComplete = useCallback(() => {
@@ -462,11 +554,9 @@ function App({ provider, anthropicProvider }: Props) {
               icon: '📂',
               content: (
                 <div className="flex flex-col p-3 h-full overflow-hidden gap-3">
-                  <ScenarioPlayer
-                    onLoad={handleScenarioLoad}
-                    onEntry={handleScenarioEntry}
-                    onComplete={handleScenarioComplete}
-                  />
+                  {!activeScenario && (
+                    <ScenarioPicker onSelect={startScenarioDirect} />
+                  )}
                   {isIdle ? (
                     <CampaignEditor
                       context={campaignContext}
@@ -501,6 +591,19 @@ function App({ provider, anthropicProvider }: Props) {
               icon: '✨',
               content: (
                 <div className="flex flex-col p-3 gap-2 h-full overflow-hidden">
+                  {activeScenario && (
+                    <PlaybackControls
+                      playing={scenarioPlaying}
+                      speed={scenarioSpeed}
+                      progress={activeScenario.entries.length > 0 ? Math.round((scenarioIndex / activeScenario.entries.length) * 100) : 0}
+                      total={activeScenario.entries.length}
+                      current={scenarioIndex}
+                      scenarioName={activeScenario.name}
+                      onToggle={toggleScenarioPlayback}
+                      onSpeedChange={changeScenarioSpeed}
+                      onReset={resetScenario}
+                    />
+                  )}
                   <MiniTranscript
                     entries={transcript}
                     maxLines={3}
