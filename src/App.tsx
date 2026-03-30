@@ -45,6 +45,14 @@ function App({ provider, anthropicProvider }: Props) {
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const sessionStartRef = useRef<number>(0)
 
+  // Refs that mirror state — used by callbacks to always read latest values
+  const campaignContextRef = useRef(campaignContext)
+  const backstoriesRef = useRef(backstories)
+  const transcriptRef = useRef(transcript)
+  campaignContextRef.current = campaignContext
+  backstoriesRef.current = backstories
+  transcriptRef.current = transcript
+
   // --- Session Lifecycle ---
 
   const startSession = useCallback(() => {
@@ -66,12 +74,15 @@ function App({ provider, anthropicProvider }: Props) {
   // --- Helpers ---
 
   function getRecentTranscript(): string {
-    return transcript.map((e) => `[${formatTs(e.ts)}] ${e.text}`).join('\n')
+    return transcriptRef.current.map((e) => `[${formatTs(e.ts)}] ${e.text}`).join('\n')
   }
 
   function getFullTranscript(): string {
     return getRecentTranscript()
   }
+
+  function getContext() { return campaignContextRef.current }
+  function getBackstories() { return backstoriesRef.current }
 
   function getCurrentElapsed(): number {
     if (sessionStartRef.current === 0) return 0
@@ -207,11 +218,11 @@ function App({ provider, anthropicProvider }: Props) {
   const handleSuggest = useCallback(async () => {
     setSuggestLoading(true)
     console.log('[DM] handleSuggest called')
-    console.log('[DM] context length:', campaignContext.length, 'backstories:', backstories.length, 'transcript:', transcript.length)
+    console.log('[DM] context length:', getContext().length, 'backstories:', getBackstories().length, 'transcript:', transcriptRef.current.length)
     try {
       const ctx = {
-        campaignContext,
-        characterBackstories: backstories,
+        campaignContext: getContext(),
+        characterBackstories: getBackstories(),
         recentTranscript: getRecentTranscript(),
         fullTranscript: getFullTranscript(),
         sessionElapsed: getCurrentElapsed(),
@@ -230,14 +241,14 @@ function App({ provider, anthropicProvider }: Props) {
     } finally {
       setSuggestLoading(false)
     }
-  }, [campaignContext, backstories, transcript, showToast])
+  }, [showToast])
 
   // --- Panic Buttons ---
 
   const handlePanic = useCallback(async (buttonId: PanicButtonId) => {
     const ctx = {
-      campaignContext,
-      characterBackstories: backstories,
+      campaignContext: getContext(),
+      characterBackstories: getBackstories(),
       recentTranscript: getRecentTranscript(),
       fullTranscript: getFullTranscript(),
     }
@@ -261,7 +272,7 @@ function App({ provider, anthropicProvider }: Props) {
     } finally {
       setPanicLoading(null)
     }
-  }, [campaignContext, backstories, transcript, showToast])
+  }, [showToast])
 
   // --- Questions ---
 
@@ -269,8 +280,8 @@ function App({ provider, anthropicProvider }: Props) {
     setQuestionLoading(true)
     try {
       const suggestion = await engineRef.current.runQuestion(question, {
-        campaignContext,
-        characterBackstories: backstories,
+        campaignContext: getContext(),
+        characterBackstories: getBackstories(),
         recentTranscript: getRecentTranscript(),
         fullTranscript: getFullTranscript(),
       })
@@ -284,7 +295,7 @@ function App({ provider, anthropicProvider }: Props) {
     } finally {
       setQuestionLoading(false)
     }
-  }, [campaignContext, backstories, transcript, showToast])
+  }, [showToast])
 
   // --- Suggestion Management ---
 
@@ -306,8 +317,8 @@ function App({ provider, anthropicProvider }: Props) {
     setQuestionLoading(true)
     try {
       const suggestion = await engineRef.current.runQuestion(question, {
-        campaignContext,
-        characterBackstories: backstories,
+        campaignContext: getContext(),
+        characterBackstories: getBackstories(),
         recentTranscript: getRecentTranscript(),
         fullTranscript: getFullTranscript(),
       })
@@ -319,7 +330,7 @@ function App({ provider, anthropicProvider }: Props) {
     } finally {
       setQuestionLoading(false)
     }
-  }, [campaignContext, backstories, transcript, showToast])
+  }, [showToast])
 
   // --- Derived ---
 
