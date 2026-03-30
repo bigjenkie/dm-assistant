@@ -8,6 +8,7 @@ type ParsedSuggestion = {
   type: SuggestionType
   title: string
   body: string
+  reasoning?: string
   dmOnly: boolean
 }
 
@@ -20,7 +21,8 @@ export function parseSuggestionResponse(raw: string): ParsedSuggestion | null {
 
   const typeMatch = trimmed.match(/^TYPE:\s*(.+)$/m)
   const titleMatch = trimmed.match(/^TITLE:\s*(.+)$/m)
-  const bodyMatch = trimmed.match(/^BODY:\s*([\s\S]+?)(?=^DM_ONLY:|\s*$)/m)
+  const bodyMatch = trimmed.match(/^BODY:\s*([\s\S]+?)(?=^REASONING:|^DM_ONLY:|\s*$)/m)
+  const reasoningMatch = trimmed.match(/^REASONING:\s*([\s\S]+?)(?=^DM_ONLY:|\s*$)/m)
   const dmOnlyMatch = trimmed.match(/^DM_ONLY:\s*(.+)$/m)
 
   // If we have at least a TITLE or BODY field, parse structured
@@ -31,9 +33,10 @@ export function parseSuggestionResponse(raw: string): ParsedSuggestion | null {
       : 'UNKNOWN'
     const title = titleMatch?.[1]?.trim() ?? 'Suggestion'
     const body = bodyMatch?.[1]?.trim() ?? ''
+    const reasoning = reasoningMatch?.[1]?.trim()
     const dmOnly = dmOnlyMatch?.[1]?.trim().toLowerCase() === 'true'
 
-    return { type, title, body, dmOnly }
+    return { type, title, body, reasoning, dmOnly }
   }
 
   // Fallback: treat entire text as a plain suggestion

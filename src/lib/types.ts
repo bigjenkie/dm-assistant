@@ -15,7 +15,8 @@ export type Suggestion = {
   id: string
   type: SuggestionType
   title: string
-  body: string
+  body: string                   // read-aloud or primary content
+  reasoning?: string             // why this was suggested (hidden by default)
   dmOnly: boolean
   timestamp: number    // seconds since session start
   pinned: boolean

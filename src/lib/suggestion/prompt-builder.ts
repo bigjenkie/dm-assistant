@@ -43,7 +43,8 @@ If nothing useful comes to mind, respond with exactly: NONE
 Format your response as:
 TYPE: [type]
 TITLE: [short title]
-BODY: [2-3 sentences max, scannable in 3 seconds]
+BODY: [the text the GM reads aloud or acts on immediately — 2-3 sentences max]
+REASONING: [one sentence: why this is relevant right now]
 DM_ONLY: [true/false — true if this contains info players should not see]`
 
   const activeSummary = ctx.activeSuggestions.length > 0
@@ -202,7 +203,8 @@ ${ctx.characterBackstories}
 Format your response as:
 TYPE: [type]
 TITLE: [short title]
-BODY: [your response]
+BODY: [read-aloud text or immediate action the GM takes — this is shown first and largest]
+REASONING: [one sentence explaining why this suggestion fits the current moment]
 DM_ONLY: [true/false]`
 
   const user = PANIC_PROMPTS[buttonId](ctx)

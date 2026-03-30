@@ -79,13 +79,22 @@ export function SuggestionCard({ suggestion, onPin, onDismiss, onFollowUp }: Pro
       </div>
 
       {/* Body — click to toggle detail */}
-      <p
-        className="text-sm px-3 py-2 leading-relaxed"
-        style={{ color: 'var(--surface-300)', cursor: 'pointer' }}
+      <div
+        className="px-3 py-2 cursor-pointer"
         onClick={() => setExpanded(!expanded)}
       >
-        {suggestion.body}
-      </p>
+        <p
+          className="text-sm leading-relaxed"
+          style={{ color: 'var(--surface-100)', lineHeight: '1.6' }}
+        >
+          {suggestion.body}
+        </p>
+        {!expanded && suggestion.reasoning && (
+          <p className="text-xs mt-1" style={{ color: 'var(--surface-500)' }}>
+            Tap for details
+          </p>
+        )}
+      </div>
 
       {/* Expanded detail — inline dropdown */}
       {expanded && (
@@ -116,6 +125,22 @@ export function SuggestionCard({ suggestion, onPin, onDismiss, onFollowUp }: Pro
                   {f.label}
                 </button>
               ))}
+            </div>
+          )}
+
+          {/* Reasoning — why this was suggested */}
+          {suggestion.reasoning && (
+            <div
+              className="text-xs px-2.5 py-1.5"
+              style={{
+                background: 'var(--surface-950)',
+                borderRadius: 'var(--radius-sm)',
+                color: 'var(--surface-400)',
+                borderLeft: '2px solid var(--amber-800)',
+              }}
+            >
+              <span style={{ color: 'var(--amber-500)', fontWeight: 600 }}>Why: </span>
+              {suggestion.reasoning}
             </div>
           )}
 
