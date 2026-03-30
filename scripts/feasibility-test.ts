@@ -1,12 +1,13 @@
 /**
  * Feasibility Test — Experiment 2: LLM Suggestion Quality
  *
- * Fires real prompts at Ollama (or Anthropic) with the demo campaign data
- * and evaluates whether the responses are structured, relevant, and useful.
+ * Tests multiple local models (and optionally Claude) against 8 TTRPG scenarios.
+ * Evaluates: format compliance, type accuracy, conciseness, latency.
  *
  * Usage:
- *   npx tsx scripts/feasibility-test.ts              # test Ollama (default)
- *   npx tsx scripts/feasibility-test.ts anthropic     # test Anthropic (needs ANTHROPIC_API_KEY env)
+ *   npx tsx scripts/feasibility-test.ts                    # test all local models
+ *   npx tsx scripts/feasibility-test.ts --model gemma3:12b  # test one model
+ *   npx tsx scripts/feasibility-test.ts --anthropic         # include Claude comparison
  */
 
 const CAMPAIGN_CONTEXT = `# Curse of the Hollow King
@@ -65,7 +66,7 @@ const TEST_CASES: TestCase[] = [
   },
   {
     name: 'NPC Recall — indirect mention',
-    transcript: '[00:42:15] Player: Let\'s go talk to that lady who gave us the quest.',
+    transcript: "[00:42:15] Player: Let's go talk to that lady who gave us the quest.",
     expectedType: 'RECALL',
   },
   {
@@ -96,18 +97,37 @@ const TEST_CASES: TestCase[] = [
   },
   {
     name: 'Rules — grapple question',
-    transcript: '[01:35:00] Player: Can I grapple the cult fanatic while I\'m prone?',
+    transcript: "[01:35:00] Player: Can I grapple the cult fanatic while I'm prone?",
     expectedType: 'RULES',
   },
 ]
 
-async function callOllama(system: string, user: string): Promise<{ text: string; latencyMs: number }> {
+function parseResponse(raw: string): { type: string; title: string; body: string; dmOnly: boolean } | null {
+  const trimmed = raw.trim()
+  if (!trimmed || trimmed.toUpperCase() === 'NONE') return null
+
+  const typeMatch = trimmed.match(/^TYPE:\s*(.+)$/m)
+  const titleMatch = trimmed.match(/^TITLE:\s*(.+)$/m)
+  const bodyMatch = trimmed.match(/^BODY:\s*([\s\S]+?)(?=^DM_ONLY:|\s*$)/m)
+  const dmOnlyMatch = trimmed.match(/^DM_ONLY:\s*(.+)$/m)
+
+  if (!titleMatch && !bodyMatch) return null
+
+  return {
+    type: typeMatch?.[1]?.trim() ?? 'UNKNOWN',
+    title: titleMatch?.[1]?.trim() ?? 'Untitled',
+    body: bodyMatch?.[1]?.trim() ?? '',
+    dmOnly: dmOnlyMatch?.[1]?.trim().toLowerCase() === 'true',
+  }
+}
+
+async function callOllama(model: string, system: string, user: string): Promise<{ text: string; latencyMs: number }> {
   const start = performance.now()
   const response = await fetch('http://localhost:11434/api/chat', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: 'llama3.1:8b-instruct-q4_K_M',
+      model,
       messages: [
         { role: 'system', content: system },
         { role: 'user', content: user },
@@ -146,90 +166,151 @@ async function callAnthropic(system: string, user: string): Promise<{ text: stri
   return { text, latencyMs: Math.round(performance.now() - start) }
 }
 
-function parseResponse(raw: string): { type: string; title: string; body: string; dmOnly: boolean } | null {
-  const trimmed = raw.trim()
-  if (!trimmed || trimmed.toUpperCase() === 'NONE') return null
-
-  const typeMatch = trimmed.match(/^TYPE:\s*(.+)$/m)
-  const titleMatch = trimmed.match(/^TITLE:\s*(.+)$/m)
-  const bodyMatch = trimmed.match(/^BODY:\s*([\s\S]+?)(?=^DM_ONLY:|\s*$)/m)
-  const dmOnlyMatch = trimmed.match(/^DM_ONLY:\s*(.+)$/m)
-
-  if (!titleMatch && !bodyMatch) return null
-
-  return {
-    type: typeMatch?.[1]?.trim() ?? 'UNKNOWN',
-    title: titleMatch?.[1]?.trim() ?? 'Untitled',
-    body: bodyMatch?.[1]?.trim() ?? '',
-    dmOnly: dmOnlyMatch?.[1]?.trim().toLowerCase() === 'true',
-  }
+type ModelResult = {
+  model: string
+  passed: number
+  failed: number
+  formatCompliance: number  // how many followed TYPE/TITLE/BODY format
+  avgLatencyMs: number
+  results: { test: string; pass: boolean; type: string; latencyMs: number; body: string }[]
 }
 
-async function main() {
-  const provider = process.argv[2] === 'anthropic' ? 'anthropic' : 'ollama'
-  const callLLM = provider === 'anthropic' ? callAnthropic : callOllama
-
-  console.log(`\n🧪 Feasibility Test — ${provider.toUpperCase()}\n`)
-  console.log('='.repeat(70))
-
-  // Check connectivity
-  try {
-    if (provider === 'ollama') {
-      const res = await fetch('http://localhost:11434/api/tags')
-      if (!res.ok) throw new Error('not ok')
-      console.log('✅ Ollama connected\n')
-    } else {
-      console.log('☁️  Using Anthropic API\n')
-    }
-  } catch {
-    console.error('❌ Cannot connect to Ollama at localhost:11434. Is it running?')
-    process.exit(1)
-  }
-
+async function testModel(
+  model: string,
+  callFn: (system: string, user: string) => Promise<{ text: string; latencyMs: number }>
+): Promise<ModelResult> {
+  const results: ModelResult['results'] = []
   let passed = 0
   let failed = 0
+  let formatOk = 0
+  let totalLatency = 0
 
   for (const tc of TEST_CASES) {
     const userPrompt = `RECENT TABLE CONVERSATION (last 3 minutes):\n${tc.transcript}\n\nGenerate ONE suggestion or respond NONE.`
 
-    console.log(`\n📋 Test: ${tc.name}`)
-    console.log(`   Expected: ${tc.expectedType}`)
+    process.stdout.write(`  ${tc.name}... `)
 
     try {
-      const result = await callLLM(SYSTEM_PROMPT, userPrompt)
+      const result = await callFn(SYSTEM_PROMPT, userPrompt)
       const parsed = parseResponse(result.text)
+      totalLatency += result.latencyMs
+
+      if (parsed) formatOk++
 
       if (tc.expectNone) {
         if (!parsed) {
-          console.log(`   ✅ PASS — Returned NONE (correct)  [${result.latencyMs}ms]`)
+          console.log(`✅ NONE [${result.latencyMs}ms]`)
+          results.push({ test: tc.name, pass: true, type: 'NONE', latencyMs: result.latencyMs, body: '' })
           passed++
         } else {
-          console.log(`   ⚠️  FAIL — Expected NONE but got: ${parsed.type}: ${parsed.title}  [${result.latencyMs}ms]`)
+          console.log(`❌ expected NONE, got ${parsed.type}: ${parsed.title} [${result.latencyMs}ms]`)
+          results.push({ test: tc.name, pass: false, type: parsed.type, latencyMs: result.latencyMs, body: parsed.body })
           failed++
         }
       } else if (!parsed) {
-        console.log(`   ⚠️  FAIL — Returned NONE (expected ${tc.expectedType})  [${result.latencyMs}ms]`)
+        console.log(`❌ returned NONE (expected ${tc.expectedType}) [${result.latencyMs}ms]`)
+        results.push({ test: tc.name, pass: false, type: 'NONE', latencyMs: result.latencyMs, body: '' })
         failed++
       } else {
         const typeMatch = parsed.type.toUpperCase() === tc.expectedType.toUpperCase()
-        const icon = typeMatch ? '✅' : '⚠️ '
-        const status = typeMatch ? 'PASS' : `SOFT FAIL (got ${parsed.type})`
-        console.log(`   ${icon} ${status}  [${result.latencyMs}ms]`)
-        console.log(`   Type: ${parsed.type} | Title: ${parsed.title}`)
-        console.log(`   Body: ${parsed.body.slice(0, 120)}${parsed.body.length > 120 ? '...' : ''}`)
-        console.log(`   DM Only: ${parsed.dmOnly}`)
-        if (typeMatch) passed++
-        else failed++
+        if (typeMatch) {
+          console.log(`✅ ${parsed.type}: "${parsed.title}" [${result.latencyMs}ms]`)
+          passed++
+        } else {
+          console.log(`⚠️  got ${parsed.type} (expected ${tc.expectedType}): "${parsed.title}" [${result.latencyMs}ms]`)
+          failed++
+        }
+        results.push({ test: tc.name, pass: typeMatch, type: parsed.type, latencyMs: result.latencyMs, body: parsed.body.slice(0, 80) })
       }
     } catch (err) {
-      console.log(`   ❌ ERROR: ${err}`)
+      console.log(`💥 ERROR: ${err}`)
+      results.push({ test: tc.name, pass: false, type: 'ERROR', latencyMs: 0, body: String(err) })
       failed++
     }
   }
 
+  return {
+    model,
+    passed,
+    failed,
+    formatCompliance: formatOk,
+    avgLatencyMs: Math.round(totalLatency / TEST_CASES.length),
+    results,
+  }
+}
+
+async function main() {
+  const args = process.argv.slice(2)
+  const singleModel = args.find(a => a !== '--anthropic' && !a.startsWith('--'))
+    ?? (args.includes('--model') ? args[args.indexOf('--model') + 1] : null)
+  const includeAnthropic = args.includes('--anthropic')
+
+  // Discover local models
+  let localModels: string[] = []
+  try {
+    const res = await fetch('http://localhost:11434/api/tags')
+    const data = await res.json()
+    localModels = data.models.map((m: { name: string }) => m.name)
+  } catch {
+    console.error('❌ Cannot connect to Ollama. Is it running?')
+    process.exit(1)
+  }
+
+  if (singleModel) {
+    localModels = localModels.filter(m => m.includes(singleModel))
+    if (localModels.length === 0) {
+      console.error(`❌ Model "${singleModel}" not found. Available: ${localModels.join(', ')}`)
+      process.exit(1)
+    }
+  }
+
+  console.log('\n🧪 FEASIBILITY TEST — LLM Suggestion Quality\n')
+  console.log(`Local models: ${localModels.join(', ')}`)
+  if (includeAnthropic) console.log('Cloud: claude-sonnet-4-6')
+  console.log('Test cases: ' + TEST_CASES.length)
+  console.log('='.repeat(70))
+
+  const allResults: ModelResult[] = []
+
+  for (const model of localModels) {
+    console.log(`\n📦 ${model}`)
+    console.log('-'.repeat(50))
+    const result = await testModel(model, (sys, usr) => callOllama(model, sys, usr))
+    allResults.push(result)
+  }
+
+  if (includeAnthropic) {
+    console.log('\n☁️  claude-sonnet-4-6')
+    console.log('-'.repeat(50))
+    const result = await testModel('claude-sonnet-4-6', callAnthropic)
+    allResults.push(result)
+  }
+
+  // Summary table
   console.log('\n' + '='.repeat(70))
-  console.log(`\n📊 Results: ${passed}/${TEST_CASES.length} passed, ${failed} failed`)
-  console.log(`   Provider: ${provider}`)
+  console.log('\n📊 SUMMARY\n')
+  console.log(`${'Model'.padEnd(30)} ${'Pass'.padEnd(6)} ${'Fail'.padEnd(6)} ${'Format'.padEnd(8)} ${'Avg ms'.padEnd(8)}`)
+  console.log('-'.repeat(60))
+
+  for (const r of allResults) {
+    const pct = `${r.passed}/${TEST_CASES.length}`
+    const fmt = `${r.formatCompliance}/${TEST_CASES.length}`
+    console.log(
+      `${r.model.padEnd(30)} ${pct.padEnd(6)} ${String(r.failed).padEnd(6)} ${fmt.padEnd(8)} ${String(r.avgLatencyMs).padEnd(8)}`
+    )
+  }
+
+  // Recommendation
+  console.log('\n' + '-'.repeat(60))
+  const best = allResults
+    .filter(r => r.passed >= 5)
+    .sort((a, b) => b.passed - a.passed || a.avgLatencyMs - b.avgLatencyMs)[0]
+
+  if (best) {
+    console.log(`\n🏆 Best local model: ${best.model} (${best.passed}/${TEST_CASES.length} pass, ${best.avgLatencyMs}ms avg)`)
+  } else {
+    console.log('\n⚠️  No local model passed 5+ tests. Claude recommended for production quality.')
+  }
   console.log('')
 }
 
