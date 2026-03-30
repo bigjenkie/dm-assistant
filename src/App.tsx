@@ -4,6 +4,7 @@ import type { Suggestion, TranscriptEntry, PanicButtonId, SessionState, Provider
 import { SuggestionEngine } from './lib/suggestion/engine'
 import { validatePanicButton } from './lib/suggestion/panic-validation'
 import { CampaignEditor } from './components/CampaignEditor'
+import { ResizablePanels } from './components/ResizablePanel'
 import { CampaignReference } from './components/CampaignReference'
 import { TranscriptPanel } from './components/TranscriptPanel'
 import { SuggestionPanel } from './components/SuggestionPanel'
@@ -393,63 +394,72 @@ function App({ provider, anthropicProvider }: Props) {
         </div>
       </div>
 
-      {/* Main Content — Three Column GM Screen */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Left Column: Campaign Reference */}
-        <div
-          className="flex flex-col p-3 overflow-hidden"
-          style={{ borderRight: '1px solid var(--surface-800)', width: '220px', minWidth: '180px' }}
-        >
-          {isIdle ? (
-            <CampaignEditor
-              context={campaignContext}
-              backstories={backstories}
-              onContextChange={setCampaignContext}
-              onBackstoriesChange={setBackstories}
-              sessionActive={false}
-            />
-          ) : (
-            <CampaignReference
-              context={campaignContext}
-              backstories={backstories}
-              onAskAbout={handleFollowUp}
-            />
-          )}
-        </div>
-
-        {/* Center Column: Transcript */}
-        <div
-          className="flex-1 flex flex-col p-3 overflow-hidden"
-          style={{ borderRight: '1px solid var(--surface-800)' }}
-        >
-          <TranscriptPanel
-            entries={transcript}
-            onAddEntry={addTranscriptEntry}
-          />
-        </div>
-
-        {/* Right Column: Panic Buttons + Questions + Suggestions */}
-        <div className="flex-1 flex flex-col p-3 gap-3 overflow-hidden">
-          <PanicToolbar
-            onPanic={handlePanic}
-            disabled={!isActive}
-            loading={panicLoading}
-          />
-          <QuestionInput
-            onSubmit={handleQuestion}
-            disabled={!isActive}
-            loading={questionLoading}
-          />
-          <div className="flex-1 overflow-hidden">
-            <SuggestionPanel
-              suggestions={suggestions}
-              onPin={handlePin}
-              onDismiss={handleDismiss}
-              onFollowUp={handleFollowUp}
-            />
-          </div>
-        </div>
-      </div>
+      {/* Main Content — Three Column GM Screen (resizable) */}
+      <ResizablePanels
+        panels={[
+          {
+            defaultWidth: 220,
+            minWidth: 160,
+            content: (
+              <div className="flex flex-col p-3 h-full overflow-hidden">
+                {isIdle ? (
+                  <CampaignEditor
+                    context={campaignContext}
+                    backstories={backstories}
+                    onContextChange={setCampaignContext}
+                    onBackstoriesChange={setBackstories}
+                    sessionActive={false}
+                  />
+                ) : (
+                  <CampaignReference
+                    context={campaignContext}
+                    backstories={backstories}
+                    onAskAbout={handleFollowUp}
+                  />
+                )}
+              </div>
+            ),
+          },
+          {
+            flex: true,
+            minWidth: 200,
+            content: (
+              <div className="flex flex-col p-3 h-full overflow-hidden">
+                <TranscriptPanel
+                  entries={transcript}
+                  onAddEntry={addTranscriptEntry}
+                />
+              </div>
+            ),
+          },
+          {
+            flex: true,
+            minWidth: 250,
+            content: (
+              <div className="flex flex-col p-3 gap-3 h-full overflow-hidden">
+                <PanicToolbar
+                  onPanic={handlePanic}
+                  disabled={!isActive}
+                  loading={panicLoading}
+                />
+                <QuestionInput
+                  onSubmit={handleQuestion}
+                  disabled={!isActive}
+                  loading={questionLoading}
+                />
+                <div className="flex-1 overflow-hidden">
+                  <SuggestionPanel
+                    suggestions={suggestions}
+                    onPin={handlePin}
+                    onDismiss={handleDismiss}
+                    onFollowUp={handleFollowUp}
+                  />
+                </div>
+              </div>
+            ),
+          },
+        ]}
+      />
 
       {/* API Key Setup Panel */}
       {showApiKeySetup && (
