@@ -7,11 +7,13 @@ type AnthropicConfig = {
   baseUrl?: string
 }
 
-// In the browser, route through Vite's dev proxy to avoid CORS.
-// In production (Tauri), call the API directly.
-const DEFAULT_BASE_URL = typeof window !== 'undefined' && window.location.hostname === 'localhost'
-  ? '/api/anthropic'
-  : 'https://api.anthropic.com'
+// In the browser during development, route through the Vite dev proxy
+// to avoid CORS. The proxy runs on the same origin as the page.
+// In production native apps (Tauri/Capacitor), call the API directly.
+const IS_DEV_SERVER = typeof window !== 'undefined' && (
+  window.location.port === '5173' || window.location.port === '5174'
+)
+const DEFAULT_BASE_URL = IS_DEV_SERVER ? '/api/anthropic' : 'https://api.anthropic.com'
 
 export function createAnthropicProvider(config: AnthropicConfig): LLMProvider {
   const baseUrl = config.baseUrl ?? DEFAULT_BASE_URL
