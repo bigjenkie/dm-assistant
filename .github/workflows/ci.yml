@@ -21,19 +21,7 @@ jobs:
       - run: npm test
       - run: npm run build
 
-  eval:
-    name: LLM Quality Eval
-    runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && contains(github.event.head_commit.message, '[eval]'))
-    needs: test
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-      - run: npm ci
-      - name: Run eval harness
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: npm run test:eval
+  # LLM eval is intentionally local-only: it routes through the Claude Code
+  # subscription via the Agent SDK and cannot run in headless CI without
+  # authenticated session state. Run `npm run test:eval` locally after
+  # `claude login`.

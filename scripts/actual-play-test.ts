@@ -2,11 +2,14 @@
  * Actual Play Test — Real transcript excerpts from Critical Role C2
  * Tests Claude's suggestion quality against real table conversation.
  *
- * Usage:
- *   ANTHROPIC_API_KEY=sk-ant-... npx tsx scripts/actual-play-test.ts
+ * Routes through the Claude Code subscription (no API key).
+ * Sign in once with `claude login`, then:
+ *
+ *   npx tsx scripts/actual-play-test.ts
  */
 import { buildSuggestionPrompt, buildPanicPrompt } from '../src/lib/suggestion/prompt-builder'
 import type { PanicButtonId } from '../src/lib/types'
+import { callClaude } from './lib/claude-subscription'
 
 // Campaign context derived from Critical Role Campaign 2 early episodes
 const CAMPAIGN = `# Campaign 2: The Mighty Nein
@@ -120,27 +123,6 @@ function getPrompt(s: Scenario): { system: string; user: string } {
     recentTranscript: s.transcript,
     fullTranscript: FULL_TRANSCRIPT,
   })
-}
-
-async function callClaude(system: string, user: string): Promise<{ text: string; ms: number }> {
-  const key = process.env.ANTHROPIC_API_KEY
-  if (!key) throw new Error('Set ANTHROPIC_API_KEY')
-  const start = performance.now()
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01' },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 600,
-      temperature: 0.7,
-      system,
-      messages: [{ role: 'user', content: user }],
-    }),
-  })
-  if (!res.ok) throw new Error(`Claude ${res.status}: ${(await res.text()).slice(0, 200)}`)
-  const data = await res.json()
-  const text = data.content.filter((b: { type: string }) => b.type === 'text').map((b: { text: string }) => b.text).join('')
-  return { text, ms: Math.round(performance.now() - start) }
 }
 
 function wrap(text: string, width = 72): string {

@@ -4,10 +4,12 @@
  * Picks random transcript chunks, fires them through prompts,
  * scores responses on multiple criteria, outputs a report.
  *
- * Usage:
- *   ANTHROPIC_API_KEY=sk-ant-... npx tsx scripts/eval-harness.ts
- *   ANTHROPIC_API_KEY=sk-ant-... npx tsx scripts/eval-harness.ts --samples 10
- *   ANTHROPIC_API_KEY=sk-ant-... npx tsx scripts/eval-harness.ts --buttons-only
+ * Uses the Claude Code subscription via the Agent SDK — no API key.
+ * Sign in once with `claude login`, then:
+ *
+ *   npx tsx scripts/eval-harness.ts
+ *   npx tsx scripts/eval-harness.ts --samples 10
+ *   npx tsx scripts/eval-harness.ts --buttons-only
  */
 import { readFileSync, readdirSync } from 'fs'
 import { join, dirname } from 'path'
@@ -16,6 +18,7 @@ import { buildSuggestionPrompt, buildPanicPrompt } from '../src/lib/suggestion/p
 import { parseSuggestionResponse } from '../src/lib/suggestion/parser'
 import type { PanicButtonId } from '../src/lib/types'
 import { PANIC_BUTTONS } from '../src/lib/types'
+import { callClaude } from './lib/claude-subscription'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -206,31 +209,6 @@ const CRITERIA: Record<string, { name: string; weight: number; score: ScoreFn; d
       return hasContext ? 8 : 5
     },
   },
-}
-
-// ---------------------------------------------------------------------------
-// LLM caller
-// ---------------------------------------------------------------------------
-
-async function callClaude(system: string, user: string): Promise<{ text: string; ms: number }> {
-  const key = process.env.ANTHROPIC_API_KEY
-  if (!key) throw new Error('Set ANTHROPIC_API_KEY')
-  const start = performance.now()
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01' },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 400,
-      temperature: 0.7,
-      system,
-      messages: [{ role: 'user', content: user }],
-    }),
-  })
-  if (!res.ok) throw new Error(`Claude ${res.status}`)
-  const data = await res.json()
-  const text = data.content.filter((b: { type: string }) => b.type === 'text').map((b: { text: string }) => b.text).join('')
-  return { text, ms: Math.round(performance.now() - start) }
 }
 
 // ---------------------------------------------------------------------------

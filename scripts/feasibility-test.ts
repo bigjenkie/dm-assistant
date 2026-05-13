@@ -4,11 +4,15 @@
  * Tests multiple local models (and optionally Claude) against 8 TTRPG scenarios.
  * Evaluates: format compliance, type accuracy, conciseness, latency.
  *
+ * Claude is routed through the Claude Code subscription (no API key).
+ * Sign in once with `claude login` to use --anthropic.
+ *
  * Usage:
  *   npx tsx scripts/feasibility-test.ts                    # test all local models
  *   npx tsx scripts/feasibility-test.ts --model gemma3:12b  # test one model
  *   npx tsx scripts/feasibility-test.ts --anthropic         # include Claude comparison
  */
+import { callClaude } from './lib/claude-subscription'
 
 const CAMPAIGN_CONTEXT = `# Curse of the Hollow King
 System: D&D 5e. Setting: Ashenmere Valley.
@@ -142,28 +146,8 @@ async function callOllama(model: string, system: string, user: string): Promise<
 }
 
 async function callAnthropic(system: string, user: string): Promise<{ text: string; latencyMs: number }> {
-  const apiKey = process.env.ANTHROPIC_API_KEY
-  if (!apiKey) throw new Error('Set ANTHROPIC_API_KEY env var')
-  const start = performance.now()
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-    },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 300,
-      temperature: 0.7,
-      system,
-      messages: [{ role: 'user', content: user }],
-    }),
-  })
-  if (!response.ok) throw new Error(`Anthropic ${response.status}`)
-  const data = await response.json()
-  const text = data.content.filter((b: { type: string }) => b.type === 'text').map((b: { text: string }) => b.text).join('')
-  return { text, latencyMs: Math.round(performance.now() - start) }
+  const { text, ms } = await callClaude(system, user)
+  return { text, latencyMs: ms }
 }
 
 type ModelResult = {

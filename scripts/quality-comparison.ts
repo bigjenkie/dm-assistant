@@ -1,13 +1,16 @@
 /**
- * Quality Comparison — Claude Opus 4.6 vs Best Local Model
+ * Quality Comparison — Claude Opus 4.7 vs Best Local Model
  *
  * Runs identical prompts through both models and displays responses
  * side by side for human evaluation of body quality.
  *
- * Usage:
- *   ANTHROPIC_API_KEY=sk-ant-... npx tsx scripts/quality-comparison.ts
+ * Claude routes through the Claude Code subscription (no API key).
+ * Sign in once with `claude login`, then:
+ *
+ *   npx tsx scripts/quality-comparison.ts
  */
 import { buildSuggestionPrompt, buildPanicPrompt } from '../src/lib/suggestion/prompt-builder'
+import { callClaude as callClaudeSubscription } from './lib/claude-subscription'
 
 const CAMPAIGN = `# Curse of the Hollow King
 System: D&D 5e. Setting: Ashenmere Valley.
@@ -102,39 +105,10 @@ async function callOllama(model: string, system: string, user: string): Promise<
   return { text: data.message.content, ms: Math.round(performance.now() - start) }
 }
 
+const CLOUD_MODEL = 'claude-opus-4-7'
+
 async function callClaude(system: string, user: string): Promise<{ text: string; ms: number }> {
-  const key = process.env.ANTHROPIC_API_KEY
-  if (!key) throw new Error('ANTHROPIC_API_KEY required')
-  const start = performance.now()
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01' },
-    body: JSON.stringify({
-      model: 'claude-opus-4-6',
-      max_tokens: 16000,
-      temperature: 1,
-      thinking: { type: 'enabled', budget_tokens: 10000 },
-      system,
-      messages: [{ role: 'user', content: user }],
-    }),
-  })
-  if (!res.ok) {
-    const err = await res.text()
-    throw new Error(`Claude ${res.status}: ${err.slice(0, 200)}`)
-  }
-  const data = await res.json()
-  const text = data.content
-    .filter((b: { type: string }) => b.type === 'text')
-    .map((b: { text: string }) => b.text)
-    .join('')
-  const thinking = data.content
-    .filter((b: { type: string }) => b.type === 'thinking')
-    .map((b: { thinking: string }) => b.thinking)
-    .join('')
-  return {
-    text: thinking ? `[THINKING]\n${thinking.slice(0, 300)}...\n\n[RESPONSE]\n${text}` : text,
-    ms: Math.round(performance.now() - start),
-  }
+  return callClaudeSubscription(system, user, CLOUD_MODEL)
 }
 
 function divider(char = '─', len = 70) { return char.repeat(len) }
@@ -159,7 +133,7 @@ async function main() {
   const localModel = 'phi4:14b'
 
   console.log(`\n${'═'.repeat(70)}`)
-  console.log(`  QUALITY COMPARISON: Claude Opus 4.6 (thinking) vs ${localModel}`)
+  console.log(`  QUALITY COMPARISON: ${CLOUD_MODEL} (subscription) vs ${localModel}`)
   console.log(`${'═'.repeat(70)}\n`)
 
   // Warm up local model
@@ -179,7 +153,7 @@ async function main() {
     const local = await callOllama(localModel, system, user)
     console.log(`${local.ms}ms`)
 
-    process.stdout.write('  claude-opus-4-6... ')
+    process.stdout.write(`  ${CLOUD_MODEL}... `)
     let claude: { text: string; ms: number }
     try {
       claude = await callClaude(system, user)
